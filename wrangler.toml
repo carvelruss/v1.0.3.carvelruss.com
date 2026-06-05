@@ -8,7 +8,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "portfolio-db"
-database_id = "REPLACE_WITH_YOUR_DB_ID"
+database_id = "af268b31-12e9-49f2-a704-ed492a472819"
 
 # ── Secrets (set via CLI, NOT stored here) ────────────────────────────────────
 # wrangler secret put ADMIN_PASSWORD
