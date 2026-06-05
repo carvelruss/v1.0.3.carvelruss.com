@@ -1904,6 +1904,124 @@ $card-shadow: 0 24px 48px rgba(0,0,0,0.5);
   }
 }
 
+// ── Competencies accordion ────────────────────────────────────────────────────
+.competencies {
+  background: #eef0ff;
+  padding: clamp(3rem, 6vw, 5rem) 0;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  &__heading {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 800;
+    color: $color-text;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  &__sub {
+    font-size: 0.9rem;
+    color: $color-muted;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  &__item {
+    background: #ffffff;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-card;
+    overflow: hidden;
+  }
+
+  &__row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.15s;
+
+    &:hover { background: rgba($color-violet, 0.03); }
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__chevron {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: $color-muted;
+    transition: background 0.15s, color 0.15s;
+
+    &.is-open {
+      background: $color-violet;
+      color: #ffffff;
+    }
+  }
+
+  // Accordion body — max-height animation
+  &__body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.32s ease;
+
+    &.is-open { max-height: 260px; }
+  }
+
+  &__body-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.25rem 1.5rem 1.5rem;
+
+    @media (max-width: $breakpoint-sm) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__icon {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+
+    svg { width: 100%; height: 100%; }
+  }
+
+  &__desc {
+    font-size: 0.9rem;
+    color: $color-violet;
+    line-height: 1.75;
+    margin: 0;
+  }
+}
+
 // ── About ─────────────────────────────────────────────────────────────────────
 .about {
   &__grid {

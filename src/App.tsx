@@ -33,6 +33,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import FeatureBar from './components/FeatureBar';
 import FeaturedProjects from './components/FeaturedProjects';
+import Competencies from './components/Competencies';
 import About from './components/About';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
@@ -55,6 +56,7 @@ function Portfolio() {
         <Hero />
         <FeatureBar />
         <FeaturedProjects />
+        <Competencies />
         <About />
         <Skills />
         <div className="container-site">
