@@ -1,5 +1,16 @@
-import { type FormEvent, useRef, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, opts: Record<string, unknown>) => string;
+      reset: (widgetId: string) => void;
+      remove: (widgetId: string) => void;
+      getResponse: (widgetId: string) => string | undefined;
+    };
+  }
+}
 
 const CONTACT_LINKS = [
   { icon: '✉', label: 'Email',    href: 'mailto:hello@yourname.com',              display: 'hello@yourname.com' },
@@ -10,10 +21,43 @@ const CONTACT_LINKS = [
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
 
 export default function Contact() {
-  const formRef  = useRef<HTMLFormElement>(null);
-  const navigate = useNavigate();
+  const formRef        = useRef<HTMLFormElement>(null);
+  const turnstileRef   = useRef<HTMLDivElement>(null);
+  const widgetIdRef    = useRef<string | null>(null);
+  const navigate       = useNavigate();
   const [sending, setSending] = useState(false);
   const [error,   setError]   = useState('');
+
+  // Render Turnstile after the component mounts (React SPA — script already loaded)
+  useEffect(() => {
+    const mount = () => {
+      if (!turnstileRef.current || !window.turnstile) return;
+      if (widgetIdRef.current) return; // already rendered
+      widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        theme: 'light',
+      });
+    };
+
+    // If turnstile is already available, render immediately
+    if (window.turnstile) {
+      mount();
+    } else {
+      // Otherwise wait for the script to load
+      const script = document.querySelector<HTMLScriptElement>(
+        'script[src*="challenges.cloudflare.com/turnstile"]',
+      );
+      script?.addEventListener('load', mount);
+      return () => script?.removeEventListener('load', mount);
+    }
+
+    return () => {
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
+    };
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,7 +68,9 @@ export default function Contact() {
     const email   = (fd.get('email')   as string)?.trim();
     const message = (fd.get('message') as string)?.trim();
     const turnstileToken =
-      formRef.current.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value ?? '';
+      widgetIdRef.current && window.turnstile
+        ? (window.turnstile.getResponse(widgetIdRef.current) ?? '')
+        : '';
 
     if (!turnstileToken) {
       setError('Please complete the spam check first.');
@@ -46,6 +92,9 @@ export default function Contact() {
         navigate('/thank-you');
       } else {
         setError(data.error ?? 'Something went wrong. Please try again.');
+        if (widgetIdRef.current && window.turnstile) {
+          window.turnstile.reset(widgetIdRef.current);
+        }
       }
     } catch {
       setError('Network error. Please check your connection and try again.');
@@ -110,12 +159,7 @@ export default function Contact() {
                 <textarea id="contact-message" name="message" placeholder="Tell me about your project…" required />
               </div>
 
-              <div
-                className="cf-turnstile"
-                data-sitekey={TURNSTILE_SITE_KEY}
-                data-theme="light"
-                aria-label="Spam verification"
-              />
+              <div ref={turnstileRef} aria-label="Spam verification" />
 
               <button type="submit" className="btn-primary-custom" disabled={sending} style={{ width: '100%', justifyContent: 'center' }}>
                 {sending ? 'Sending…' : 'Send Message →'}
