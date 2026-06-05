@@ -1,5 +1,6 @@
 import { Component, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -25,7 +26,9 @@ class AdminErrorBoundary extends Component<{ children: ReactNode }, { error: str
   }
 }
 
-function AdminGuard({ children }: { children: React.ReactNode }) {
+function AdminGuard({ children }: { children: ReactNode }) {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/admin/login" replace />;
   return <>{children}</>;
 }
 

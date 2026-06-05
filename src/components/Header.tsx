@@ -1,6 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+function useDarkMode() {
+  const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark');
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark);
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }, [dark]);
+  return [dark, () => setDark(v => !v)] as const;
+}
+
 const NAV_LINKS = [
   { label: 'Home',         href: '/',             type: 'route' },
   { label: 'About',        href: '/#about',       type: 'hash'  },
@@ -13,8 +22,9 @@ const NAV_LINKS = [
 const HASH_SECTIONS = ['about', 'skills', 'contact'];
 
 export default function Header() {
-  const [menuOpen, setMenuOpen]         = useState(false);
+  const [menuOpen, setMenuOpen]           = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const [dark, toggleDark]               = useDarkMode();
   const navigate  = useNavigate();
   const location  = useLocation();
 
@@ -96,8 +106,23 @@ export default function Header() {
 
         {/* Right actions */}
         <div className="header__actions">
+          {/* Light / Dark toggle */}
+          <div className="header__theme-toggle" role="group" aria-label="Color theme">
+            <span className={`header__theme-label${!dark ? ' active' : ''}`}>Light</span>
+            <button
+              className={`header__toggle-switch${dark ? ' is-dark' : ''}`}
+              onClick={toggleDark}
+              aria-pressed={dark}
+              aria-label="Toggle dark mode"
+            />
+            <span className={`header__theme-label${dark ? ' active' : ''}`}>Dark</span>
+          </div>
+
           <button className="header__btn-solid" onClick={() => handleNavClick('/#contact', 'hash')}>
-            Hire Me →
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+            Hire Me
           </button>
         </div>
 

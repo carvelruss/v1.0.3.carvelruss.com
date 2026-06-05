@@ -255,21 +255,21 @@ img { max-width: 100%; display: block; }
   }
 
   &__logo-icon {
-    width: 30px;
-    height: 30px;
-    background: $color-primary;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, $color-violet 0%, #818cf8 100%);
     color: #fff;
-    border-radius: 7px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.625rem;
+    font-size: 0.6rem;
     font-weight: 800;
     letter-spacing: 0;
     flex-shrink: 0;
   }
 
-  &__logo-accent { color: $color-primary; }
+  &__logo-accent { color: $color-violet; }
 
   // Nav — middle cell, truly centered
   &__nav {
@@ -300,7 +300,7 @@ img { max-width: 100%; display: block; }
     border-radius: $radius-md;
     font-size: 0.9rem;
     font-weight: 500;
-    color: $color-muted;
+    color: $color-violet;
     cursor: pointer;
     background: none;
     border: none;
@@ -309,10 +309,10 @@ img { max-width: 100%; display: block; }
     transition: color 0.14s ease, background 0.14s ease;
     position: relative;
 
-    &:hover { color: $color-text; background: $color-bg; }
+    &:hover { color: $color-violet-dark; background: $color-violet-light; }
 
     &.active {
-      color: $color-text;
+      color: $color-violet-dark;
       font-weight: 600;
 
       &::after {
@@ -322,7 +322,7 @@ img { max-width: 100%; display: block; }
         left: 0.875rem;
         right: 0.875rem;
         height: 2px;
-        background: $color-primary;
+        background: $color-violet;
         border-radius: 2px;
       }
     }
@@ -347,8 +347,11 @@ img { max-width: 100%; display: block; }
   }
 
   &__btn-solid {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     padding: 0.45rem 1.25rem;
-    background: $color-primary;
+    background: $color-violet;
     color: #ffffff;
     border: none;
     border-radius: $radius-pill;
@@ -356,10 +359,56 @@ img { max-width: 100%; display: block; }
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 2px 14px rgba($color-primary, 0.35);
+    box-shadow: 0 2px 14px rgba($color-violet, 0.35);
     transition: background 0.14s ease, box-shadow 0.14s ease, transform 0.12s;
 
-    &:hover { background: darken(#1877f2, 7%); box-shadow: 0 4px 20px rgba($color-primary, 0.48); transform: translateY(-1px); }
+    &:hover { background: $color-violet-dark; box-shadow: 0 4px 20px rgba($color-violet, 0.48); transform: translateY(-1px); }
+  }
+
+  // Light / Dark toggle (Silicon-style)
+  &__theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  &__theme-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: $color-muted;
+    transition: color 0.15s;
+    &.active { color: $color-text; }
+  }
+
+  &__toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: #dde1e7;
+    border-radius: $radius-pill;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background 0.2s;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      transition: transform 0.2s ease;
+    }
+
+    &.is-dark {
+      background: $color-violet;
+      &::after { transform: translateX(20px); }
+    }
   }
 
   // Hamburger — only in mobile grid col 2
@@ -397,6 +446,25 @@ img { max-width: 100%; display: block; }
 
     @media (max-width: ($breakpoint-lg - 1px)) { display: flex; }
   }
+}
+
+// Dark-mode header overrides
+html.dark {
+  .header {
+    background: #12131f;
+    border-color: rgba(255,255,255,0.07);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .header__logo { color: #e2e8f0; }
+  .header__logo-accent { color: #818cf8; }
+  .header__nav-link {
+    color: #818cf8;
+    &:hover { background: rgba(99,102,241,0.12); color: #a5b4fc; }
+    &.active { color: #a5b4fc; }
+  }
+  .header__theme-label { color: #64748b; &.active { color: #e2e8f0; } }
+  .header__menu-btn span { background: #e2e8f0; }
+  .header__nav.is-open { background: #12131f; border-color: rgba(255,255,255,0.07); }
 }
 
 // ── Hero ─────────────────────────────────────────────────────────────────────
