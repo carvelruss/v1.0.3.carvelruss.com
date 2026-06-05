@@ -64,11 +64,6 @@ const ShareIcon = () => (
   </svg>
 );
 
-const BookmarkIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-  </svg>
-);
 
 export default function BlogList() {
   const navigate = useNavigate();
@@ -234,13 +229,6 @@ export default function BlogList() {
                     ? <img src={post.og_image} alt={post.title} loading="lazy" />
                     : <div className="blog-post-row__img-placeholder" style={{ background: COVER_GRADIENTS[i % COVER_GRADIENTS.length] }} />
                   }
-                  <button
-                    className="blog-post-row__bookmark"
-                    aria-label="Bookmark post"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <BookmarkIcon />
-                  </button>
                 </div>
 
                 {/* Content */}
@@ -269,11 +257,6 @@ export default function BlogList() {
                         {getInitials(post.author)}
                       </span>
                       <span className="blog-post-row__author-name">{post.author}</span>
-                    </div>
-                    <div className="blog-post-row__stats" aria-hidden="true">
-                      <span><ThumbIcon /> 0</span>
-                      <span><CommentIcon /> 0</span>
-                      <span><ShareIcon /> 0</span>
                     </div>
                   </div>
                 </div>
