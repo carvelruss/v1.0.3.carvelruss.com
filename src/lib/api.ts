@@ -1,0 +1,105 @@
+import type { Project, Post, Inquiry } from '../types';
+
+const TOKEN_KEY = 'portfolio_admin_token';
+
+class ApiClient {
+  private readonly base = '/api';
+
+  getToken(): string | null {
+    return localStorage.getItem(TOKEN_KEY);
+  }
+
+  saveToken(token: string) {
+    localStorage.setItem(TOKEN_KEY, token);
+  }
+
+  clearToken() {
+    localStorage.removeItem(TOKEN_KEY);
+  }
+
+  private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const token = this.getToken();
+    if (token) headers.set('Authorization', `Bearer ${token}`);
+
+    const res = await fetch(`${this.base}${path}`, { ...init, headers });
+
+    if (res.status === 401) {
+      this.clearToken();
+      window.location.href = '/admin/login';
+      throw new Error('Session expired');
+    }
+
+    let data: Record<string, unknown> = {};
+    try {
+      data = await res.json() as Record<string, unknown>;
+    } catch {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    if (!res.ok) {
+      throw new Error((data.error as string) ?? `HTTP ${res.status}`);
+    }
+
+    return data as T;
+  }
+
+  // ── Auth ────────────────────────────────────────────────────────────────────
+  async login(password: string): Promise<{ token: string }> {
+    return this.request('/auth', { method: 'POST', body: JSON.stringify({ password }) });
+  }
+
+  // ── Projects ────────────────────────────────────────────────────────────────
+  getProjects(): Promise<Project[]> {
+    return this.request('/projects');
+  }
+  createProject(data: Omit<Project, 'id'>): Promise<{ id: number }> {
+    return this.request('/projects', { method: 'POST', body: JSON.stringify(data) });
+  }
+  updateProject(id: number, data: Partial<Project>): Promise<{ success: boolean }> {
+    return this.request(`/projects/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  deleteProject(id: number): Promise<{ success: boolean }> {
+    return this.request(`/projects/${id}`, { method: 'DELETE' });
+  }
+
+  // ── Posts ───────────────────────────────────────────────────────────────────
+  getPosts(adminMode = false): Promise<Post[]> {
+    return this.request(`/posts${adminMode ? '?admin=true' : ''}`);
+  }
+  getPostBySlug(slug: string): Promise<Post> {
+    return this.request(`/posts/${slug}`);
+  }
+  createPost(data: Omit<Post, 'id'>): Promise<{ slug: string }> {
+    return this.request('/posts', { method: 'POST', body: JSON.stringify(data) });
+  }
+  updatePost(slug: string, data: Partial<Post>): Promise<{ slug: string }> {
+    return this.request(`/posts/${slug}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  deletePost(slug: string): Promise<{ success: boolean }> {
+    return this.request(`/posts/${slug}`, { method: 'DELETE' });
+  }
+
+  // ── Inquiries ───────────────────────────────────────────────────────────────
+  getInquiries(): Promise<Inquiry[]> {
+    return this.request('/inquiries');
+  }
+  markRead(id: number): Promise<{ success: boolean }> {
+    return this.request(`/inquiries/${id}`, { method: 'PATCH', body: JSON.stringify({ is_read: 1 }) });
+  }
+  deleteInquiry(id: number): Promise<{ success: boolean }> {
+    return this.request(`/inquiries/${id}`, { method: 'DELETE' });
+  }
+
+  // ── Contact (public) ────────────────────────────────────────────────────────
+  submitContact(data: {
+    name: string;
+    email: string;
+    message: string;
+    turnstileToken: string;
+  }): Promise<{ success: boolean; message: string }> {
+    return this.request('/contact', { method: 'POST', body: JSON.stringify(data) });
+  }
+}
+
+export const api = new ApiClient();
