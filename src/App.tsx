@@ -32,6 +32,7 @@ import './styles/main.scss';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import FeatureBar from './components/FeatureBar';
+import FeaturedProjects from './components/FeaturedProjects';
 import About from './components/About';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
@@ -53,6 +54,7 @@ function Portfolio() {
       <main id="main-content" tabIndex={-1}>
         <Hero />
         <FeatureBar />
+        <FeaturedProjects />
         <About />
         <Skills />
         <div className="container-site">
