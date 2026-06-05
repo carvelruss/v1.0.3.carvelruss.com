@@ -39,6 +39,7 @@ import Footer from './components/Footer';
 import CTABanner from './components/CTABanner';
 
 import ProjectsPage from './pages/ProjectsPage';
+import CaseStudyDetail from './pages/CaseStudyDetail';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 import ThankYou from './pages/ThankYou';
@@ -122,7 +123,8 @@ export default function App() {
       <RevealObserver />
       <Routes>
         <Route path="/"              element={<Portfolio />} />
-        <Route path="/case-studies"   element={<ProjectsLayout />} />
+        <Route path="/case-studies"          element={<ProjectsLayout />} />
+        <Route path="/case-studies/:slug"    element={<><Header /><main id="main-content" tabIndex={-1}><CaseStudyDetail /></main><Footer /></>} />
         <Route path="/blog"          element={<BlogListLayout />} />
         <Route path="/blog/:slug"    element={<BlogPostLayout />} />
         <Route path="/thank-you"     element={<ThankYouLayout />} />

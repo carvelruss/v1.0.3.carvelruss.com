@@ -959,6 +959,216 @@ $card-shadow: 0 24px 48px rgba(0,0,0,0.5);
   50%       { opacity: 0.35; }
 }
 
+// ── Case Study Detail ─────────────────────────────────────────────────────────
+.cs-loading, .cs-not-found {
+  padding: clamp(4rem, 10vw, 8rem) 0;
+  color: $color-muted;
+  font-size: 1.0625rem;
+
+  h1 { color: $color-text; margin-bottom: $spacing-lg; }
+}
+
+.cs-detail {
+  &__hero {
+    background: #060b18;
+    padding: clamp(3rem, 6vw, 5rem) 0 clamp(2rem, 4vw, 3.5rem);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+  }
+
+  &__back {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: $spacing-lg;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+    font-family: inherit;
+
+    &:hover { color: rgba(255,255,255,0.9); }
+  }
+
+  &__meta { margin-bottom: $spacing-sm; }
+
+  &__title {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin: 0 0 $spacing-md;
+  }
+
+  &__description {
+    font-size: 1.0625rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.72;
+    max-width: 640px;
+    margin: 0 0 $spacing-lg;
+  }
+
+  &__tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .skill-pill {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+  }
+
+  &__body {
+    padding-top: clamp(2.5rem, 5vw, 4rem);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: flex-start;
+
+    @media (max-width: $breakpoint-md) { grid-template-columns: 1fr; }
+  }
+
+  &__content {
+    min-width: 0;
+  }
+
+  &__prose {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: $color-text;
+
+    h1, h2, h3, h4 {
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin: 2em 0 0.6em;
+      color: $color-text;
+
+      &:first-child { margin-top: 0; }
+    }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+    p { margin: 0 0 1.25em; }
+    ul, ol { padding-left: 1.5em; margin: 0 0 1.25em; }
+    li { margin-bottom: 0.4em; }
+    strong { font-weight: 700; color: $color-text; }
+    a { color: $color-primary; text-decoration: underline; }
+    blockquote {
+      border-left: 4px solid $color-primary;
+      margin: 1.5em 0;
+      padding: 0.75em 1.25em;
+      background: rgba($color-primary, 0.04);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: $color-muted;
+    }
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.875em;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1.25em 1.5em;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin: 1.5em 0;
+
+      code { background: none; padding: 0; color: inherit; }
+    }
+    hr { border: none; border-top: 1px solid $color-border; margin: 2.5em 0; }
+    img { border-radius: 12px; margin: 1.5em 0; }
+  }
+
+  &__empty {
+    color: $color-muted;
+    font-style: italic;
+    padding: $spacing-xl 0;
+  }
+
+  &__sidebar {
+    position: sticky;
+    top: calc(#{$nav-height} + 24px);
+
+    @media (max-width: $breakpoint-md) { position: static; }
+  }
+
+  &__sidebar-card {
+    background: $color-card;
+    border: 1px solid $color-border;
+    border-radius: 16px;
+    padding: $spacing-lg;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+
+    h3 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: $color-text;
+      margin: 0 0 $spacing-md;
+    }
+  }
+
+  &__sidebar-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: $spacing-md;
+    font-size: 0.875rem;
+    color: $color-text;
+    line-height: 1.5;
+  }
+
+  &__sidebar-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $color-muted;
+  }
+
+  &__sidebar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: $spacing-sm;
+    padding: 10px 16px;
+    background: $color-primary;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-radius: $radius-pill;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.12s;
+    width: 100%;
+    justify-content: center;
+
+    &:hover { background: darken(#1877f2, 7%); transform: translateY(-1px); color: #fff; }
+  }
+}
+
 // ── Page hero (Projects, Blog) ────────────────────────────────────────────────
 .page-hero {
   background: linear-gradient(160deg, #f8faff 0%, $color-bg 100%);

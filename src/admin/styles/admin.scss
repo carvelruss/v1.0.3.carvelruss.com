@@ -459,6 +459,8 @@ $a-shadow-hover:  0 4px 16px rgba(0,0,0,0.12);
   resize: vertical;
   min-height: 90px;
   line-height: 1.55;
+
+  &--tall { min-height: 280px; font-family: 'Courier New', monospace; font-size: 13px; }
 }
 
 .a-select { cursor: pointer; }

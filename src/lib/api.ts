@@ -53,6 +53,9 @@ class ApiClient {
   getProjects(): Promise<Project[]> {
     return this.request('/projects');
   }
+  getProjectBySlug(slug: string): Promise<Project> {
+    return this.request(`/projects/slug/${slug}`);
+  }
   createProject(data: Omit<Project, 'id'>): Promise<{ id: number }> {
     return this.request('/projects', { method: 'POST', body: JSON.stringify(data) });
   }

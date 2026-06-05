@@ -27,6 +27,7 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
   const [role, setRole] = useState(project?.role ?? '');
   const [liveUrl, setLiveUrl] = useState(project?.live_url ?? '');
   const [caseUrl, setCaseUrl] = useState(project?.case_study_url ?? '');
+  const [content, setContent] = useState(project?.content ?? '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const caseUrlEdited = useRef(!!project?.case_study_url);
@@ -66,7 +67,9 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
     try {
       const payload = {
         title: title.trim(),
+        slug: toSlug(title),
         description: description.trim(),
+        content,
         tech,
         role: role.trim(),
         live_url: liveUrl || null,
@@ -108,6 +111,11 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
               <div className="a-field">
                 <label className="a-field__label" htmlFor="pf-desc">Description <span>*</span></label>
                 <textarea id="pf-desc" className="a-textarea" value={description} onChange={e => setDescription(e.target.value)} placeholder="What did you build? What was the impact?" required />
+              </div>
+
+              <div className="a-field">
+                <label className="a-field__label" htmlFor="pf-content">Case Study Content <span className="a-field__hint" style={{ fontWeight: 400 }}>(Markdown supported)</span></label>
+                <textarea id="pf-content" className="a-textarea a-textarea--tall" value={content} onChange={e => setContent(e.target.value)} placeholder="Write the full case study here. Use ## headings, **bold**, bullet lists, etc." />
               </div>
 
               <div className="a-field">

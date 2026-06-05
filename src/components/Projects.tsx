@@ -40,15 +40,7 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export default function Projects() {
-  const [projects, setProjects] = useState<Project[]>(() =>
-    staticProjects.map(p => ({
-      ...p,
-      live_url: p.liveUrl,
-      case_study_url: p.caseStudyUrl,
-      github_url: p.githubUrl,
-      sort_order: p.id,
-    }))
-  );
+  const [projects, setProjects] = useState<Project[]>(() => staticProjects);
 
   useEffect(() => {
     fetch('/api/projects')

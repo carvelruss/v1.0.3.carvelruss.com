@@ -82,15 +82,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 export default function ProjectsPage() {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState<Project[]>(() =>
-    staticProjects.map(p => ({
-      ...p,
-      live_url: p.liveUrl,
-      case_study_url: p.caseStudyUrl,
-      github_url: p.githubUrl,
-      sort_order: p.id,
-    }))
-  );
+  const [projects, setProjects] = useState<Project[]>(() => staticProjects);
   const [filter, setFilter] = useState<Filter>('all');
   const [loading, setLoading] = useState(true);
 

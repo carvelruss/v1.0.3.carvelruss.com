@@ -5,7 +5,9 @@ import { type Env, json, err, isAdmin } from '../_helpers';
 interface ProjectRow {
   id: number;
   title: string;
+  slug: string;
   description: string;
+  content: string;
   tech: string;
   role: string;
   live_url: string | null;
@@ -39,12 +41,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   try {
     const body = await request.json<{
       title: string;
+      slug: string;
       description: string;
+      content?: string;
       tech: string[];
       role: string;
-      live_url?: string;
-      case_study_url?: string;
-      github_url?: string;
+      live_url?: string | null;
+      case_study_url?: string | null;
+      github_url?: string | null;
       sort_order?: number;
     }>();
 
@@ -53,12 +57,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     }
 
     const result = await env.DB.prepare(
-      `INSERT INTO projects (title, description, tech, role, live_url, case_study_url, github_url, sort_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO projects (title, slug, description, content, tech, role, live_url, case_study_url, github_url, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
       .bind(
         body.title.trim(),
+        body.slug?.trim() ?? '',
         body.description.trim(),
+        body.content ?? '',
         JSON.stringify(body.tech ?? []),
         body.role?.trim() ?? '',
         body.live_url ?? null,

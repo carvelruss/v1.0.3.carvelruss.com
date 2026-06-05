@@ -5,7 +5,9 @@ import { type Env, json, err, isAdmin } from '../../_helpers';
 interface ProjectRow {
   id: number;
   title: string;
+  slug: string;
   description: string;
+  content: string;
   tech: string;
   role: string;
   live_url: string | null;
@@ -40,7 +42,9 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
   try {
     const body = await request.json<{
       title?: string;
+      slug?: string;
       description?: string;
+      content?: string;
       tech?: string[];
       role?: string;
       live_url?: string | null;
@@ -55,11 +59,13 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
     if (!existing) return err('Not found', 404);
 
     await env.DB.prepare(
-      `UPDATE projects SET title=?, description=?, tech=?, role=?, live_url=?, case_study_url=?, github_url=?, sort_order=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`,
+      `UPDATE projects SET title=?, slug=?, description=?, content=?, tech=?, role=?, live_url=?, case_study_url=?, github_url=?, sort_order=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`,
     )
       .bind(
         body.title?.trim() ?? existing.title,
+        body.slug?.trim() ?? existing.slug,
         body.description?.trim() ?? existing.description,
+        body.content ?? existing.content,
         JSON.stringify(body.tech ?? JSON.parse(existing.tech)),
         body.role?.trim() ?? existing.role,
         body.live_url !== undefined ? body.live_url : existing.live_url,
