@@ -1304,6 +1304,194 @@ $card-shadow: 0 24px 48px rgba(0,0,0,0.5);
   }
 }
 
+// ── Blog Hero ─────────────────────────────────────────────────────────────────
+.blog-hero {
+  position: relative;
+  background: linear-gradient(135deg, #0f0e1a 0%, #1a1a2e 55%, #16213e 100%);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+
+  &__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1px minmax(240px, 320px);
+    gap: 0 2.5rem;
+    align-items: start;
+    padding: clamp(2.5rem, 5vw, 4rem) 0;
+
+    @media (max-width: $breakpoint-md) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__featured { display: flex; flex-direction: column; align-items: flex-start; }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 1.5rem;
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.13s;
+      &:hover { color: rgba(255,255,255,0.75); }
+    }
+
+    &-sep { opacity: 0.5; font-size: 0.7rem; }
+    &-current { color: rgba(255,255,255,0.7); }
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba($color-violet, 0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba($color-violet, 0.3);
+    border-radius: $radius-pill;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+
+  &__title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.25rem;
+    cursor: pointer;
+    transition: color 0.15s;
+
+    &:hover { color: #a5b4fc; }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.75rem;
+  }
+
+  &__cat {
+    background: rgba(255,255,255,0.12);
+    color: #e2e8f0;
+    border-radius: $radius-sm;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  &__sep {
+    width: 1px;
+    height: 14px;
+    background: rgba(255,255,255,0.2);
+    flex-shrink: 0;
+  }
+
+  &__time {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+  }
+
+  &__read-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: $color-violet;
+    color: #fff;
+    border: none;
+    border-radius: $radius-md;
+    padding: 0.65rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.12s;
+
+    &:hover { background: $color-violet-dark; transform: translateY(-1px); }
+  }
+
+  &__empty {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  // Vertical divider
+  &__divider {
+    background: rgba(255,255,255,0.1);
+    align-self: stretch;
+
+    @media (max-width: $breakpoint-md) { display: none; }
+  }
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: $breakpoint-md) {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1.5rem;
+      margin-top: 1rem;
+    }
+  }
+
+  &__side-post {
+    padding: 1.25rem 0 1.25rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-radius: $radius-md;
+    transition: background 0.15s;
+
+    &:last-child { border-bottom: none; }
+    &:hover { background: rgba(255,255,255,0.04); }
+
+    @media (max-width: $breakpoint-md) { padding-left: 0; }
+  }
+
+  &__side-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 0.6rem;
+  }
+
+  &__side-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    line-height: 1.35;
+    margin: 0;
+  }
+}
+
 // ── CTA Banner ────────────────────────────────────────────────────────────────
 .cta-banner {
   background: linear-gradient(135deg, #0f2557 0%, $color-primary 55%, #42a1f5 100%);
