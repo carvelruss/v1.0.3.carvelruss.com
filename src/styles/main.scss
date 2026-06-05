@@ -1469,13 +1469,9 @@ $card-shadow: 0 24px 48px rgba(0,0,0,0.5);
     border-radius: $radius-lg;
     transition: transform 0.15s ease, opacity 0.15s;
 
-    // First card: violet fill
-    &:first-child { background: rgba($color-violet, 0.55); }
+    background: rgba(255,255,255,0.06);
 
-    // Subsequent cards: dark semi-transparent
-    &:not(:first-child) { background: rgba(255,255,255,0.06); }
-
-    &:hover { transform: translateY(-2px); opacity: 0.92; }
+    &:hover { background: rgba($color-violet, 0.55); transform: translateY(-2px); }
   }
 
   &__side-meta {
