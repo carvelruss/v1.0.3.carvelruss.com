@@ -141,8 +141,10 @@ export default function Competencies() {
 
                 <div className={`competencies__body${isOpen ? ' is-open' : ''}`} aria-hidden={!isOpen}>
                   <div className="competencies__body-inner">
-                    <div className="competencies__icon">{item.icon}</div>
-                    <p className="competencies__desc">{item.desc}</p>
+                    <div className="competencies__body-content">
+                      <div className="competencies__icon">{item.icon}</div>
+                      <p className="competencies__desc">{item.desc}</p>
+                    </div>
                   </div>
                 </div>
               </div>

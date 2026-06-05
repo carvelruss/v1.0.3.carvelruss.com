@@ -1985,7 +1985,7 @@ $card-shadow: 0 24px 48px rgba(0,0,0,0.5);
     }
   }
 
-  // Accordion body — grid-row trick animates to real height (no snap)
+  // Accordion body — grid-row trick (padding must NOT be on the grid item)
   &__body {
     display: grid;
     grid-template-rows: 0fr;
@@ -1994,13 +1994,18 @@ $card-shadow: 0 24px 48px rgba(0,0,0,0.5);
     &.is-open { grid-template-rows: 1fr; }
   }
 
+  // Grid item: no padding, overflow hidden so 0fr collapses to true 0px
   &__body-inner {
     overflow: hidden;
     min-height: 0;
+  }
+
+  // Padding lives here — inside the grid item, not on it
+  &__body-content {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    padding: 0.25rem 1.5rem 1.5rem;
+    padding: 0.5rem 1.5rem 1.75rem;
 
     @media (max-width: $breakpoint-sm) {
       flex-direction: column;
