@@ -36,7 +36,6 @@ import FeaturedProjects from './components/FeaturedProjects';
 import Competencies from './components/Competencies';
 import TrustedClients from './components/TrustedClients';
 import About from './components/About';
-import Skills from './components/Skills';
 import Experience from './components/Experience';
 import Footer from './components/Footer';
 import CTABanner from './components/CTABanner';
@@ -47,6 +46,7 @@ import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 import ThankYou from './pages/ThankYou';
 import ContactPage from './pages/ContactPage';
+import SkillsPage from './pages/SkillsPage';
 import AdminApp from './admin/AdminApp';
 
 function Portfolio() {
@@ -60,7 +60,6 @@ function Portfolio() {
         <Competencies />
         <TrustedClients />
         <About />
-        <Skills />
         <div className="container-site">
           <CTABanner
             heading="Ready to see my work?"
@@ -114,6 +113,18 @@ function BlogPostLayout() {
   );
 }
 
+function SkillsLayout() {
+  return (
+    <>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
+        <SkillsPage />
+      </main>
+      <Footer />
+    </>
+  );
+}
+
 function ContactLayout() {
   return (
     <>
@@ -146,6 +157,7 @@ export default function App() {
         <Route path="/case-studies/:slug"    element={<><Header /><main id="main-content" tabIndex={-1}><CaseStudyDetail /></main><Footer /></>} />
         <Route path="/blog"          element={<BlogListLayout />} />
         <Route path="/blog/:slug"    element={<BlogPostLayout />} />
+        <Route path="/skills"        element={<SkillsLayout />} />
         <Route path="/contact"       element={<ContactLayout />} />
         <Route path="/thank-you"     element={<ThankYouLayout />} />
         <Route path="/admin/*"       element={<AdminApp />} />

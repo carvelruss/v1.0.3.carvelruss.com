@@ -1,9 +1,9 @@
 import { skillCategories } from '../data/skills';
 
-const CATEGORY_STYLES = [
-  { accent: '#7c3aed', bg: '#f5f3ff', pillBg: '#ede9fe', pillText: '#5b21b6' },
-  { accent: '#1877f2', bg: '#eff6ff', pillBg: '#dbeafe', pillText: '#1d4ed8' },
-  { accent: '#059669', bg: '#f0fdf4', pillBg: '#d1fae5', pillText: '#065f46' },
+const PILL_STYLES = [
+  { pillBg: '#ede9fe', pillText: '#5b21b6' },
+  { pillBg: '#dbeafe', pillText: '#1d4ed8' },
+  { pillBg: '#d1fae5', pillText: '#065f46' },
 ];
 
 export default function Skills() {
@@ -16,7 +16,7 @@ export default function Skills() {
 
         <div className="skills__grid">
           {skillCategories.map((category, i) => {
-            const style = CATEGORY_STYLES[i % CATEGORY_STYLES.length];
+            const ps = PILL_STYLES[i % PILL_STYLES.length];
             return (
               <article
                 key={category.label}
@@ -24,7 +24,7 @@ export default function Skills() {
                 aria-label={`${category.label} skills`}
                 data-reveal
                 data-reveal-delay={i * 100}
-                style={{ '--cat-accent': style.accent, '--cat-bg': style.bg } as React.CSSProperties}
+                style={{ '--cat-accent': category.accent, '--cat-bg': category.bg } as React.CSSProperties}
               >
                 <div className="skills__category-header">
                   <span className="skills__category-icon" aria-hidden="true">{category.icon}</span>
@@ -34,12 +34,12 @@ export default function Skills() {
                 <ul className="skills__pills" role="list">
                   {category.skills.map(skill => (
                     <li
-                      key={skill}
+                      key={skill.name}
                       className="skill-pill"
                       role="listitem"
-                      style={{ background: style.pillBg, color: style.pillText }}
+                      style={{ background: ps.pillBg, color: ps.pillText }}
                     >
-                      {skill}
+                      {skill.name}
                     </li>
                   ))}
                 </ul>

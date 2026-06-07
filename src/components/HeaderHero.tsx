@@ -23,13 +23,13 @@ interface NavLink {
 const NAV_LINKS: NavLink[] = [
   { label: 'Home',         href: '/',             type: 'route' },
   { label: 'About',        href: '/#about',       type: 'hash'  },
-  { label: 'Skills',       href: '/#skills',      type: 'hash'  },
+  { label: 'Skills',       href: '/skills',       type: 'route' },
   { label: 'Case Studies', href: '/case-studies', type: 'route' },
   { label: 'Blog',         href: '/blog',         type: 'route' },
   { label: 'Contact',      href: '/contact',      type: 'route' },
 ];
 
-const HASH_SECTIONS = ['about', 'skills'] as const;
+const HASH_SECTIONS = ['about'] as const;
 
 const STATS = [
   { icon: <BsCalendarCheck />, value: '6+',  label: 'Years Experience', color: '#1877f2' },
