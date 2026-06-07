@@ -26,10 +26,10 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Skills',       href: '/#skills',      type: 'hash'  },
   { label: 'Case Studies', href: '/case-studies', type: 'route' },
   { label: 'Blog',         href: '/blog',         type: 'route' },
-  { label: 'Contact',      href: '/#contact',     type: 'hash'  },
+  { label: 'Contact',      href: '/contact',      type: 'route' },
 ];
 
-const HASH_SECTIONS = ['about', 'skills', 'contact'] as const;
+const HASH_SECTIONS = ['about', 'skills'] as const;
 
 const STATS = [
   { icon: <BsCalendarCheck />, value: '6+',  label: 'Years Experience', color: '#1877f2' },
@@ -136,9 +136,6 @@ export default function HeaderHero() {
     return activeSection === href.slice(2);
   };
 
-  const scrollTo = (id: string) =>
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-
   return (
     <>
       {/* ════════════════════════════════ HEADER ════════════════════════════════ */}
@@ -194,7 +191,7 @@ export default function HeaderHero() {
 
             <button
               className="hh-header__hire-btn"
-              onClick={() => handleNavClick('/#contact', 'hash')}
+              onClick={() => navigate('/contact')}
             >
               <BsPersonFill size={13} aria-hidden="true" />
               Hire Me
@@ -263,7 +260,7 @@ export default function HeaderHero() {
                 </button>
                 <button
                   className="hh-hero__btn-ghost"
-                  onClick={() => scrollTo('contact')}
+                  onClick={() => navigate('/contact')}
                 >
                   Let's Talk
                 </button>

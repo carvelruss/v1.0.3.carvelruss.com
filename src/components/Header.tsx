@@ -16,10 +16,10 @@ const NAV_LINKS = [
   { label: 'Skills',       href: '/#skills',      type: 'hash'  },
   { label: 'Case Studies', href: '/case-studies', type: 'route' },
   { label: 'Blog',         href: '/blog',         type: 'route' },
-  { label: 'Contact',      href: '/#contact',     type: 'hash'  },
+  { label: 'Contact',      href: '/contact',      type: 'route' },
 ];
 
-const HASH_SECTIONS = ['about', 'skills', 'contact'];
+const HASH_SECTIONS = ['about', 'skills'];
 
 export default function Header() {
   const [menuOpen, setMenuOpen]           = useState(false);

@@ -38,7 +38,6 @@ import TrustedClients from './components/TrustedClients';
 import About from './components/About';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CTABanner from './components/CTABanner';
 
@@ -47,6 +46,7 @@ import CaseStudyDetail from './pages/CaseStudyDetail';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 import ThankYou from './pages/ThankYou';
+import ContactPage from './pages/ContactPage';
 import AdminApp from './admin/AdminApp';
 
 function Portfolio() {
@@ -72,7 +72,6 @@ function Portfolio() {
           />
         </div>
         <Experience />
-        <Contact />
       </main>
       <Footer />
     </>
@@ -115,6 +114,18 @@ function BlogPostLayout() {
   );
 }
 
+function ContactLayout() {
+  return (
+    <>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
+        <ContactPage />
+      </main>
+      <Footer />
+    </>
+  );
+}
+
 function ThankYouLayout() {
   return (
     <>
@@ -135,6 +146,7 @@ export default function App() {
         <Route path="/case-studies/:slug"    element={<><Header /><main id="main-content" tabIndex={-1}><CaseStudyDetail /></main><Footer /></>} />
         <Route path="/blog"          element={<BlogListLayout />} />
         <Route path="/blog/:slug"    element={<BlogPostLayout />} />
+        <Route path="/contact"       element={<ContactLayout />} />
         <Route path="/thank-you"     element={<ThankYouLayout />} />
         <Route path="/admin/*"       element={<AdminApp />} />
         <Route path="*"              element={<Navigate to="/" replace />} />
