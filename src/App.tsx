@@ -30,7 +30,7 @@ function RevealObserver() {
 import './styles/main.scss';
 
 import Header from './components/Header';
-import Hero from './components/Hero';
+import HeaderHero from './components/HeaderHero';
 import FeatureBar from './components/FeatureBar';
 import FeaturedProjects from './components/FeaturedProjects';
 import Competencies from './components/Competencies';
@@ -52,9 +52,9 @@ import AdminApp from './admin/AdminApp';
 function Portfolio() {
   return (
     <>
-      <Header />
+      <HeaderHero />
       <main id="main-content" tabIndex={-1}>
-        <Hero />
+        {/* Hero is rendered inside HeaderHero — do not add a standalone <Hero /> here */}
         <FeatureBar />
         <FeaturedProjects />
         <Competencies />
