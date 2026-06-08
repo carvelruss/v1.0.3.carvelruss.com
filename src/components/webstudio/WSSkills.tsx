@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
+import { SiPython, SiFigma, SiBootstrap, SiCss } from 'react-icons/si';
 
 type QuoteCard = {
   type: 'quote';
@@ -12,6 +13,9 @@ type IconCard = {
   name: string;
   emoji: string;
   bg: string;
+  Icon: React.ComponentType<{ size?: number; color?: string }>;
+  iconColor: string;
+  description: string;
 };
 type Card = QuoteCard | IconCard;
 
@@ -34,6 +38,10 @@ const CARDS: Card[] = [
     name: 'Python',
     emoji: '🐍',
     bg: '#f0fdf4',
+    Icon: SiPython,
+    iconColor: '#3776ab',
+    description:
+      'Python is a programming language that lets you work quickly and integrate systems more effectively.',
   },
   {
     type: 'quote',
@@ -53,6 +61,10 @@ const CARDS: Card[] = [
     name: 'Figma',
     emoji: '🎨',
     bg: '#fff7ed',
+    Icon: SiFigma,
+    iconColor: '#f24e1e',
+    description:
+      'Figma is a collaborative interface design tool used to create and prototype UI/UX designs in real time.',
   },
   {
     type: 'quote',
@@ -72,6 +84,10 @@ const CARDS: Card[] = [
     name: 'Bootstrap',
     emoji: '⚡',
     bg: '#f5f3ff',
+    Icon: SiBootstrap,
+    iconColor: '#7952b3',
+    description:
+      "Bootstrap is the world's most popular CSS framework for responsive, mobile-first web development.",
   },
   {
     type: 'quote',
@@ -91,6 +107,10 @@ const CARDS: Card[] = [
     name: 'CSS3',
     emoji: '🌊',
     bg: '#eff6ff',
+    Icon: SiCss,
+    iconColor: '#264de4',
+    description:
+      'CSS3 powers modern layouts, animations, and responsive designs with custom properties and flexbox.',
   },
 ];
 
@@ -114,7 +134,7 @@ export default function WSSkills() {
 
         {/* Header row */}
         <div
-          className="d-flex align-items-center justify-content-between mb-4"
+          className="d-flex align-items-center justify-content-between"
           style={{ marginBottom: '2rem' }}
         >
           <h2 className="section-title" style={{ marginBottom: 0 }}>Our skills</h2>
@@ -161,10 +181,11 @@ export default function WSSkills() {
 
       </div>
 
-      {/* Full-bleed scrollable track (no container clipping) */}
+      {/* Full-bleed scrollable track */}
       <div style={{ paddingLeft: 'max(1rem, calc((100vw - 1320px) / 2 + 12px))' }}>
         <div
           ref={trackRef}
+          className="ws-skills-track"
           style={{
             display: 'flex',
             gap: '1.5rem',
@@ -174,50 +195,78 @@ export default function WSSkills() {
             paddingBottom: '4px',
             paddingRight: '1.5rem',
           }}
-          // hide webkit scrollbar via className
-          className="ws-skills-track"
         >
-          {CARDS.map((card, i) => (
-            <div
-              key={i}
-              className="ws-skill-cc"
-              style={{
-                flex: '0 0 clamp(240px, 28vw, 340px)',
-                scrollSnapAlign: 'start',
-                background: card.type === 'icon' ? card.bg : CARD_BG,
-                borderRadius: '1.125rem',
-                padding: '2.25rem 2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '280px',
-                gap: '1.5rem',
-              }}
-            >
-              {card.type === 'quote' ? (
-                <>
-                  <p
-                    style={{
-                      fontStyle: 'italic',
-                      fontSize: '.9375rem',
+          {CARDS.map((card, i) =>
+            card.type === 'icon' ? (
+              /* ── Flip card ── */
+              <div
+                key={i}
+                className="ws-skill-cc ws-flip-card"
+                style={{ flex: '0 0 clamp(240px, 28vw, 340px)', scrollSnapAlign: 'start', minHeight: '280px' }}
+                tabIndex={0}
+              >
+                <div className="ws-flip-inner">
+                  {/* Front */}
+                  <div
+                    className="ws-flip-face ws-flip-front"
+                    style={{ background: card.bg }}
+                  >
+                    <div style={{ fontSize: '4rem', lineHeight: 1 }} aria-hidden="true">
+                      {card.emoji}
+                    </div>
+                  </div>
+
+                  {/* Back */}
+                  <div
+                    className="ws-flip-face ws-flip-back"
+                    style={{ background: card.bg }}
+                  >
+                    <card.Icon size={56} color={card.iconColor} aria-hidden="true" />
+                    <p style={{
+                      fontSize: '.875rem',
                       color: '#475569',
-                      lineHeight: 1.7,
+                      lineHeight: 1.65,
                       textAlign: 'center',
                       margin: 0,
-                    }}
-                  >
-                    {card.quote}
-                  </p>
-                  <span style={card.companyStyle}>{card.company}</span>
-                </>
-              ) : (
-                <div style={{ fontSize: '4rem', lineHeight: 1 }} aria-label={card.name}>
-                  {card.emoji}
+                    }}>
+                      {card.description}
+                    </p>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            ) : (
+              /* ── Quote card (no flip) ── */
+              <div
+                key={i}
+                className="ws-skill-cc"
+                style={{
+                  flex: '0 0 clamp(240px, 28vw, 340px)',
+                  scrollSnapAlign: 'start',
+                  background: CARD_BG,
+                  borderRadius: '1.125rem',
+                  padding: '2.25rem 2rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: '280px',
+                  gap: '1.5rem',
+                }}
+              >
+                <p style={{
+                  fontStyle: 'italic',
+                  fontSize: '.9375rem',
+                  color: '#475569',
+                  lineHeight: 1.7,
+                  textAlign: 'center',
+                  margin: 0,
+                }}>
+                  {card.quote}
+                </p>
+                <span style={card.companyStyle}>{card.company}</span>
+              </div>
+            )
+          )}
         </div>
       </div>
     </section>

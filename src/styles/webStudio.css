@@ -270,6 +270,39 @@
 
 /* ── Skills carousel ──────────────────────────────── */
 .ws-skills-track::-webkit-scrollbar { display: none; }
+
+/* ── Flip card ────────────────────────────────────── */
+.ws-flip-card {
+  perspective: 1000px;
+  cursor: pointer;
+}
+.ws-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .55s cubic-bezier(.4, 0, .2, 1);
+}
+.ws-flip-card:hover .ws-flip-inner,
+.ws-flip-card:focus .ws-flip-inner {
+  transform: rotateY(180deg);
+}
+.ws-flip-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.25rem 2rem;
+  gap: 1.25rem;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.ws-flip-back {
+  transform: rotateY(180deg);
+}
 .ws-bg-soft     { background: var(--ws-bg-soft); }
 
 /* ── Icon circle ───────────────────────────────────── */
