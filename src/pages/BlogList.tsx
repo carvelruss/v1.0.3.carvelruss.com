@@ -40,11 +40,6 @@ const COVER_GRADIENTS = [
 ];
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
-const HomeIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-  </svg>
-);
 const ThumbIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
@@ -193,14 +188,6 @@ export default function BlogList() {
 
             {/* Featured */}
             <div style={{ flex: 1, minWidth: 0 }}>
-              <nav className="ws-blog-breadcrumb" aria-label="Breadcrumb">
-                <button onClick={() => navigate('/')} aria-label="Home">
-                  <HomeIcon /> Home
-                </button>
-                <span className="ws-blog-breadcrumb__sep" aria-hidden="true">»</span>
-                <span className="ws-blog-breadcrumb__current">Blog</span>
-              </nav>
-
               {!loading && featured ? (
                 <>
                   <div className="ws-blog-hero__badge">🔥 Hot Topic</div>

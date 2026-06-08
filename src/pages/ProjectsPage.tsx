@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { projects as staticProjects } from '../data/projects';
 import type { Project } from '../types';
 import CTABanner from '../components/CTABanner';
@@ -73,7 +72,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 }
 
 export default function ProjectsPage() {
-  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>(() => staticProjects);
   const [filter, setFilter]     = useState<Filter>('all');
   const [loading, setLoading]   = useState(true);
@@ -107,9 +105,6 @@ export default function ProjectsPage() {
 
             {/* Left: text + stats */}
             <div className="ws-pg-hero__content">
-              <button className="ws-article-back" onClick={() => navigate('/')} style={{ marginBottom: '1.25rem' }}>
-                ← Home
-              </button>
               <p className="ws-eyebrow">Portfolio</p>
               <h1 className="ws-pg-hero__title">Case Studies</h1>
               <p className="ws-pg-hero__sub">
