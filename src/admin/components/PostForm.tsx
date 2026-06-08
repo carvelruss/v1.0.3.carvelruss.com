@@ -5,6 +5,8 @@ import { renderMarkdown, slugify } from '../../lib/markdown';
 import type { Post } from '../../types';
 import AdminLayout from './AdminLayout';
 import RichEditor from './RichEditor';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const EMPTY: Omit<Post, 'id'> = {
   title: '',
@@ -226,15 +228,20 @@ export default function PostForm() {
                 </div>
                 <div>
                   <label className="a-side-label" htmlFor="post-pub-date">Publish date</label>
-                  <input
+                  <DatePicker
                     id="post-pub-date"
-                    className="a-input"
-                    style={{ width: '100%' }}
-                    type="datetime-local"
-                    value={form.published_at ? form.published_at.slice(0, 16) : ''}
-                    onChange={e =>
-                      set('published_at', e.target.value ? new Date(e.target.value).toISOString() : null)
+                    selected={form.published_at ? new Date(form.published_at) : null}
+                    onChange={(date: Date | null) =>
+                      set('published_at', date ? date.toISOString() : null)
                     }
+                    showTimeSelect
+                    timeFormat="h:mm aa"
+                    timeIntervals={15}
+                    dateFormat="MMM d, yyyy · h:mm aa"
+                    placeholderText="Set date & time…"
+                    isClearable
+                    wrapperClassName="a-datepicker-wrap"
+                    popperClassName="a-datepicker-popper"
                   />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
