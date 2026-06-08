@@ -104,17 +104,20 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
 
             <div className="a-form">
               <div className="a-field">
-                <label className="a-field__label" htmlFor="pf-title">Title <span>*</span></label>
+                <label className="a-field__label" htmlFor="pf-title">Title <span className="a-req">*</span></label>
                 <input id="pf-title" className="a-input" value={title} onChange={e => handleTitleChange(e.target.value)} placeholder="e.g. HealthTrack Dashboard" required />
               </div>
 
               <div className="a-field">
-                <label className="a-field__label" htmlFor="pf-desc">Description <span>*</span></label>
+                <label className="a-field__label" htmlFor="pf-desc">Description <span className="a-req">*</span></label>
                 <textarea id="pf-desc" className="a-textarea" value={description} onChange={e => setDescription(e.target.value)} placeholder="What did you build? What was the impact?" required />
               </div>
 
               <div className="a-field">
-                <label className="a-field__label" htmlFor="pf-content">Case Study Content <span className="a-field__hint" style={{ fontWeight: 400 }}>(Markdown supported)</span></label>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 5 }}>
+                  <label className="a-field__label" htmlFor="pf-content" style={{ marginBottom: 0 }}>Case Study Content</label>
+                  <span className="a-field__hint" style={{ marginTop: 0 }}>Markdown supported</span>
+                </div>
                 <textarea id="pf-content" className="a-textarea a-textarea--tall" value={content} onChange={e => setContent(e.target.value)} placeholder="Write the full case study here. Use ## headings, **bold**, bullet lists, etc." />
               </div>
 

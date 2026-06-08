@@ -451,7 +451,7 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
     font-weight: 600;
     color: $a-text;
 
-    span { color: $a-red; margin-left: 2px; }
+    .a-req { color: $a-red; margin-left: 2px; }
   }
 
   &__hint { font-size: 11px; color: $a-muted; margin-top: 2px; }
