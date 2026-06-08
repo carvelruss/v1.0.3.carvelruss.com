@@ -27,124 +27,108 @@ function RevealObserver() {
   }, []);
   return null;
 }
+
+import 'bootstrap/dist/css/bootstrap-grid.min.css';
+import './styles/webStudio.css';
 import './styles/main.scss';
 
-import Header from './components/Header';
-import HeaderHero from './components/HeaderHero';
-import FeatureBar from './components/FeatureBar';
-import FeaturedProjects from './components/FeaturedProjects';
-import Competencies from './components/Competencies';
-import TrustedClients from './components/TrustedClients';
-import About from './components/About';
-import Experience from './components/Experience';
-import Footer from './components/Footer';
-import CTABanner from './components/CTABanner';
+import WSHeader from './components/webstudio/WSHeader';
+import WSFooter from './components/webstudio/WSFooter';
 
-import ProjectsPage from './pages/ProjectsPage';
+import ProjectsPage    from './pages/ProjectsPage';
 import CaseStudyDetail from './pages/CaseStudyDetail';
-import BlogList from './pages/BlogList';
-import BlogPost from './pages/BlogPost';
-import ThankYou from './pages/ThankYou';
-import ContactPage from './pages/ContactPage';
-import SkillsPage from './pages/SkillsPage';
-import AdminApp from './admin/AdminApp';
+import BlogList        from './pages/BlogList';
+import BlogPost        from './pages/BlogPost';
+import ThankYou        from './pages/ThankYou';
+import ContactPage     from './pages/ContactPage';
+import SkillsPage      from './pages/SkillsPage';
+import AdminApp        from './admin/AdminApp';
 import WebStudioLanding from './pages/WebStudioLanding';
 
-function Portfolio() {
-  return (
-    <>
-      <HeaderHero />
-      <main id="main-content" tabIndex={-1}>
-        {/* Hero is rendered inside HeaderHero — do not add a standalone <Hero /> here */}
-        <FeatureBar />
-        <FeaturedProjects />
-        <Competencies />
-        <TrustedClients />
-        <About />
-        <div className="container-site">
-          <CTABanner
-            heading="Ready to see my work?"
-            subtext="Browse my portfolio of UI/UX and frontend projects."
-            primaryLabel="View Case Studies →"
-            primaryHref="/case-studies"
-            secondaryLabel="Read the Blog"
-            secondaryHref="/blog"
-          />
-        </div>
-        <Experience />
-      </main>
-      <Footer />
-    </>
-  );
-}
+// Pages that use WSHeader share this offset so content clears the fixed navbar
+const NAV_OFFSET: React.CSSProperties = { paddingTop: '72px' };
 
 function ProjectsLayout() {
   return (
-    <>
-      <Header />
-      <main id="main-content" tabIndex={-1}>
+    <div className="ws-page">
+      <WSHeader />
+      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
         <ProjectsPage />
       </main>
-      <Footer />
-    </>
+      <WSFooter />
+    </div>
   );
 }
 
 function BlogListLayout() {
   return (
-    <>
-      <Header />
-      <main id="main-content" tabIndex={-1}>
+    <div className="ws-page">
+      <WSHeader />
+      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
         <BlogList />
       </main>
-      <Footer />
-    </>
+      <WSFooter />
+    </div>
   );
 }
 
 function BlogPostLayout() {
   return (
-    <>
-      <Header />
-      <main id="main-content" tabIndex={-1}>
+    <div className="ws-page">
+      <WSHeader />
+      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
         <BlogPost />
       </main>
-      <Footer />
-    </>
+      <WSFooter />
+    </div>
   );
 }
 
 function SkillsLayout() {
   return (
-    <>
-      <Header />
-      <main id="main-content" tabIndex={-1}>
+    <div className="ws-page">
+      <WSHeader />
+      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
         <SkillsPage />
       </main>
-      <Footer />
-    </>
+      <WSFooter />
+    </div>
   );
 }
 
 function ContactLayout() {
   return (
-    <>
-      <Header />
-      <main id="main-content" tabIndex={-1}>
+    <div className="ws-page">
+      <WSHeader />
+      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
         <ContactPage />
       </main>
-      <Footer />
-    </>
+      <WSFooter />
+    </div>
   );
 }
 
 function ThankYouLayout() {
   return (
-    <>
-      <Header />
-      <ThankYou />
-      <Footer />
-    </>
+    <div className="ws-page">
+      <WSHeader />
+      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+        <ThankYou />
+      </main>
+      <WSFooter />
+    </div>
+  );
+}
+
+function CaseStudyLayout() {
+  return (
+    <div className="ws-page">
+      <WSHeader />
+      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+        <CaseStudyDetail />
+      </main>
+      <WSFooter />
+    </div>
   );
 }
 
@@ -153,17 +137,16 @@ export default function App() {
     <BrowserRouter>
       <RevealObserver />
       <Routes>
-        <Route path="/"              element={<Portfolio />} />
+        <Route path="/"                      element={<WebStudioLanding />} />
         <Route path="/case-studies"          element={<ProjectsLayout />} />
-        <Route path="/case-studies/:slug"    element={<><Header /><main id="main-content" tabIndex={-1}><CaseStudyDetail /></main><Footer /></>} />
-        <Route path="/blog"          element={<BlogListLayout />} />
-        <Route path="/blog/:slug"    element={<BlogPostLayout />} />
-        <Route path="/skills"        element={<SkillsLayout />} />
-        <Route path="/contact"       element={<ContactLayout />} />
-        <Route path="/thank-you"     element={<ThankYouLayout />} />
-        <Route path="/web-studio"    element={<WebStudioLanding />} />
-        <Route path="/admin/*"       element={<AdminApp />} />
-        <Route path="*"              element={<Navigate to="/" replace />} />
+        <Route path="/case-studies/:slug"    element={<CaseStudyLayout />} />
+        <Route path="/blog"                  element={<BlogListLayout />} />
+        <Route path="/blog/:slug"            element={<BlogPostLayout />} />
+        <Route path="/skills"                element={<SkillsLayout />} />
+        <Route path="/contact"               element={<ContactLayout />} />
+        <Route path="/thank-you"             element={<ThankYouLayout />} />
+        <Route path="/admin/*"               element={<AdminApp />} />
+        <Route path="*"                      element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

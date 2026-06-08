@@ -1,6 +1,3 @@
-import 'bootstrap/dist/css/bootstrap-grid.min.css';
-import '../styles/webStudio.css';
-
 import WSHeader        from '../components/webstudio/WSHeader';
 import WSHero          from '../components/webstudio/WSHero';
 import WSServices      from '../components/webstudio/WSServices';
