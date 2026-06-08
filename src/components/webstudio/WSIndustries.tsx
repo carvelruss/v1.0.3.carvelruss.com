@@ -60,7 +60,7 @@ const INDUSTRIES: Industry[] = [
 ];
 
 export default function WSIndustries() {
-  const [activeId, setActiveId] = useState<string>('startup');
+  const [activeId, setActiveId] = useState<string>(INDUSTRIES[0].id);
   const current = INDUSTRIES.find(i => i.id === activeId) ?? INDUSTRIES[0];
 
   return (
