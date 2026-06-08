@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, type MouseEvent as RMouseEvent } from 'react';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { SiPython, SiFigma, SiBootstrap, SiCss } from 'react-icons/si';
 
@@ -117,15 +117,44 @@ const CARDS: Card[] = [
 const CARD_BG = '#f1f5f9';
 
 export default function WSSkills() {
-  const trackRef = useRef<HTMLDivElement>(null);
+  const trackRef   = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const startX     = useRef(0);
+  const scrollLeft = useRef(0);
 
   function slide(dir: 1 | -1) {
     const track = trackRef.current;
     if (!track) return;
     const card = track.querySelector<HTMLElement>('.ws-skill-cc');
     if (!card) return;
-    const step = card.offsetWidth + 24;
-    track.scrollBy({ left: dir * step, behavior: 'smooth' });
+    track.scrollBy({ left: dir * (card.offsetWidth + 24), behavior: 'smooth' });
+  }
+
+  function onMouseDown(e: RMouseEvent<HTMLDivElement>) {
+    const track = trackRef.current;
+    if (!track) return;
+    isDragging.current = true;
+    startX.current     = e.pageX - track.offsetLeft;
+    scrollLeft.current = track.scrollLeft;
+    track.style.cursor     = 'grabbing';
+    track.style.userSelect = 'none';
+  }
+
+  function onMouseMove(e: RMouseEvent<HTMLDivElement>) {
+    const track = trackRef.current;
+    if (!isDragging.current || !track) return;
+    e.preventDefault();
+    const x    = e.pageX - track.offsetLeft;
+    const walk = (x - startX.current) * 1.4;
+    track.scrollLeft = scrollLeft.current - walk;
+  }
+
+  function stopDrag() {
+    const track = trackRef.current;
+    if (!track) return;
+    isDragging.current     = false;
+    track.style.cursor     = 'grab';
+    track.style.userSelect = '';
   }
 
   return (
@@ -186,6 +215,10 @@ export default function WSSkills() {
         <div
           ref={trackRef}
           className="ws-skills-track"
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={stopDrag}
+          onMouseLeave={stopDrag}
           style={{
             display: 'flex',
             gap: '1.5rem',
@@ -194,6 +227,7 @@ export default function WSSkills() {
             scrollbarWidth: 'none',
             paddingBottom: '4px',
             paddingRight: '1.5rem',
+            cursor: 'grab',
           }}
         >
           {CARDS.map((card, i) =>
