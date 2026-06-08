@@ -57,7 +57,7 @@ export default function ProjectsAdmin() {
       <div className="a-card">
         <div className="a-table-wrap">
           {loading ? (
-            <p style={{ padding: 24, color: '#6c7a8d' }}>Loading…</p>
+            <p style={{ padding: 24, color: '#64748b' }}>Loading…</p>
           ) : (
             <table className="a-table" aria-label="Projects list">
               <thead>
@@ -71,25 +71,36 @@ export default function ProjectsAdmin() {
               </thead>
               <tbody>
                 {projects.length === 0 && (
-                  <tr><td colSpan={5} className="a-table__empty">No projects yet. Add your first project.</td></tr>
+                  <tr>
+                    <td colSpan={5} className="a-table__empty">
+                      No projects yet.{' '}
+                      <button
+                        className="a-btn a-btn--primary a-btn--sm"
+                        style={{ marginLeft: 8 }}
+                        onClick={handleAdd}
+                      >
+                        Add your first project →
+                      </button>
+                    </td>
+                  </tr>
                 )}
                 {projects.map(p => (
                   <tr key={p.id}>
-                    <td style={{ color: '#6c7a8d', fontWeight: 500 }}>{p.sort_order}</td>
+                    <td style={{ color: '#64748b', fontWeight: 500 }}>{p.sort_order}</td>
                     <td>
                       <div className="a-table__title">{p.title}</div>
                       <div className="a-table__sub" style={{ maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {p.description}
                       </div>
                     </td>
-                    <td style={{ color: '#6c7a8d', fontSize: 12 }}>{p.role}</td>
+                    <td style={{ color: '#64748b', fontSize: 12 }}>{p.role}</td>
                     <td>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                         {p.tech.slice(0, 3).map(t => (
-                          <span key={t} style={{ background: '#e7f0fd', color: '#1558b0', borderRadius: 50, padding: '1px 8px', fontSize: 11, fontWeight: 500 }}>{t}</span>
+                          <span key={t} style={{ background: '#eef2ff', color: '#6366f1', borderRadius: 50, padding: '2px 9px', fontSize: 11, fontWeight: 500 }}>{t}</span>
                         ))}
                         {p.tech.length > 3 && (
-                          <span style={{ color: '#6c7a8d', fontSize: 11 }}>+{p.tech.length - 3}</span>
+                          <span style={{ color: '#64748b', fontSize: 11 }}>+{p.tech.length - 3}</span>
                         )}
                       </div>
                     </td>

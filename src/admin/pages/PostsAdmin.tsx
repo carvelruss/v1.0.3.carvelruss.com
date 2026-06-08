@@ -6,9 +6,9 @@ import type { Post } from '../../types';
 
 export default function PostsAdmin() {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts]   = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError]   = useState('');
   const [success, setSuccess] = useState('');
 
   const load = () => {
@@ -44,19 +44,20 @@ export default function PostsAdmin() {
         </button>
       }
     >
-      {error && <div className="a-alert a-alert--error" role="alert" style={{ marginBottom: 16 }} onClick={() => setError('')}>{error}</div>}
-      {success && <div className="a-alert a-alert--success" role="status" style={{ marginBottom: 16 }} onClick={() => setSuccess('')}>{success}</div>}
+      {error   && <div className="a-alert a-alert--error"   role="alert"   style={{ marginBottom: 16 }} onClick={() => setError('')}>{error}</div>}
+      {success && <div className="a-alert a-alert--success" role="status"  style={{ marginBottom: 16 }} onClick={() => setSuccess('')}>{success}</div>}
 
       <div className="a-card">
         <div className="a-table-wrap">
           {loading ? (
-            <p style={{ padding: 24, color: '#6c7a8d' }}>Loading…</p>
+            <p style={{ padding: 24, color: '#64748b' }}>Loading…</p>
           ) : (
             <table className="a-table" aria-label="Blog posts list">
               <thead>
                 <tr>
                   <th>Title</th>
                   <th>Slug</th>
+                  <th>Category</th>
                   <th>Status</th>
                   <th>Published</th>
                   <th>Actions</th>
@@ -64,27 +65,46 @@ export default function PostsAdmin() {
               </thead>
               <tbody>
                 {posts.length === 0 && (
-                  <tr><td colSpan={5} className="a-table__empty">No posts yet. Write your first blog post.</td></tr>
+                  <tr>
+                    <td colSpan={6} className="a-table__empty">
+                      No posts yet.{' '}
+                      <button
+                        className="a-btn a-btn--primary a-btn--sm"
+                        style={{ marginLeft: 8 }}
+                        onClick={() => navigate('/admin/posts/new')}
+                      >
+                        Write your first post →
+                      </button>
+                    </td>
+                  </tr>
                 )}
                 {posts.map(post => (
                   <tr key={post.slug}>
-                    <td>
+                    <td style={{ maxWidth: 320 }}>
                       <div className="a-table__title">{post.title}</div>
                       {post.excerpt && (
-                        <div className="a-table__sub" style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div className="a-table__sub" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {post.excerpt}
                         </div>
                       )}
                     </td>
                     <td>
-                      <code style={{ fontSize: 12, color: '#6c7a8d' }}>{post.slug}</code>
+                      <code style={{ fontSize: 11.5, color: '#6366f1', background: '#eef2ff', padding: '2px 7px', borderRadius: 6 }}>
+                        {post.slug}
+                      </code>
+                    </td>
+                    <td style={{ color: '#64748b', fontSize: 12 }}>
+                      {post.category || <span style={{ color: '#d1d5db' }}>—</span>}
                     </td>
                     <td>
-                      <span className={`a-badge ${post.status === 'published' ? 'a-badge--published' : 'a-badge--draft'}`}>
-                        {post.status}
+                      <span className={`a-badge a-badge--${post.status}`}>
+                        <span className="a-badge__dot" />
+                        {post.status === 'published' ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td style={{ color: '#6c7a8d', fontSize: 12 }}>{formatDate(post.published_at)}</td>
+                    <td style={{ color: '#64748b', fontSize: 12, whiteSpace: 'nowrap' }}>
+                      {formatDate(post.published_at)}
+                    </td>
                     <td>
                       <div className="a-table__actions">
                         {post.status === 'published' && (
