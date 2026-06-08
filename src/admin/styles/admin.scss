@@ -613,12 +613,13 @@ $a-shadow-hover:  0 4px 16px rgba(0,0,0,0.12);
   border: none;
   outline: none;
   font-family: inherit;
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 700;
   color: $a-text;
   background: transparent;
   padding: 0;
-  line-height: 1.35;
+  line-height: 1.32;
+  letter-spacing: -.2px;
 
   &::placeholder { color: #c5cdd8; font-weight: 400; }
 }
@@ -1223,6 +1224,111 @@ $a-shadow-hover:  0 4px 16px rgba(0,0,0,0.12);
   margin-top: 20px;
   font-size: 12px;
   color: #b0b3b8;
+}
+
+// ── Modern post editor — unified card layout ─────────────────────────────────
+
+// Single card wrapping title + excerpt + rich editor (replaces 3 a-card divs)
+.a-editor-body {
+  background: $a-card-bg;
+  border: 1px solid $a-border;
+  border-radius: $a-radius;
+  box-shadow: $a-shadow;
+  overflow: hidden;
+}
+
+.a-editor-title-section {
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid $a-border;
+}
+
+// Excerpt textarea lives seamlessly inside the card — no visible border
+.a-editor-excerpt-section {
+  padding: 0 24px;
+  border-bottom: 1px solid $a-border;
+
+  textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: inherit;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: $a-text;
+    background: transparent;
+    padding: 14px 0;
+    min-height: 66px;
+    display: block;
+
+    &::placeholder { color: lighten($a-muted, 22%); font-style: italic; }
+  }
+}
+
+// Strips TipTap editor's outer border so it blends into .a-editor-body
+.a-rich-editor-wrap--seamless {
+  .a-rich-editor {
+    border: none;
+    border-radius: 0;
+
+    &:focus-within {
+      border-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  .a-rich-toolbar { border-radius: 0; }
+}
+
+// Single sidebar panel with sections (replaces 4 separate .a-side-card divs)
+.a-editor-panel {
+  background: $a-card-bg;
+  border: 1px solid $a-border;
+  border-radius: $a-radius;
+  box-shadow: $a-shadow;
+  overflow: hidden;
+  position: sticky;
+  top: 80px;
+
+  @media (max-width: 900px) { position: static; }
+}
+
+.a-editor-section {
+  padding: 14px 16px;
+
+  & + & { border-top: 1px solid $a-border; }
+}
+
+.a-editor-section__label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: $a-muted;
+  margin-bottom: 10px;
+}
+
+// Colored status pill shown in the topbar next to save actions
+.a-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+
+  &--draft     { background: $a-orange-light; color: $a-orange; }
+  &--published { background: $a-green-light;  color: $a-green;  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
 }
 
 // ── Tech chip input ───────────────────────────────────────────────────────────

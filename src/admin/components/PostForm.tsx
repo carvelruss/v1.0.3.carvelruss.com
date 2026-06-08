@@ -126,11 +126,37 @@ export default function PostForm() {
 
   return (
     <AdminLayout
-      pageTitle={isEdit ? 'Edit Post' : 'New Post'}
+      pageTitle={form.title.trim() || (isEdit ? 'Edit Post' : 'New Post')}
       headerAction={
-        <button className="a-btn a-btn--ghost a-btn--sm" onClick={() => navigate('/admin/posts')}>
-          ← Posts
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span className={`a-status-badge a-status-badge--${form.status}`}>
+            <span className="a-status-badge__dot" />
+            {isPublished ? 'Published' : 'Draft'}
+          </span>
+          <button
+            type="button"
+            className="a-btn a-btn--ghost a-btn--sm"
+            onClick={() => save('draft')}
+            disabled={saving}
+          >
+            {saving ? '…' : 'Save Draft'}
+          </button>
+          <button
+            type="button"
+            className="a-btn a-btn--primary a-btn--sm"
+            onClick={() => save('published')}
+            disabled={saving}
+          >
+            {saving ? '…' : isPublished ? 'Update' : 'Publish →'}
+          </button>
+          <button
+            type="button"
+            className="a-btn a-btn--ghost a-btn--sm"
+            onClick={() => navigate('/admin/posts')}
+          >
+            ← Posts
+          </button>
+        </div>
       }
     >
       <form onSubmit={handleSubmit}>
@@ -139,82 +165,72 @@ export default function PostForm() {
 
         <div className="a-post-editor">
 
-          {/* ── Main column ── */}
+          {/* ── Main column — unified writing card ── */}
           <div className="a-post-main">
+            <div className="a-editor-body">
 
-            {/* Title + slug */}
-            <div className="a-card a-card--pad">
-              <input
-                className="a-post-title"
-                value={form.title}
-                onChange={e => handleTitleChange(e.target.value)}
-                placeholder="Post title…"
-                required
-                aria-label="Post title"
-              />
-              <div className="a-slug-bar">
-                <span className="a-slug-prefix">/blog/</span>
+              {/* Title + slug + category */}
+              <div className="a-editor-title-section">
                 <input
-                  className="a-slug-input"
-                  value={form.slug}
-                  onChange={e => { setSlugManual(true); set('slug', e.target.value); }}
-                  placeholder="my-post-slug"
+                  className="a-post-title"
+                  value={form.title}
+                  onChange={e => handleTitleChange(e.target.value)}
+                  placeholder="Post title…"
                   required
-                  aria-label="URL slug"
+                  aria-label="Post title"
                 />
-                <span className="a-slug-sep">·</span>
-                <input
-                  className="a-slug-category"
-                  value={form.category ?? ''}
-                  onChange={e => set('category', e.target.value)}
-                  placeholder="Category"
-                  aria-label="Category"
+                <div className="a-slug-bar">
+                  <span className="a-slug-prefix">/blog/</span>
+                  <input
+                    className="a-slug-input"
+                    value={form.slug}
+                    onChange={e => { setSlugManual(true); set('slug', e.target.value); }}
+                    placeholder="my-post-slug"
+                    required
+                    aria-label="URL slug"
+                  />
+                  <span className="a-slug-sep">·</span>
+                  <input
+                    className="a-slug-category"
+                    value={form.category ?? ''}
+                    onChange={e => set('category', e.target.value)}
+                    placeholder="Category"
+                    aria-label="Category"
+                  />
+                </div>
+              </div>
+
+              {/* Excerpt — borderless, flows inside the card */}
+              <div className="a-editor-excerpt-section">
+                <textarea
+                  value={form.excerpt ?? ''}
+                  onChange={e => set('excerpt', e.target.value)}
+                  placeholder="Short summary shown in the blog list…"
+                  rows={3}
+                  aria-label="Post excerpt"
                 />
               </div>
-            </div>
 
-            {/* Excerpt */}
-            <div className="a-card a-card--pad" style={{ paddingBottom: 14 }}>
-              <label className="a-side-label" htmlFor="post-excerpt">Excerpt</label>
-              <textarea
-                id="post-excerpt"
-                className="a-textarea"
-                style={{ minHeight: 68, marginTop: 2, width: '100%' }}
-                value={form.excerpt ?? ''}
-                onChange={e => set('excerpt', e.target.value)}
-                placeholder="Short summary shown in the blog list…"
-              />
-            </div>
+              {/* Rich text editor — no outer border, seamless with card */}
+              <div className="a-rich-editor-wrap--seamless">
+                <RichEditor
+                  value={form.content ?? ''}
+                  onChange={v => set('content', v)}
+                />
+              </div>
 
-            {/* Rich text editor */}
-            <div className="a-card">
-              <RichEditor
-                value={form.content ?? ''}
-                onChange={v => set('content', v)}
-              />
             </div>
-
           </div>
 
-          {/* ── Sidebar ── */}
-          <div className="a-post-sidebar">
+          {/* ── Sidebar — single panel with section dividers ── */}
+          <div className="a-editor-panel">
 
-            {/* Publish card */}
-            <div className="a-side-card">
-              <div className="a-side-card__head">
-                <span className="a-side-card__head-icon">🚦</span>
-                <span className="a-side-card__head-title">Publish</span>
-              </div>
-              <div className="a-side-card__body">
+            {/* Publish settings */}
+            <div className="a-editor-section">
+              <div className="a-editor-section__label">Publish</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div>
-                  <label className="a-side-label" htmlFor="post-status">
-                    Status
-                    <span
-                      className={`a-status-dot a-status-dot--${form.status}`}
-                      style={{ marginLeft: 6 }}
-                      aria-hidden="true"
-                    />
-                  </label>
+                  <label className="a-side-label" htmlFor="post-status">Status</label>
                   <select
                     id="post-status"
                     className="a-select"
@@ -271,35 +287,12 @@ export default function PostForm() {
                   </div>
                 </div>
               </div>
-              <div className="a-side-card__actions">
-                <button
-                  type="button"
-                  className="a-btn a-btn--ghost a-btn--sm"
-                  style={{ flex: 1 }}
-                  onClick={() => save('draft')}
-                  disabled={saving}
-                >
-                  {saving ? '…' : 'Save Draft'}
-                </button>
-                <button
-                  type="submit"
-                  className="a-btn a-btn--primary a-btn--sm"
-                  style={{ flex: 1 }}
-                  disabled={saving}
-                  onClick={() => set('status', 'published')}
-                >
-                  {saving ? '…' : isPublished ? 'Update' : 'Publish →'}
-                </button>
-              </div>
             </div>
 
-            {/* Featured image card */}
-            <div className="a-side-card">
-              <div className="a-side-card__head">
-                <span className="a-side-card__head-icon">🖼</span>
-                <span className="a-side-card__head-title">Featured Image</span>
-              </div>
-              <div className="a-side-card__body">
+            {/* Featured image */}
+            <div className="a-editor-section">
+              <div className="a-editor-section__label">Featured Image</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {form.og_image && (
                   <img
                     src={form.og_image}
@@ -334,13 +327,10 @@ export default function PostForm() {
               </div>
             </div>
 
-            {/* Author card */}
-            <div className="a-side-card">
-              <div className="a-side-card__head">
-                <span className="a-side-card__head-icon">👤</span>
-                <span className="a-side-card__head-title">Author</span>
-              </div>
-              <div className="a-side-card__body">
+            {/* Author */}
+            <div className="a-editor-section">
+              <div className="a-editor-section__label">Author</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
                   {form.author_avatar && (
                     <img
@@ -388,13 +378,10 @@ export default function PostForm() {
               </div>
             </div>
 
-            {/* SEO card */}
-            <div className="a-side-card">
-              <div className="a-side-card__head">
-                <span className="a-side-card__head-icon">🔍</span>
-                <span className="a-side-card__head-title">SEO &amp; Tags</span>
-              </div>
-              <div className="a-side-card__body">
+            {/* SEO & Tags */}
+            <div className="a-editor-section">
+              <div className="a-editor-section__label">SEO &amp; Tags</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div>
                   <label className="a-side-label" htmlFor="post-kw">Tags</label>
                   <input
