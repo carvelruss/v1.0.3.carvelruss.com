@@ -8,7 +8,6 @@ import BlogHero from '../components/blog/BlogHero';
 import BlogContent from '../components/blog/BlogContent';
 import BlogAuthorBox from '../components/blog/BlogAuthorBox';
 import BlogShare from '../components/blog/BlogShare';
-import BlogComments from '../components/blog/BlogComments';
 import RelatedArticles from '../components/blog/RelatedArticles';
 import NewsletterBlock from '../components/blog/NewsletterBlock';
 import CTABanner from '../components/CTABanner';
@@ -121,7 +120,6 @@ export default function BlogSingle() {
       <BlogContent html={html} post={post} />
       <BlogShare title={post.title} url={window.location.href} />
       <BlogAuthorBox author={post.author} avatar={post.author_avatar} bio={post.author_bio} />
-      <BlogComments count={post.comments_count} />
       <RelatedArticles posts={related} />
       <NewsletterBlock />
       <div className="container" style={{ paddingBottom: '4rem', marginTop: '2.5rem' }}>
