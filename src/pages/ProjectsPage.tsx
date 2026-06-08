@@ -79,7 +79,7 @@ export default function ProjectsPage() {
   const [loading, setLoading]   = useState(true);
 
   useEffect(() => {
-    document.title = 'Case Studies | webstudio';
+    document.title = 'Case Studies | Carvel Russ';
     fetch('/api/projects')
       .then(r => r.ok ? r.json() as Promise<Project[]> : Promise.reject())
       .then(setProjects)

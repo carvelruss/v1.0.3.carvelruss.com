@@ -20,7 +20,7 @@ export default function WSFooter() {
           {/* Brand + description + subscribe */}
           <div className="col-lg-4">
             <a href="#ws-hero" className="ws-footer-brand">
-              web<span>studio</span>
+              Carvel<span> Russ</span>
             </a>
             <p className="ws-footer-desc">
               We design and build digital products that people love.
@@ -88,8 +88,8 @@ export default function WSFooter() {
           {/* Contact */}
           <div className="col-sm-4 col-lg-3">
             <h6>Contact us</h6>
-            <a href="mailto:hello@webstudio.io" className="ws-footer-link">
-              hello@webstudio.io
+            <a href="mailto:development@astraresults.com" className="ws-footer-link">
+              development@astraresults.com
             </a>
             <a href="tel:+14155551234" className="ws-footer-link">
               +1 (415) 555-1234
@@ -143,7 +143,7 @@ export default function WSFooter() {
         <hr className="ws-footer-divider" />
         <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
           <p className="ws-footer-copy">
-            © {new Date().getFullYear()} webstudio. All rights reserved.
+            © {new Date().getFullYear()} Carvel Russ. All rights reserved.
           </p>
           <div className="d-flex gap-4">
             {['Privacy', 'Terms', 'Cookies'].map(link => (

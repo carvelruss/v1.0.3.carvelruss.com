@@ -167,7 +167,7 @@ export default function BlogList() {
   const [activeFilter, setActiveFilter] = useState('all');
 
   useEffect(() => {
-    document.title = 'Blog | webstudio';
+    document.title = 'Blog | Carvel Russ';
     api.getPosts(false).then(setPosts).catch(() => []).finally(() => setLoading(false));
   }, []);
 

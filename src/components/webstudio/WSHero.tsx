@@ -12,7 +12,7 @@ export default function WSHero() {
           <div className="col-lg-6">
             <div className="ws-hero-badge ws-fade-up" aria-label="Award-winning web studio">
               <FiAward size={14} aria-hidden="true" />
-              Award‑winning web studio
+              Award‑winning developer
             </div>
 
             <h1 className="hero-title ws-fade-up ws-du-1">

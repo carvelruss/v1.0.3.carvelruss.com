@@ -6,7 +6,7 @@ export default function ThankYou() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = 'Thank You | webstudio';
+    document.title = 'Thank You | Carvel Russ';
   }, []);
 
   return (

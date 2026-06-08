@@ -19,7 +19,7 @@ export default function BlogPost() {
       .then(p => {
         setPost(p);
         setHtml(renderMarkdown(p.content ?? ''));
-        document.title = `${p.title} | webstudio`;
+        document.title = `${p.title} | Carvel Russ`;
 
         const setMeta = (name: string, content: string, prop = false) => {
           const sel = prop ? `meta[property="${name}"]` : `meta[name="${name}"]`;

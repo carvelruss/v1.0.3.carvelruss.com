@@ -64,7 +64,7 @@ export default function WSHeader() {
 
             {/* Brand */}
             <Link to="/" className="ws-brand">
-              web<span>studio</span>
+              Carvel<span> Russ</span>
             </Link>
 
             {/* Desktop nav */}
@@ -141,7 +141,7 @@ export default function WSHeader() {
           style={{ borderBottom: '1px solid var(--ws-border)' }}
         >
           <Link to="/" className="ws-brand" onClick={close}>
-            web<span>studio</span>
+            Carvel<span> Russ</span>
           </Link>
           <button
             style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--ws-charcoal)', padding: '4px', lineHeight: 1 }}
