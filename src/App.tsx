@@ -48,6 +48,7 @@ import ThankYou from './pages/ThankYou';
 import ContactPage from './pages/ContactPage';
 import SkillsPage from './pages/SkillsPage';
 import AdminApp from './admin/AdminApp';
+import WebStudioLanding from './pages/WebStudioLanding';
 
 function Portfolio() {
   return (
@@ -160,6 +161,7 @@ export default function App() {
         <Route path="/skills"        element={<SkillsLayout />} />
         <Route path="/contact"       element={<ContactLayout />} />
         <Route path="/thank-you"     element={<ThankYouLayout />} />
+        <Route path="/web-studio"    element={<WebStudioLanding />} />
         <Route path="/admin/*"       element={<AdminApp />} />
         <Route path="*"              element={<Navigate to="/" replace />} />
       </Routes>
