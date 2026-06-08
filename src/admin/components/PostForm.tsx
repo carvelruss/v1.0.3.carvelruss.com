@@ -185,7 +185,7 @@ export default function PostForm() {
               <textarea
                 id="post-excerpt"
                 className="a-textarea"
-                style={{ minHeight: 68, marginTop: 2 }}
+                style={{ minHeight: 68, marginTop: 2, width: '100%' }}
                 value={form.excerpt ?? ''}
                 onChange={e => set('excerpt', e.target.value)}
                 placeholder="Short summary shown in the blog list…"
