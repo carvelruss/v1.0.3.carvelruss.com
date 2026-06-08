@@ -1416,61 +1416,106 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
 .a-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(15,23,42,0.55);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
   padding: 16px;
+  backdrop-filter: blur(2px);
 }
 
 .a-modal {
   background: $a-card-bg;
   border-radius: $a-radius;
   width: 100%;
-  max-width: 580px;
-  max-height: 90vh;
+  max-width: 600px;
+  max-height: 92vh;
   overflow-y: auto;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.28);
+  display: flex;
+  flex-direction: column;
+
+  &--lg { max-width: 760px; }
 
   &__header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    padding: 16px 20px;
+    gap: 12px;
+    padding: 18px 22px 16px;
     border-bottom: 1px solid $a-border;
     position: sticky;
     top: 0;
     background: $a-card-bg;
     z-index: 1;
+    flex-shrink: 0;
   }
 
-  &__title { font-size: 16px; font-weight: 700; color: $a-text; }
+  &__title { font-size: 17px; font-weight: 700; color: $a-text; line-height: 1.2; }
+  &__sub   { font-size: 12px; color: $a-muted; margin-top: 2px; }
 
   &__close {
-    width: 30px;
-    height: 30px;
-    border-radius: 6px;
-    border: none;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1px solid $a-border;
     background: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     color: $a-muted;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    transition: background .12s, color .12s;
 
-    &:hover { background: $a-content-bg; color: $a-text; }
+    &:hover { background: $a-red-light; border-color: $a-red; color: $a-red; }
   }
 
-  &__body { padding: 20px; }
+  // ── Tab strip (sits between header and body) ──
+  &__tabs {
+    display: flex;
+    border-bottom: 1px solid $a-border;
+    background: #fafbfc;
+    padding: 0 22px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 73px;
+    z-index: 1;
+  }
+
+  &__tab {
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: $a-muted;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color .14s, border-color .14s;
+    margin-bottom: -1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+
+    &:hover:not(.is-active) { color: $a-text; }
+    &.is-active { color: $a-blue; border-bottom-color: $a-blue; }
+  }
+
+  &__body { padding: 22px; flex: 1; }
 
   &__footer {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    padding: 14px 20px;
+    padding: 14px 22px;
     border-top: 1px solid $a-border;
     background: #fafbfc;
+    position: sticky;
+    bottom: 0;
+    flex-shrink: 0;
   }
 }
