@@ -4,8 +4,7 @@ import { api } from '../../lib/api';
 import { renderMarkdown, slugify } from '../../lib/markdown';
 import type { Post } from '../../types';
 import AdminLayout from './AdminLayout';
-
-type Tab = 'write' | 'preview';
+import RichEditor from './RichEditor';
 
 const EMPTY: Omit<Post, 'id'> = {
   title: '',
@@ -33,8 +32,6 @@ export default function PostForm() {
 
   const [form, setForm] = useState<Omit<Post, 'id'>>(EMPTY);
   const [slugManual, setSlugManual] = useState(false);
-  const [tab, setTab] = useState<Tab>('write');
-  const [preview, setPreview] = useState('');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(isEdit);
   const [error, setError] = useState('');
@@ -47,7 +44,7 @@ export default function PostForm() {
         setForm({
           title:                  post.title,
           slug:                   post.slug,
-          content:                post.content ?? '',
+          content:                (() => { const c = post.content ?? ''; return c.trim().startsWith('<') ? c : renderMarkdown(c); })(),
           excerpt:                post.excerpt ?? '',
           meta_description:       post.meta_description ?? '',
           og_image:               post.og_image ?? '',
@@ -74,11 +71,6 @@ export default function PostForm() {
   const handleTitleChange = (value: string) => {
     set('title', value);
     if (!slugManual) set('slug', slugify(value));
-  };
-
-  const handleTabChange = (t: Tab) => {
-    if (t === 'preview') setPreview(renderMarkdown(form.content ?? ''));
-    setTab(t);
   };
 
   const save = async (overrideStatus?: Post['status']) => {
@@ -192,40 +184,12 @@ export default function PostForm() {
               />
             </div>
 
-            {/* Markdown editor */}
+            {/* Rich text editor */}
             <div className="a-card">
-              <div className="a-md-editor">
-                <div className="a-md-editor__tabs" role="tablist">
-                  {(['write', 'preview'] as Tab[]).map(t => (
-                    <button
-                      key={t}
-                      type="button"
-                      role="tab"
-                      className={`a-md-editor__tab${tab === t ? ' active' : ''}`}
-                      onClick={() => handleTabChange(t)}
-                      aria-selected={tab === t}
-                    >
-                      {t === 'write' ? '✏️ Write' : '👁 Preview'}
-                    </button>
-                  ))}
-                </div>
-                {tab === 'write' ? (
-                  <textarea
-                    value={form.content ?? ''}
-                    onChange={e => set('content', e.target.value)}
-                    placeholder={`Write your post in Markdown…\n\n## Introduction\n\nStart writing here…\n\n> Blockquote text\n>\n> — Attribution`}
-                    aria-label="Post content"
-                    style={{ minHeight: 420 }}
-                  />
-                ) : (
-                  <div
-                    className="a-md-preview"
-                    dangerouslySetInnerHTML={{ __html: preview }}
-                    aria-label="Rendered preview"
-                    style={{ minHeight: 420 }}
-                  />
-                )}
-              </div>
+              <RichEditor
+                value={form.content ?? ''}
+                onChange={v => set('content', v)}
+              />
             </div>
 
           </div>

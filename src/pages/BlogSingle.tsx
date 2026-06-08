@@ -37,7 +37,8 @@ export default function BlogSingle() {
     api.getPostBySlug(slug)
       .then(async p => {
         setPost(p);
-        setHtml(renderMarkdown(p.content ?? ''));
+        const raw = p.content ?? '';
+        setHtml(raw.trim().startsWith('<') ? raw : renderMarkdown(raw));
         document.title = `${p.title} | Carvel Russ`;
 
         if (p.meta_description) setMeta('description', p.meta_description);
