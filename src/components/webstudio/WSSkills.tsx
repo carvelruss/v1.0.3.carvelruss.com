@@ -1,4 +1,4 @@
-import { useRef, type MouseEvent as RMouseEvent } from 'react';
+import { useRef, useEffect, type MouseEvent as RMouseEvent } from 'react';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { SiPython, SiFigma, SiBootstrap, SiCss } from 'react-icons/si';
 
@@ -121,6 +121,11 @@ export default function WSSkills() {
   const isDragging = useRef(false);
   const startX     = useRef(0);
   const scrollLeft = useRef(0);
+  const velocity   = useRef(0);
+  const lastX      = useRef(0);
+  const rafId      = useRef(0);
+
+  useEffect(() => () => cancelAnimationFrame(rafId.current), []);
 
   function slide(dir: 1 | -1) {
     const track = trackRef.current;
@@ -133,28 +138,49 @@ export default function WSSkills() {
   function onMouseDown(e: RMouseEvent<HTMLDivElement>) {
     const track = trackRef.current;
     if (!track) return;
-    isDragging.current = true;
-    startX.current     = e.pageX - track.offsetLeft;
-    scrollLeft.current = track.scrollLeft;
-    track.style.cursor     = 'grabbing';
-    track.style.userSelect = 'none';
+    cancelAnimationFrame(rafId.current);
+    isDragging.current     = true;
+    startX.current         = e.pageX - track.offsetLeft;
+    scrollLeft.current     = track.scrollLeft;
+    lastX.current          = e.pageX;
+    velocity.current       = 0;
+    track.style.cursor          = 'grabbing';
+    track.style.userSelect      = 'none';
+    track.style.scrollSnapType  = 'none';   // disable snap while dragging
   }
 
   function onMouseMove(e: RMouseEvent<HTMLDivElement>) {
     const track = trackRef.current;
     if (!isDragging.current || !track) return;
     e.preventDefault();
-    const x    = e.pageX - track.offsetLeft;
-    const walk = (x - startX.current) * 1.4;
-    track.scrollLeft = scrollLeft.current - walk;
+    velocity.current  = e.pageX - lastX.current;
+    lastX.current     = e.pageX;
+    const walk = (e.pageX - track.offsetLeft) - startX.current;
+    track.scrollLeft  = scrollLeft.current - walk;
   }
 
   function stopDrag() {
     const track = trackRef.current;
-    if (!track) return;
+    if (!track || !isDragging.current) return;
     isDragging.current     = false;
     track.style.cursor     = 'grab';
     track.style.userSelect = '';
+    momentum(velocity.current);
+  }
+
+  function momentum(v: number) {
+    const track = trackRef.current;
+    if (!track) return;
+    const step = () => {
+      v *= 0.88;                          // friction — tune lower = more glide
+      if (Math.abs(v) < 0.5) {
+        track.style.scrollSnapType = '';  // restore snap once settled
+        return;
+      }
+      track.scrollLeft -= v;
+      rafId.current = requestAnimationFrame(step);
+    };
+    rafId.current = requestAnimationFrame(step);
   }
 
   return (
