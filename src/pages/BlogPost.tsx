@@ -8,9 +8,9 @@ import type { Post } from '../types';
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [post, setPost] = useState<Post | null>(null);
-  const [html, setHtml] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [post,     setPost]     = useState<Post | null>(null);
+  const [html,     setHtml]     = useState('');
+  const [loading,  setLoading]  = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -19,8 +19,7 @@ export default function BlogPost() {
       .then(p => {
         setPost(p);
         setHtml(renderMarkdown(p.content ?? ''));
-
-        document.title = `${p.title} | devfolio`;
+        document.title = `${p.title} | webstudio`;
 
         const setMeta = (name: string, content: string, prop = false) => {
           const sel = prop ? `meta[property="${name}"]` : `meta[name="${name}"]`;
@@ -48,7 +47,7 @@ export default function BlogPost() {
 
         document.getElementById('blog-ld')?.remove();
         const ld = document.createElement('script');
-        ld.id = 'blog-ld';
+        ld.id   = 'blog-ld';
         ld.type = 'application/ld+json';
         ld.text = JSON.stringify({ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.title, description: p.meta_description, author: { '@type': 'Person', name: p.author }, datePublished: p.published_at, dateModified: p.updated_at, image: p.og_image, url: window.location.href });
         document.head.appendChild(ld);
@@ -63,53 +62,53 @@ export default function BlogPost() {
     d ? new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
 
   if (loading) return (
-    <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <p style={{ color: '#65676b' }}>Loading…</p>
-    </div>
+    <div className="ws-loading-state" style={{ paddingTop: '8rem' }}>Loading…</div>
   );
 
   if (notFound || !post) return (
-    <div className="container-site section" style={{ textAlign: 'center', minHeight: '50vh' }}>
-      <p style={{ fontSize: '3rem', margin: '0 0 1rem' }}>404</p>
-      <h1 style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>Post not found</h1>
-      <p style={{ color: '#65676b', marginBottom: '1.5rem' }}>This post doesn't exist or has been removed.</p>
-      <button className="btn-primary-custom" onClick={() => navigate('/blog')}>← Back to Blog</button>
+    <div className="ws-pg-hero" style={{ minHeight: '50vh', display: 'flex', alignItems: 'center' }}>
+      <div className="container" style={{ textAlign: 'center' }}>
+        <p style={{ fontSize: '3rem', margin: '0 0 1rem' }}>404</p>
+        <h1 className="section-title">Post not found</h1>
+        <p style={{ color: 'var(--ws-body)', marginBottom: '1.5rem' }}>This post doesn't exist or has been removed.</p>
+        <button className="ws-btn-primary" onClick={() => navigate('/blog')}>← Back to Blog</button>
+      </div>
     </div>
   );
 
   return (
     <>
-      {/* ── Article ── */}
-      <article style={{ maxWidth: 760, margin: '0 auto', padding: '2rem 1rem 0' }}>
-        <nav aria-label="Breadcrumb" style={{ marginBottom: '1.5rem' }}>
-          <button onClick={() => navigate('/blog')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1877f2', fontWeight: 600, fontSize: '0.9rem', padding: 0 }}>
-            ← Blog
-          </button>
-        </nav>
+      <article className="ws-article">
+        <button className="ws-article-back" onClick={() => navigate('/blog')}>
+          ← Blog
+        </button>
 
-        <header className="blog-post-header">
-          <h1 className="blog-post-header__title">{post.title}</h1>
-          <div className="blog-post-header__meta">
+        <header className="ws-article-header">
+          <h1 className="ws-article-title">{post.title}</h1>
+          <div className="ws-article-meta">
             <span>By <strong>{post.author}</strong></span>
             {post.published_at && (
               <time dateTime={post.published_at}>· {formatDate(post.published_at)}</time>
             )}
           </div>
           {post.excerpt && (
-            <p className="blog-post-header__excerpt">{post.excerpt}</p>
+            <p className="ws-article-excerpt">{post.excerpt}</p>
           )}
         </header>
 
-        <div className="blog-post-body card" dangerouslySetInnerHTML={{ __html: html }} aria-label="Post content" />
+        <div
+          className="ws-article-body"
+          dangerouslySetInnerHTML={{ __html: html }}
+          aria-label="Post content"
+        />
       </article>
 
-      {/* ── CTA ── */}
-      <div className="container-site" style={{ paddingBottom: '3rem', marginTop: '2rem' }}>
+      <div className="container" style={{ paddingBottom: '4rem', marginTop: '2.5rem' }}>
         <CTABanner
           heading="Enjoyed this post?"
           subtext="If you'd like to work together or just say hi, I'd love to hear from you."
           primaryLabel="Get in Touch"
-          primaryHref="/#contact"
+          primaryHref="/contact"
           secondaryLabel="View Case Studies"
           secondaryHref="/case-studies"
         />

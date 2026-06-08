@@ -1,79 +1,74 @@
 import { skillCategories } from '../data/skills';
-import './SkillsPage.css';
 
 export default function SkillsPage() {
   return (
     <>
-      {/* ── Page hero ─────────────────────────────────────────────────────── */}
-      <div className="sp-hero" role="banner">
-        <div className="sp-hero__dots" aria-hidden="true" />
-        <div className="sp-hero__glow"  aria-hidden="true" />
-        <div className="container-site sp-hero__inner">
-          <span className="sp-hero__eyebrow">Full-stack skillset</span>
-          <h1 className="sp-hero__heading">Skills &amp; Expertise</h1>
-          <p className="sp-hero__sub">
-            A complete breakdown of the tools, technologies, and disciplines
-            I use to take a product from idea to a polished, production-ready experience.
+      {/* Hero */}
+      <section className="ws-pg-hero ws-pg-hero--dark">
+        <div className="container">
+          <p className="ws-eyebrow">Full-stack skillset</p>
+          <h1 className="section-title">Skills &amp; Expertise</h1>
+          <p className="ws-pg-hero__sub">
+            A complete breakdown of the tools, technologies, and disciplines I use to take
+            a product from idea to a polished, production-ready experience.
           </p>
-          <div className="sp-hero__stats" aria-label="Skill counts">
+          <div className="ws-pg-hero__stats" aria-label="Skill counts">
             {skillCategories.map(cat => (
-              <div key={cat.label} className="sp-hero__stat">
-                <strong
-                  className="sp-hero__stat-num"
-                  style={{ color: cat.accent }}
-                >
-                  {cat.skills.length}
-                </strong>
-                <span className="sp-hero__stat-lbl">{cat.label}</span>
+              <div key={cat.label}>
+                <span className="ws-pg-hero__stat-value">{cat.skills.length}</span>
+                <span className="ws-pg-hero__stat-label">{cat.label}</span>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── Category sections ─────────────────────────────────────────────── */}
+      {/* Category sections */}
       {skillCategories.map((cat, ci) => (
         <section
           key={cat.label}
-          className={`sp-section${ci % 2 === 1 ? ' sp-section--alt' : ''}`}
+          className="ws-section"
+          style={{ background: ci % 2 === 1 ? 'var(--ws-bg-soft)' : '#fff' }}
           aria-label={`${cat.label} skills`}
         >
-          <div className="container-site">
-
-            {/* Category header */}
-            <div className="sp-cat-header">
-              <span
-                className="sp-cat-badge"
-                style={{ background: `${cat.accent}18`, color: cat.accent, borderColor: `${cat.accent}30` }}
-              >
-                <span aria-hidden="true">{cat.icon}</span>
-                {cat.label}
-              </span>
-              <h2 className="sp-cat-title">{cat.label} Skills</h2>
-              <p className="sp-cat-sub">
-                {ci === 0 && 'Design thinking and tools I use to create clear, user-centred experiences from first sketch to final handoff.'}
-                {ci === 1 && 'The technologies I write every day to build fast, accessible, and maintainable frontend applications.'}
-                {ci === 2 && 'The workflow tools and platforms I rely on to ship quality work reliably and collaborate without friction.'}
-              </p>
+          <div className="container">
+            <div className="row justify-content-center mb-5">
+              <div className="col-lg-7 text-center">
+                <span
+                  className="ws-skill-cat-badge"
+                  style={{
+                    background: `${cat.accent}18`,
+                    color: cat.accent,
+                    borderColor: `${cat.accent}30`,
+                  }}
+                >
+                  <span aria-hidden="true">{cat.icon}</span>
+                  {cat.label}
+                </span>
+                <h2 className="section-title">{cat.label} Skills</h2>
+                <p style={{ color: 'var(--ws-body)', fontSize: '1.0625rem', marginTop: '.5rem', marginBottom: 0 }}>
+                  {ci === 0 && 'Design thinking and tools I use to create clear, user-centred experiences from first sketch to final handoff.'}
+                  {ci === 1 && 'The technologies I write every day to build fast, accessible, and maintainable frontend applications.'}
+                  {ci === 2 && 'The workflow tools and platforms I rely on to ship quality work reliably and collaborate without friction.'}
+                </p>
+              </div>
             </div>
 
-            {/* Skills grid */}
-            <div className="sp-grid" role="list">
+            <div className="row g-4" role="list">
               {cat.skills.map((skill, si) => (
-                <article
-                  key={skill.name}
-                  className="sp-skill"
-                  role="listitem"
-                  style={{ '--sp-accent': cat.accent } as React.CSSProperties}
-                  data-reveal
-                  data-reveal-delay={si * 50}
-                >
-                  <h3 className="sp-skill__name">{skill.name}</h3>
-                  <p className="sp-skill__desc">{skill.description}</p>
-                </article>
+                <div key={skill.name} className="col-sm-6 col-md-4 col-lg-3" role="listitem">
+                  <article
+                    className="ws-skill-item"
+                    style={{ '--sp-accent': cat.accent } as React.CSSProperties}
+                    data-reveal
+                    data-reveal-delay={si * 50}
+                  >
+                    <h3 className="ws-skill-item__name">{skill.name}</h3>
+                    <p className="ws-skill-item__desc">{skill.description}</p>
+                  </article>
+                </div>
               ))}
             </div>
-
           </div>
         </section>
       ))}

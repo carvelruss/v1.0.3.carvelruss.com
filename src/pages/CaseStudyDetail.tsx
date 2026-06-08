@@ -7,8 +7,8 @@ import type { Project } from '../types';
 export default function CaseStudyDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [project,  setProject]  = useState<Project | null>(null);
+  const [loading,  setLoading]  = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -20,19 +20,15 @@ export default function CaseStudyDetail() {
   }, [slug]);
 
   if (loading) {
-    return (
-      <div className="cs-loading">
-        <div className="container-site">Loading…</div>
-      </div>
-    );
+    return <div className="ws-loading-state" style={{ paddingTop: '6rem' }}>Loading…</div>;
   }
 
   if (notFound || !project) {
     return (
-      <div className="cs-not-found">
-        <div className="container-site">
-          <h1>Case study not found</h1>
-          <button className="btn btn-primary" onClick={() => navigate('/case-studies')}>
+      <div className="ws-pg-hero" style={{ minHeight: '50vh', display: 'flex', alignItems: 'center' }}>
+        <div className="container">
+          <h1 className="section-title">Case study not found</h1>
+          <button className="ws-btn-primary" onClick={() => navigate('/case-studies')}>
             ← Back to Case Studies
           </button>
         </div>
@@ -41,59 +37,55 @@ export default function CaseStudyDetail() {
   }
 
   return (
-    <article className="cs-detail">
+    <article>
 
       {/* Hero */}
-      <div className="cs-detail__hero">
-        <div className="container-site">
-          <button className="cs-detail__back" onClick={() => navigate('/case-studies')}>
+      <div className="ws-cs-hero">
+        <div className="container">
+          <button className="ws-article-back" onClick={() => navigate('/case-studies')}>
             ← Back to Case Studies
           </button>
-          <div className="cs-detail__meta">
-            <span className="section__eyebrow">Case Study</span>
-          </div>
-          <h1 className="cs-detail__title">{project.title}</h1>
-          <p className="cs-detail__description">{project.description}</p>
-          <div className="cs-detail__tech">
+          <p className="ws-eyebrow">Case Study</p>
+          <h1 className="ws-cs-title">{project.title}</h1>
+          <p className="ws-cs-desc">{project.description}</p>
+          <div className="ws-proj-card__tech">
             {project.tech.map(t => (
-              <span key={t} className="skill-pill">{t}</span>
+              <span key={t} className="ws-tech-pill">{t}</span>
             ))}
           </div>
         </div>
       </div>
 
       {/* Body */}
-      <div className="container-site cs-detail__body">
-        <div className="cs-detail__layout">
+      <div className="container" style={{ paddingTop: '3.5rem', paddingBottom: '4rem' }}>
+        <div className="row g-5 align-items-start">
 
-          {/* Main content */}
-          <main className="cs-detail__content">
+          <main className="col-lg-8">
             {project.content ? (
               <div
-                className="cs-detail__prose"
+                className="ws-article-body"
                 dangerouslySetInnerHTML={{ __html: renderMarkdown(project.content) }}
               />
             ) : (
-              <p className="cs-detail__empty">No case study content yet.</p>
+              <div className="ws-empty-state">No case study content yet.</div>
             )}
           </main>
 
-          {/* Sidebar */}
-          <aside className="cs-detail__sidebar">
-            <div className="cs-detail__sidebar-card">
+          <aside className="col-lg-4">
+            <div className="ws-cs-sidebar-card">
               <h3>Project Details</h3>
 
               {project.role && (
-                <div className="cs-detail__sidebar-row">
-                  <span className="cs-detail__sidebar-label">Role</span>
-                  <span>{project.role}</span>
+                <div className="ws-cs-sidebar-row">
+                  <span className="ws-cs-sidebar-label">Role</span>
+                  <span className="ws-cs-sidebar-value">{project.role}</span>
                 </div>
               )}
 
               {project.tech.length > 0 && (
-                <div className="cs-detail__sidebar-row">
-                  <span className="cs-detail__sidebar-label">Tech Stack</span>
-                  <span>{project.tech.join(', ')}</span>
+                <div className="ws-cs-sidebar-row">
+                  <span className="ws-cs-sidebar-label">Tech Stack</span>
+                  <span className="ws-cs-sidebar-value">{project.tech.join(', ')}</span>
                 </div>
               )}
 
@@ -102,7 +94,8 @@ export default function CaseStudyDetail() {
                   href={project.live_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="cs-detail__sidebar-link"
+                  className="ws-btn-primary"
+                  style={{ display: 'block', textAlign: 'center', marginTop: '1.25rem' }}
                 >
                   View Live Site →
                 </a>
