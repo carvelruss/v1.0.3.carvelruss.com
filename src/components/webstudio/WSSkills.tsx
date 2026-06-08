@@ -202,25 +202,26 @@ export default function WSSkills() {
               <div
                 key={i}
                 className="ws-skill-cc ws-flip-card"
-                style={{ flex: '0 0 clamp(240px, 28vw, 340px)', scrollSnapAlign: 'start', minHeight: '280px' }}
+                style={{
+                  flex: '0 0 clamp(240px, 28vw, 340px)',
+                  scrollSnapAlign: 'start',
+                  minHeight: '280px',
+                  background: card.bg,
+                  borderRadius: '1.125rem',
+                  position: 'relative',
+                }}
                 tabIndex={0}
               >
                 <div className="ws-flip-inner">
                   {/* Front */}
-                  <div
-                    className="ws-flip-face ws-flip-front"
-                    style={{ background: card.bg }}
-                  >
+                  <div className="ws-flip-face ws-flip-front">
                     <div style={{ fontSize: '4rem', lineHeight: 1 }} aria-hidden="true">
                       {card.emoji}
                     </div>
                   </div>
 
                   {/* Back */}
-                  <div
-                    className="ws-flip-face ws-flip-back"
-                    style={{ background: card.bg }}
-                  >
+                  <div className="ws-flip-face ws-flip-back">
                     <card.Icon size={56} color={card.iconColor} aria-hidden="true" />
                     <p style={{
                       fontSize: '.875rem',
