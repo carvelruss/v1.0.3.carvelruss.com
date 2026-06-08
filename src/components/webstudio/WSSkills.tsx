@@ -1,163 +1,222 @@
-interface Skill {
+import { useRef } from 'react';
+import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
+
+type QuoteCard = {
+  type: 'quote';
+  quote: string;
+  company: string;
+  companyStyle: React.CSSProperties;
+};
+type IconCard = {
+  type: 'icon';
   name: string;
   emoji: string;
-  logoBg: string;
-  logoColor: string;
-  description: string;
-  quote: string;
-  quoteName: string;
-  partner: string;
-}
+  bg: string;
+};
+type Card = QuoteCard | IconCard;
 
-const SKILLS: Skill[] = [
+const CARDS: Card[] = [
   {
-    name: 'Figma',
-    emoji: '🎨',
-    logoBg: '#fff7ed',
-    logoColor: '#ea580c',
-    description:
-      'Our design process lives in Figma — collaborative, iterative, and pixel-perfect. Every component, prototype, and dev handoff is crafted inside a shared design system that scales with your product.',
+    type: 'quote',
     quote:
-      '"Their Figma prototypes saved us weeks of back-and-forth. The design system handed off to dev was impeccably organized."',
-    quoteName: 'Marketplace Co.',
-    partner: 'Design Systems',
+      '"Their Figma prototypes saved us weeks of back-and-forth. The design system handed off to dev was impeccably organized and production-ready."',
+    company: '///ALPINE',
+    companyStyle: {
+      fontWeight: 800,
+      fontSize: '.8125rem',
+      letterSpacing: '.14em',
+      textTransform: 'uppercase',
+      color: '#1e293b',
+    },
   },
   {
-    name: 'CSS3',
-    emoji: '🌊',
-    logoBg: '#eff6ff',
-    logoColor: '#3b82f6',
-    description:
-      'From fluid grid layouts to sophisticated micro-animations and glassmorphism — we master CSS3 to create interfaces that feel native to every screen size and browser.',
-    quote:
-      '"Every hover state, every transition felt intentional and polished. The attention to CSS detail was remarkable throughout."',
-    quoteName: 'FinTech Labs',
-    partner: 'Frontend Excellence',
-  },
-  {
-    name: 'Bootstrap',
-    emoji: '⚡',
-    logoBg: '#f5f3ff',
-    logoColor: '#7c3aed',
-    description:
-      'We use Bootstrap 5 as our utility-first foundation, customizing every design token to match brand guidelines while leveraging the grid and component system for fast, consistent delivery.',
-    quote:
-      '"They built our entire admin interface in just 3 weeks — responsive, accessible, and perfectly on-brand. Remarkable."',
-    quoteName: 'SaaS Platform X',
-    partner: 'Rapid Delivery',
-  },
-  {
+    type: 'icon',
     name: 'Python',
     emoji: '🐍',
-    logoBg: '#f0fdf4',
-    logoColor: '#16a34a',
-    description:
-      'Backend APIs, data pipelines, automation scripts — our Python expertise powers everything from simple REST services to complex ML-driven applications deployed at scale.',
+    bg: '#f0fdf4',
+  },
+  {
+    type: 'quote',
     quote:
-      '"The Python API they built handles over 100k requests daily without a hiccup. Performance was a top priority and they delivered."',
-    quoteName: 'DataFlow Inc.',
-    partner: 'Backend Engineering',
+      '"The Python API they built handles over 100k requests daily without a hiccup. Performance was a top priority and they delivered every time."',
+    company: 'Deloitte.',
+    companyStyle: {
+      fontFamily: 'Georgia, "Times New Roman", serif',
+      fontWeight: 900,
+      fontSize: '1.375rem',
+      color: '#0a1628',
+      letterSpacing: '-.01em',
+    },
+  },
+  {
+    type: 'icon',
+    name: 'Figma',
+    emoji: '🎨',
+    bg: '#fff7ed',
+  },
+  {
+    type: 'quote',
+    quote:
+      '"Every hover state, every transition felt intentional and polished. The attention to CSS detail was remarkable throughout the project."',
+    company: 'FinTech Labs',
+    companyStyle: {
+      fontWeight: 700,
+      fontSize: '.875rem',
+      letterSpacing: '.06em',
+      textTransform: 'uppercase',
+      color: '#334155',
+    },
+  },
+  {
+    type: 'icon',
+    name: 'Bootstrap',
+    emoji: '⚡',
+    bg: '#f5f3ff',
+  },
+  {
+    type: 'quote',
+    quote:
+      '"They built our entire admin interface in 3 weeks — responsive, accessible, and perfectly on-brand. Remarkable execution from start to finish."',
+    company: 'SaaS Platform X',
+    companyStyle: {
+      fontWeight: 700,
+      fontSize: '.875rem',
+      letterSpacing: '.05em',
+      textTransform: 'uppercase',
+      color: '#334155',
+    },
+  },
+  {
+    type: 'icon',
+    name: 'CSS3',
+    emoji: '🌊',
+    bg: '#eff6ff',
   },
 ];
 
+const CARD_BG = '#f1f5f9';
+
 export default function WSSkills() {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  function slide(dir: 1 | -1) {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.querySelector<HTMLElement>('.ws-skill-cc');
+    if (!card) return;
+    const step = card.offsetWidth + 24;
+    track.scrollBy({ left: dir * step, behavior: 'smooth' });
+  }
+
   return (
-    <section id="ws-skills" className="ws-section ws-bg-soft">
+    <section id="ws-skills" className="ws-section" style={{ background: '#fff', overflow: 'hidden' }}>
       <div className="container">
-        {/* Section header */}
-        <div className="row justify-content-center mb-5">
-          <div className="col-lg-6 text-center">
-            <p className="ws-eyebrow">What we master</p>
-            <h2 className="section-title">Our skills</h2>
-            <p style={{ color: 'var(--ws-body)', fontSize: '1.0625rem', marginTop: '.75rem', marginBottom: 0 }}>
-              Deep expertise across the full design-to-deployment stack.
-            </p>
+
+        {/* Header row */}
+        <div
+          className="d-flex align-items-center justify-content-between mb-4"
+          style={{ marginBottom: '2rem' }}
+        >
+          <h2 className="section-title" style={{ marginBottom: 0 }}>Our skills</h2>
+
+          {/* Arrow buttons */}
+          <div className="d-flex gap-2">
+            {[
+              { dir: -1 as const, icon: <FiArrowLeft size={16} />, label: 'Previous' },
+              { dir:  1 as const, icon: <FiArrowRight size={16} />, label: 'Next' },
+            ].map(btn => (
+              <button
+                key={btn.label}
+                onClick={() => slide(btn.dir)}
+                aria-label={btn.label}
+                style={{
+                  width: 40, height: 40,
+                  borderRadius: '50%',
+                  border: '1.5px solid var(--ws-border)',
+                  background: '#fff',
+                  color: 'var(--ws-charcoal)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'border-color .2s, background .2s, color .2s',
+                  flexShrink: 0,
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget;
+                  el.style.borderColor = 'var(--ws-violet)';
+                  el.style.background  = 'var(--ws-violet)';
+                  el.style.color       = '#fff';
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget;
+                  el.style.borderColor = 'var(--ws-border)';
+                  el.style.background  = '#fff';
+                  el.style.color       = 'var(--ws-charcoal)';
+                }}
+              >
+                {btn.icon}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Skill cards — alternating layout */}
-        <div className="d-flex flex-column gap-4">
-          {SKILLS.map((skill, i) => (
-            <article key={skill.name} className="ws-skill-card">
-              <div className={`row g-0 align-items-stretch${i % 2 === 1 ? ' flex-lg-row-reverse' : ''}`}>
+      </div>
 
-                {/* Content side */}
-                <div className="col-lg-5 p-4 p-xl-5 d-flex flex-column justify-content-center">
-                  <div className="d-flex align-items-center gap-3 mb-4">
-                    <div
-                      className="ws-skill-logo"
-                      style={{ background: skill.logoBg, color: skill.logoColor }}
-                      aria-hidden="true"
-                    >
-                      {skill.emoji}
-                    </div>
-                    <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--ws-navy)', marginBottom: 0 }}>
-                      {skill.name}
-                    </h3>
-                  </div>
-
-                  <p style={{ color: 'var(--ws-body)', lineHeight: 1.75, fontSize: '.9375rem', marginBottom: 0 }}>
-                    {skill.description}
-                  </p>
-
-                  <blockquote className="ws-skill-quote" cite="#">
-                    {skill.quote}
-                  </blockquote>
-
-                  <div className="d-flex align-items-center gap-3 flex-wrap">
-                    <span className="ws-skill-partner">
-                      <span aria-hidden="true" style={{ fontSize: '.7rem', opacity: .6 }}>✦</span>
-                      {skill.partner}
-                    </span>
-                    <span style={{ fontSize: '.875rem', color: '#94a3b8' }}>
-                      — {skill.quoteName}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Visual side */}
-                <div className="col-lg-7 d-flex">
-                  <div
+      {/* Full-bleed scrollable track (no container clipping) */}
+      <div style={{ paddingLeft: 'max(1rem, calc((100vw - 1320px) / 2 + 12px))' }}>
+        <div
+          ref={trackRef}
+          style={{
+            display: 'flex',
+            gap: '1.5rem',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            scrollbarWidth: 'none',
+            paddingBottom: '4px',
+            paddingRight: '1.5rem',
+          }}
+          // hide webkit scrollbar via className
+          className="ws-skills-track"
+        >
+          {CARDS.map((card, i) => (
+            <div
+              key={i}
+              className="ws-skill-cc"
+              style={{
+                flex: '0 0 clamp(240px, 28vw, 340px)',
+                scrollSnapAlign: 'start',
+                background: card.type === 'icon' ? card.bg : CARD_BG,
+                borderRadius: '1.125rem',
+                padding: '2.25rem 2rem',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '280px',
+                gap: '1.5rem',
+              }}
+            >
+              {card.type === 'quote' ? (
+                <>
+                  <p
                     style={{
-                      flex: 1,
-                      minHeight: '260px',
-                      background: `linear-gradient(135deg, ${skill.logoBg} 0%, #ffffff 100%)`,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '1.5rem',
-                      padding: '2rem',
+                      fontStyle: 'italic',
+                      fontSize: '.9375rem',
+                      color: '#475569',
+                      lineHeight: 1.7,
+                      textAlign: 'center',
+                      margin: 0,
                     }}
-                    aria-hidden="true"
                   >
-                    {/* Big emoji */}
-                    <div style={{ fontSize: '4.5rem', opacity: .35 }}>{skill.emoji}</div>
-
-                    {/* Mini card strip */}
-                    <div className="d-flex gap-3 flex-wrap justify-content-center">
-                      {['Speed', 'Quality', 'Scale'].map(label => (
-                        <div
-                          key={label}
-                          style={{
-                            background: '#fff',
-                            border: '1px solid var(--ws-border)',
-                            borderRadius: '.625rem',
-                            padding: '.4rem .9rem',
-                            fontSize: '.8125rem',
-                            fontWeight: 600,
-                            color: skill.logoColor,
-                          }}
-                        >
-                          {label}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                    {card.quote}
+                  </p>
+                  <span style={card.companyStyle}>{card.company}</span>
+                </>
+              ) : (
+                <div style={{ fontSize: '4rem', lineHeight: 1 }} aria-label={card.name}>
+                  {card.emoji}
                 </div>
-
-              </div>
-            </article>
+              )}
+            </div>
           ))}
         </div>
       </div>

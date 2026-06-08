@@ -267,6 +267,9 @@
 /* ── Section spacing ───────────────────────────────── */
 .ws-section     { padding: 5.5rem 0; }
 .ws-section-sm  { padding: 3.5rem 0; }
+
+/* ── Skills carousel ──────────────────────────────── */
+.ws-skills-track::-webkit-scrollbar { display: none; }
 .ws-bg-soft     { background: var(--ws-bg-soft); }
 
 /* ── Icon circle ───────────────────────────────────── */
