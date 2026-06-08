@@ -580,6 +580,175 @@ $a-shadow-hover:  0 4px 16px rgba(0,0,0,0.12);
   th { background: #fafbfc; font-weight: 600; }
 }
 
+// ── Post editor (2-column CMS layout) ────────────────────────────────────────
+.a-post-editor {
+  display: grid;
+  grid-template-columns: 1fr 308px;
+  gap: 16px;
+  align-items: start;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.a-post-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.a-post-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 80px; // topbar 56px + content padding 24px
+
+  @media (max-width: 900px) { position: static; }
+}
+
+// Large borderless title input
+.a-post-title {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 19px;
+  font-weight: 700;
+  color: $a-text;
+  background: transparent;
+  padding: 0;
+  line-height: 1.35;
+
+  &::placeholder { color: #c5cdd8; font-weight: 400; }
+}
+
+// Slug bar below title
+.a-slug-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid $a-border;
+  font-size: 12px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.a-slug-prefix { color: $a-muted; white-space: nowrap; flex-shrink: 0; }
+
+.a-slug-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 12px;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  color: $a-blue;
+  background: transparent;
+  padding: 0;
+  min-width: 0;
+
+  &:focus { text-decoration: underline; text-underline-offset: 2px; }
+}
+
+.a-slug-sep { color: $a-border; flex-shrink: 0; padding: 0 2px; }
+
+.a-slug-category {
+  border: none;
+  outline: none;
+  font-size: 12px;
+  font-family: inherit;
+  color: $a-muted;
+  background: transparent;
+  padding: 0;
+  min-width: 60px;
+  max-width: 120px;
+
+  &::placeholder { color: #c5cdd8; }
+  &:focus { color: $a-text; }
+}
+
+// Sidebar section cards
+.a-side-card {
+  background: $a-card-bg;
+  border: 1px solid $a-border;
+  border-radius: $a-radius;
+  box-shadow: $a-shadow;
+  overflow: hidden;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border-bottom: 1px solid $a-border;
+    background: #fafbfc;
+
+    &-icon { font-size: 12px; line-height: 1; }
+    &-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .055em; color: $a-muted; }
+  }
+
+  &__body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px;
+    border-top: 1px solid $a-border;
+    background: #fafbfc;
+  }
+}
+
+// Tiny label inside sidebar cards
+.a-side-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: $a-text;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.a-side-hint { font-size: 10.5px; color: $a-muted; margin-top: 3px; display: block; }
+
+// Image / avatar previews
+.a-img-preview {
+  width: 100%;
+  height: 120px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid $a-border;
+  display: block;
+}
+
+.a-avatar-preview {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid $a-border;
+  display: block;
+  flex-shrink: 0;
+}
+
+// Status dot
+.a-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+
+  &--draft     { background: #f59e0b; }
+  &--published { background: #10b981; }
+}
+
 // ── Inquiry expand ────────────────────────────────────────────────────────────
 .a-inquiry {
   &__message {

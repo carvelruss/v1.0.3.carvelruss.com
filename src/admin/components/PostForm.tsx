@@ -6,7 +6,6 @@ import type { Post } from '../../types';
 import AdminLayout from './AdminLayout';
 
 type Tab = 'write' | 'preview';
-type Section = 'content' | 'media' | 'author' | 'seo' | 'settings';
 
 const EMPTY: Omit<Post, 'id'> = {
   title: '',
@@ -27,14 +26,6 @@ const EMPTY: Omit<Post, 'id'> = {
   views_count: null,
 };
 
-const SECTION_LABELS: Record<Section, string> = {
-  content:  '✏️ Content',
-  media:    '🖼 Media',
-  author:   '👤 Author',
-  seo:      '🔍 SEO',
-  settings: '⚙️ Settings',
-};
-
 export default function PostForm() {
   const navigate = useNavigate();
   const { slug: editSlug } = useParams<{ slug?: string }>();
@@ -43,7 +34,6 @@ export default function PostForm() {
   const [form, setForm] = useState<Omit<Post, 'id'>>(EMPTY);
   const [slugManual, setSlugManual] = useState(false);
   const [tab, setTab] = useState<Tab>('write');
-  const [section, setSection] = useState<Section>('content');
   const [preview, setPreview] = useState('');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(isEdit);
@@ -55,22 +45,22 @@ export default function PostForm() {
     api.getPostBySlug(editSlug)
       .then(post => {
         setForm({
-          title:                   post.title,
-          slug:                    post.slug,
-          content:                 post.content ?? '',
-          excerpt:                 post.excerpt ?? '',
-          meta_description:        post.meta_description ?? '',
-          og_image:                post.og_image ?? '',
-          keywords:                post.keywords ?? '',
-          author:                  post.author,
-          status:                  post.status,
-          published_at:            post.published_at ?? null,
-          category:                post.category ?? '',
-          author_avatar:           post.author_avatar ?? '',
-          author_bio:              post.author_bio ?? '',
-          featured_image_caption:  post.featured_image_caption ?? '',
-          reading_time:            post.reading_time ?? '',
-          views_count:             post.views_count ?? null,
+          title:                  post.title,
+          slug:                   post.slug,
+          content:                post.content ?? '',
+          excerpt:                post.excerpt ?? '',
+          meta_description:       post.meta_description ?? '',
+          og_image:               post.og_image ?? '',
+          keywords:               post.keywords ?? '',
+          author:                 post.author,
+          status:                 post.status,
+          published_at:           post.published_at ?? null,
+          category:               post.category ?? '',
+          author_avatar:          post.author_avatar ?? '',
+          author_bio:             post.author_bio ?? '',
+          featured_image_caption: post.featured_image_caption ?? '',
+          reading_time:           post.reading_time ?? '',
+          views_count:            post.views_count ?? null,
         });
         setSlugManual(true);
       })
@@ -91,17 +81,18 @@ export default function PostForm() {
     setTab(t);
   };
 
-  const handleSubmit = async (e: FormEvent, asDraft = false) => {
-    e.preventDefault();
+  const save = async (overrideStatus?: Post['status']) => {
     if (!form.title.trim()) { setError('Title is required'); return; }
     if (!form.slug.trim())  { setError('Slug is required');  return; }
 
     setError('');
     setSaving(true);
+
+    const status = overrideStatus ?? form.status;
     const payload: Omit<Post, 'id'> = {
       ...form,
-      status: asDraft ? 'draft' : form.status,
-      published_at: !asDraft && form.status === 'published'
+      status,
+      published_at: status === 'published'
         ? (form.published_at || new Date().toISOString())
         : form.published_at,
     };
@@ -109,11 +100,12 @@ export default function PostForm() {
     try {
       if (isEdit && editSlug) {
         const { slug: newSlug } = await api.updatePost(editSlug, payload);
-        setSuccess('Post saved successfully.');
+        setSuccess('Post saved.');
+        setForm(prev => ({ ...prev, status }));
         if (newSlug !== editSlug) navigate(`/admin/posts/${newSlug}/edit`, { replace: true });
       } else {
         const { slug: newSlug } = await api.createPost(payload);
-        setSuccess('Post created successfully.');
+        setSuccess('Post created.');
         navigate(`/admin/posts/${newSlug}/edit`, { replace: true });
       }
     } catch (e: unknown) {
@@ -121,6 +113,11 @@ export default function PostForm() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    save(form.status === 'draft' ? 'draft' : 'published');
   };
 
   if (loading) {
@@ -131,106 +128,72 @@ export default function PostForm() {
     );
   }
 
+  const isPublished = form.status === 'published';
+
   return (
     <AdminLayout
       pageTitle={isEdit ? 'Edit Post' : 'New Post'}
       headerAction={
-        <button className="a-btn a-btn--ghost" onClick={() => navigate('/admin/posts')}>
-          ← Back
+        <button className="a-btn a-btn--ghost a-btn--sm" onClick={() => navigate('/admin/posts')}>
+          ← Posts
         </button>
       }
     >
-      <form onSubmit={(e) => handleSubmit(e)}>
-        {error   && <div className="a-alert a-alert--error"   role="alert"  style={{ marginBottom: 16 }}>{error}</div>}
-        {success && <div className="a-alert a-alert--success" role="status" style={{ marginBottom: 16 }}>{success}</div>}
+      <form onSubmit={handleSubmit}>
+        {error   && <div className="a-alert a-alert--error"   role="alert"  style={{ marginBottom: 14 }}>{error}</div>}
+        {success && <div className="a-alert a-alert--success" role="status" style={{ marginBottom: 14 }}>{success}</div>}
 
-        {/* ── Section tabs ── */}
-        <div className="a-card" style={{ marginBottom: 16, padding: '0 16px' }}>
-          <div style={{ display: 'flex', gap: 4, overflowX: 'auto', borderBottom: '1px solid #e2e8f0' }}>
-            {(Object.keys(SECTION_LABELS) as Section[]).map(s => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSection(s)}
-                style={{
-                  padding: '12px 16px',
-                  background: 'none',
-                  border: 'none',
-                  borderBottom: section === s ? '2px solid #6366f1' : '2px solid transparent',
-                  cursor: 'pointer',
-                  fontWeight: section === s ? 700 : 500,
-                  color: section === s ? '#6366f1' : '#6c7a8d',
-                  fontSize: '.875rem',
-                  whiteSpace: 'nowrap',
-                  marginBottom: -1,
-                  transition: 'color .15s',
-                }}
-              >
-                {SECTION_LABELS[s]}
-              </button>
-            ))}
-          </div>
-        </div>
+        <div className="a-post-editor">
 
-        {/* ── Content section ── */}
-        {section === 'content' && (
-          <>
-            <div className="a-card a-card--pad" style={{ marginBottom: 16 }}>
-              <div className="a-form">
-                <div className="a-field">
-                  <label className="a-field__label" htmlFor="post-title">Title <span>*</span></label>
-                  <input
-                    id="post-title"
-                    className="a-input"
-                    value={form.title}
-                    onChange={e => handleTitleChange(e.target.value)}
-                    placeholder="Post title"
-                    required
-                  />
-                </div>
+          {/* ── Main column ── */}
+          <div className="a-post-main">
 
-                <div className="a-input-row">
-                  <div className="a-field">
-                    <label className="a-field__label" htmlFor="post-slug">Slug <span>*</span></label>
-                    <input
-                      id="post-slug"
-                      className="a-input"
-                      value={form.slug}
-                      onChange={e => { setSlugManual(true); set('slug', e.target.value); }}
-                      placeholder="my-post-slug"
-                      required
-                    />
-                    <span className="a-field__hint">URL: /blog/{form.slug || 'my-post-slug'}</span>
-                  </div>
-
-                  <div className="a-field">
-                    <label className="a-field__label" htmlFor="post-category">Category</label>
-                    <input
-                      id="post-category"
-                      className="a-input"
-                      value={form.category ?? ''}
-                      onChange={e => set('category', e.target.value)}
-                      placeholder="e.g. Design, Development"
-                    />
-                  </div>
-                </div>
-
-                <div className="a-field">
-                  <label className="a-field__label" htmlFor="post-excerpt">Excerpt</label>
-                  <textarea
-                    id="post-excerpt"
-                    className="a-textarea"
-                    style={{ minHeight: 72 }}
-                    value={form.excerpt ?? ''}
-                    onChange={e => set('excerpt', e.target.value)}
-                    placeholder="Short preview shown in the blog list and hero section"
-                  />
-                </div>
+            {/* Title + slug */}
+            <div className="a-card a-card--pad">
+              <input
+                className="a-post-title"
+                value={form.title}
+                onChange={e => handleTitleChange(e.target.value)}
+                placeholder="Post title…"
+                required
+                aria-label="Post title"
+              />
+              <div className="a-slug-bar">
+                <span className="a-slug-prefix">/blog/</span>
+                <input
+                  className="a-slug-input"
+                  value={form.slug}
+                  onChange={e => { setSlugManual(true); set('slug', e.target.value); }}
+                  placeholder="my-post-slug"
+                  required
+                  aria-label="URL slug"
+                />
+                <span className="a-slug-sep">·</span>
+                <input
+                  className="a-slug-category"
+                  value={form.category ?? ''}
+                  onChange={e => set('category', e.target.value)}
+                  placeholder="Category"
+                  aria-label="Category"
+                />
               </div>
             </div>
 
-            {/* Content editor */}
-            <div className="a-card" style={{ marginBottom: 16 }}>
+            {/* Excerpt */}
+            <div className="a-card a-card--pad" style={{ paddingBottom: 14 }}>
+              <label className="a-side-label" htmlFor="post-excerpt">Excerpt</label>
+              <textarea
+                id="post-excerpt"
+                className="a-textarea"
+                style={{ minHeight: 68, marginTop: 2 }}
+                value={form.excerpt ?? ''}
+                onChange={e => set('excerpt', e.target.value)}
+                placeholder="Short summary shown in the blog list…"
+              />
+            </div>
+
+            {/* Markdown editor */}
+            <div className="a-card">
               <div className="a-md-editor">
                 <div className="a-md-editor__tabs" role="tablist">
                   {(['write', 'preview'] as Tab[]).map(t => (
@@ -250,163 +213,46 @@ export default function PostForm() {
                   <textarea
                     value={form.content ?? ''}
                     onChange={e => set('content', e.target.value)}
-                    placeholder="Write your post in Markdown…&#10;&#10;## Introduction&#10;&#10;Start writing here…&#10;&#10;> Blockquote with attribution&#10;> &#10;> — Author Name"
-                    aria-label="Post content in Markdown"
+                    placeholder={`Write your post in Markdown…\n\n## Introduction\n\nStart writing here…\n\n> Blockquote text\n>\n> — Attribution`}
+                    aria-label="Post content"
+                    style={{ minHeight: 420 }}
                   />
                 ) : (
                   <div
                     className="a-md-preview"
                     dangerouslySetInnerHTML={{ __html: preview }}
-                    aria-label="Rendered post preview"
+                    aria-label="Rendered preview"
+                    style={{ minHeight: 420 }}
                   />
                 )}
               </div>
             </div>
-          </>
-        )}
 
-        {/* ── Media section ── */}
-        {section === 'media' && (
-          <div className="a-card a-card--pad" style={{ marginBottom: 16 }}>
-            <div className="a-form">
-              <div className="a-field">
-                <label className="a-field__label" htmlFor="post-og">Featured Image URL</label>
-                <input
-                  id="post-og"
-                  className="a-input"
-                  type="url"
-                  value={form.og_image ?? ''}
-                  onChange={e => set('og_image', e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                />
-                <span className="a-field__hint">Used as the hero image and og:image for social sharing</span>
-              </div>
-
-              {form.og_image && (
-                <div style={{ marginBottom: 16 }}>
-                  <img
-                    src={form.og_image}
-                    alt="Featured image preview"
-                    style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 8, objectFit: 'cover', border: '1px solid #e2e8f0' }}
-                    onError={e => (e.currentTarget.style.display = 'none')}
-                  />
-                </div>
-              )}
-
-              <div className="a-field">
-                <label className="a-field__label" htmlFor="post-img-caption">Image Caption</label>
-                <input
-                  id="post-img-caption"
-                  className="a-input"
-                  value={form.featured_image_caption ?? ''}
-                  onChange={e => set('featured_image_caption', e.target.value)}
-                  placeholder="Optional caption displayed below the featured image"
-                />
-              </div>
-            </div>
           </div>
-        )}
 
-        {/* ── Author section ── */}
-        {section === 'author' && (
-          <div className="a-card a-card--pad" style={{ marginBottom: 16 }}>
-            <div className="a-form">
-              <div className="a-input-row">
-                <div className="a-field">
-                  <label className="a-field__label" htmlFor="post-author">Author Name</label>
-                  <input
-                    id="post-author"
-                    className="a-input"
-                    value={form.author}
-                    onChange={e => set('author', e.target.value)}
-                    placeholder="Your Name"
-                  />
-                </div>
-                <div className="a-field">
-                  <label className="a-field__label" htmlFor="post-avatar">Author Avatar URL</label>
-                  <input
-                    id="post-avatar"
-                    className="a-input"
-                    type="url"
-                    value={form.author_avatar ?? ''}
-                    onChange={e => set('author_avatar', e.target.value)}
-                    placeholder="https://example.com/avatar.jpg"
-                  />
-                </div>
+          {/* ── Sidebar ── */}
+          <div className="a-post-sidebar">
+
+            {/* Publish card */}
+            <div className="a-side-card">
+              <div className="a-side-card__head">
+                <span className="a-side-card__head-icon">🚦</span>
+                <span className="a-side-card__head-title">Publish</span>
               </div>
-
-              {form.author_avatar && (
-                <div style={{ marginBottom: 16 }}>
-                  <img
-                    src={form.author_avatar}
-                    alt="Author avatar preview"
-                    style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '1px solid #e2e8f0' }}
-                    onError={e => (e.currentTarget.style.display = 'none')}
-                  />
-                </div>
-              )}
-
-              <div className="a-field">
-                <label className="a-field__label" htmlFor="post-bio">Author Bio</label>
-                <textarea
-                  id="post-bio"
-                  className="a-textarea"
-                  style={{ minHeight: 80 }}
-                  value={form.author_bio ?? ''}
-                  onChange={e => set('author_bio', e.target.value)}
-                  placeholder="A short bio shown in the author box below each post"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── SEO section ── */}
-        {section === 'seo' && (
-          <div className="a-card a-card--pad" style={{ marginBottom: 16 }}>
-            <div className="a-form">
-              <div className="a-field">
-                <label className="a-field__label" htmlFor="post-meta-desc">
-                  Meta Description <span style={{ color: '#6c7a8d', fontWeight: 400 }}>(SEO)</span>
-                </label>
-                <textarea
-                  id="post-meta-desc"
-                  className="a-textarea"
-                  style={{ minHeight: 72 }}
-                  value={form.meta_description ?? ''}
-                  onChange={e => set('meta_description', e.target.value)}
-                  placeholder="150–160 character description for search results"
-                />
-                <span className="a-field__hint">{(form.meta_description ?? '').length}/160 chars</span>
-              </div>
-
-              <div className="a-field">
-                <label className="a-field__label" htmlFor="post-kw">
-                  Keywords / Tags <span style={{ color: '#6c7a8d', fontWeight: 400 }}>(comma-separated)</span>
-                </label>
-                <input
-                  id="post-kw"
-                  className="a-input"
-                  value={form.keywords ?? ''}
-                  onChange={e => set('keywords', e.target.value)}
-                  placeholder="react, ui, ux, design, frontend"
-                />
-                <span className="a-field__hint">Shown as tag pills on the post page</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Settings section ── */}
-        {section === 'settings' && (
-          <div className="a-card a-card--pad" style={{ marginBottom: 16 }}>
-            <div className="a-form">
-              <div className="a-input-row">
-                <div className="a-field">
-                  <label className="a-field__label" htmlFor="post-status">Status</label>
+              <div className="a-side-card__body">
+                <div>
+                  <label className="a-side-label" htmlFor="post-status">
+                    Status
+                    <span
+                      className={`a-status-dot a-status-dot--${form.status}`}
+                      style={{ marginLeft: 6 }}
+                      aria-hidden="true"
+                    />
+                  </label>
                   <select
                     id="post-status"
                     className="a-select"
+                    style={{ width: '100%' }}
                     value={form.status}
                     onChange={e => set('status', e.target.value as Post['status'])}
                   >
@@ -414,12 +260,12 @@ export default function PostForm() {
                     <option value="published">Published</option>
                   </select>
                 </div>
-
-                <div className="a-field">
-                  <label className="a-field__label" htmlFor="post-pub-date">Published date</label>
+                <div>
+                  <label className="a-side-label" htmlFor="post-pub-date">Publish date</label>
                   <input
                     id="post-pub-date"
                     className="a-input"
+                    style={{ width: '100%' }}
                     type="datetime-local"
                     value={form.published_at ? form.published_at.slice(0, 16) : ''}
                     onChange={e =>
@@ -427,53 +273,189 @@ export default function PostForm() {
                     }
                   />
                 </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div>
+                    <label className="a-side-label" htmlFor="post-reading-time">Read time</label>
+                    <input
+                      id="post-reading-time"
+                      className="a-input"
+                      style={{ width: '100%' }}
+                      value={form.reading_time ?? ''}
+                      onChange={e => set('reading_time', e.target.value)}
+                      placeholder="5 min"
+                    />
+                  </div>
+                  <div>
+                    <label className="a-side-label" htmlFor="post-views">Views</label>
+                    <input
+                      id="post-views"
+                      className="a-input"
+                      style={{ width: '100%' }}
+                      type="number"
+                      min="0"
+                      value={form.views_count ?? ''}
+                      onChange={e => set('views_count', e.target.value ? Number(e.target.value) : null)}
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
               </div>
+              <div className="a-side-card__actions">
+                <button
+                  type="button"
+                  className="a-btn a-btn--ghost a-btn--sm"
+                  style={{ flex: 1 }}
+                  onClick={() => save('draft')}
+                  disabled={saving}
+                >
+                  {saving ? '…' : 'Save Draft'}
+                </button>
+                <button
+                  type="submit"
+                  className="a-btn a-btn--primary a-btn--sm"
+                  style={{ flex: 1 }}
+                  disabled={saving}
+                  onClick={() => set('status', 'published')}
+                >
+                  {saving ? '…' : isPublished ? 'Update' : 'Publish →'}
+                </button>
+              </div>
+            </div>
 
-              <div className="a-input-row">
-                <div className="a-field">
-                  <label className="a-field__label" htmlFor="post-reading-time">Reading Time</label>
+            {/* Featured image card */}
+            <div className="a-side-card">
+              <div className="a-side-card__head">
+                <span className="a-side-card__head-icon">🖼</span>
+                <span className="a-side-card__head-title">Featured Image</span>
+              </div>
+              <div className="a-side-card__body">
+                {form.og_image && (
+                  <img
+                    src={form.og_image}
+                    alt="Featured image preview"
+                    className="a-img-preview"
+                    onError={e => (e.currentTarget.style.display = 'none')}
+                  />
+                )}
+                <div>
+                  <label className="a-side-label" htmlFor="post-og">Image URL</label>
                   <input
-                    id="post-reading-time"
+                    id="post-og"
                     className="a-input"
-                    value={form.reading_time ?? ''}
-                    onChange={e => set('reading_time', e.target.value)}
-                    placeholder="e.g. 5 min read"
+                    style={{ width: '100%' }}
+                    type="url"
+                    value={form.og_image ?? ''}
+                    onChange={e => set('og_image', e.target.value)}
+                    placeholder="https://…"
                   />
                 </div>
-
-                <div className="a-field">
-                  <label className="a-field__label" htmlFor="post-views">Views Count</label>
+                <div>
+                  <label className="a-side-label" htmlFor="post-img-caption">Caption</label>
                   <input
-                    id="post-views"
+                    id="post-img-caption"
                     className="a-input"
-                    type="number"
-                    min="0"
-                    value={form.views_count ?? ''}
-                    onChange={e => set('views_count', e.target.value ? Number(e.target.value) : null)}
-                    placeholder="0"
+                    style={{ width: '100%' }}
+                    value={form.featured_image_caption ?? ''}
+                    onChange={e => set('featured_image_caption', e.target.value)}
+                    placeholder="Optional image caption"
                   />
                 </div>
               </div>
             </div>
-          </div>
-        )}
 
-        {/* ── Actions ── */}
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-          <button type="button" className="a-btn a-btn--ghost" onClick={() => navigate('/admin/posts')} disabled={saving}>
-            Cancel
-          </button>
-          <button type="button" className="a-btn a-btn--ghost" onClick={(e) => handleSubmit(e, true)} disabled={saving}>
-            {saving ? 'Saving…' : 'Save Draft'}
-          </button>
-          <button
-            type="submit"
-            className="a-btn a-btn--primary"
-            disabled={saving}
-            onClick={() => set('status', 'published')}
-          >
-            {saving ? 'Saving…' : form.status === 'published' ? 'Update Post' : 'Publish Post'}
-          </button>
+            {/* Author card */}
+            <div className="a-side-card">
+              <div className="a-side-card__head">
+                <span className="a-side-card__head-icon">👤</span>
+                <span className="a-side-card__head-title">Author</span>
+              </div>
+              <div className="a-side-card__body">
+                <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+                  {form.author_avatar && (
+                    <img
+                      src={form.author_avatar}
+                      alt="Avatar preview"
+                      className="a-avatar-preview"
+                      onError={e => (e.currentTarget.style.display = 'none')}
+                    />
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <label className="a-side-label" htmlFor="post-author">Name</label>
+                    <input
+                      id="post-author"
+                      className="a-input"
+                      style={{ width: '100%' }}
+                      value={form.author}
+                      onChange={e => set('author', e.target.value)}
+                      placeholder="Carvel Russ"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="a-side-label" htmlFor="post-avatar">Avatar URL</label>
+                  <input
+                    id="post-avatar"
+                    className="a-input"
+                    style={{ width: '100%' }}
+                    type="url"
+                    value={form.author_avatar ?? ''}
+                    onChange={e => set('author_avatar', e.target.value)}
+                    placeholder="https://…"
+                  />
+                </div>
+                <div>
+                  <label className="a-side-label" htmlFor="post-bio">Bio</label>
+                  <textarea
+                    id="post-bio"
+                    className="a-textarea"
+                    style={{ minHeight: 68 }}
+                    value={form.author_bio ?? ''}
+                    onChange={e => set('author_bio', e.target.value)}
+                    placeholder="Short bio shown below the post"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* SEO card */}
+            <div className="a-side-card">
+              <div className="a-side-card__head">
+                <span className="a-side-card__head-icon">🔍</span>
+                <span className="a-side-card__head-title">SEO &amp; Tags</span>
+              </div>
+              <div className="a-side-card__body">
+                <div>
+                  <label className="a-side-label" htmlFor="post-kw">Tags</label>
+                  <input
+                    id="post-kw"
+                    className="a-input"
+                    style={{ width: '100%' }}
+                    value={form.keywords ?? ''}
+                    onChange={e => set('keywords', e.target.value)}
+                    placeholder="react, ui, design"
+                  />
+                  <span className="a-side-hint">Comma-separated · shown as pills on the post</span>
+                </div>
+                <div>
+                  <label className="a-side-label" htmlFor="post-meta-desc">
+                    Meta description
+                    <span style={{ fontWeight: 400, color: '#6c7a8d', marginLeft: 4 }}>
+                      ({(form.meta_description ?? '').length}/160)
+                    </span>
+                  </label>
+                  <textarea
+                    id="post-meta-desc"
+                    className="a-textarea"
+                    style={{ minHeight: 76 }}
+                    value={form.meta_description ?? ''}
+                    onChange={e => set('meta_description', e.target.value)}
+                    placeholder="150–160 char description for search results"
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </form>
     </AdminLayout>
