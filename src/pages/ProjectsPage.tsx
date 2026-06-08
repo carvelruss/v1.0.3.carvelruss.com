@@ -89,36 +89,62 @@ export default function ProjectsPage() {
 
   const filtered = projects.filter(p => matchesFilter(p, filter));
 
+  /* Preview cards for the hero right side — use real projects or fallback tiles */
+  const previewTiles = projects.length >= 3
+    ? projects.slice(0, 3).map((p, i) => ({ label: p.role || 'Project', title: p.title, gradient: GRADIENTS[i] }))
+    : [
+        { label: 'UI/UX Design',    title: 'Product Design',   gradient: GRADIENTS[0] },
+        { label: 'Frontend Dev',    title: 'Web Application',  gradient: GRADIENTS[2] },
+        { label: 'Design Systems',  title: 'Component Library',gradient: GRADIENTS[4] },
+      ];
+
   return (
     <>
       {/* ── Page hero ── */}
-      <section className="ws-pg-hero">
+      <section className="ws-pg-hero ws-pg-hero--split">
         <div className="container">
-          <button
-            className="ws-article-back"
-            onClick={() => navigate('/')}
-            style={{ marginBottom: '1.5rem' }}
-          >
-            ← Home
-          </button>
-          <p className="ws-eyebrow">Portfolio</p>
-          <h1 className="section-title">Case Studies</h1>
-          <p className="ws-pg-hero__sub">
-            A selection of case studies spanning UI/UX design, frontend engineering, and design systems.
-          </p>
-          <div className="ws-pg-hero__stats">
-            <div>
-              <span className="ws-pg-hero__stat-value">{projects.length}</span>
-              <span className="ws-pg-hero__stat-label">Case Studies</span>
+          <div className="ws-pg-hero__inner">
+
+            {/* Left: text + stats */}
+            <div className="ws-pg-hero__content">
+              <button className="ws-article-back" onClick={() => navigate('/')} style={{ marginBottom: '1.25rem' }}>
+                ← Home
+              </button>
+              <p className="ws-eyebrow">Portfolio</p>
+              <h1 className="ws-pg-hero__title">Case Studies</h1>
+              <p className="ws-pg-hero__sub">
+                A curated selection of case studies spanning UI/UX design, frontend engineering, and design systems.
+              </p>
+              <div className="ws-pg-hero__stats">
+                {[
+                  { value: projects.length.toString(), label: 'Case Studies', icon: '🗂' },
+                  { value: '6+',  label: 'Years Experience', icon: '⚡' },
+                  { value: '10+', label: 'Happy Clients',    icon: '🤝' },
+                ].map(s => (
+                  <div key={s.label} className="ws-pg-hero__stat">
+                    <span className="ws-pg-hero__stat-icon" aria-hidden="true">{s.icon}</span>
+                    <span className="ws-pg-hero__stat-value">{s.value}</span>
+                    <span className="ws-pg-hero__stat-label">{s.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div>
-              <span className="ws-pg-hero__stat-value">6+</span>
-              <span className="ws-pg-hero__stat-label">Years exp.</span>
+
+            {/* Right: decorative stacked cards */}
+            <div className="ws-pg-hero__visual" aria-hidden="true">
+              {previewTiles.map((tile, i) => (
+                <div
+                  key={i}
+                  className={`ws-pg-hero__preview-card ws-pg-hero__preview-card--${i}`}
+                  style={{ background: tile.gradient }}
+                >
+                  <span className="ws-pg-hero__preview-num">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="ws-pg-hero__preview-tag">{tile.label}</span>
+                  <div className="ws-pg-hero__preview-title">{tile.title}</div>
+                </div>
+              ))}
             </div>
-            <div>
-              <span className="ws-pg-hero__stat-value">10+</span>
-              <span className="ws-pg-hero__stat-label">Happy clients</span>
-            </div>
+
           </div>
         </div>
       </section>
