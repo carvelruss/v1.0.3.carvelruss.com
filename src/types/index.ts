@@ -28,6 +28,14 @@ export interface Post {
   published_at?: string | null;
   created_at?: string;
   updated_at?: string;
+  // Extended fields (gracefully absent on older backend records)
+  category?: string | null;
+  author_avatar?: string | null;
+  author_bio?: string | null;
+  featured_image_caption?: string | null;
+  reading_time?: string | null;
+  views_count?: number | null;
+  comments_count?: number | null;
 }
 
 export interface Inquiry {

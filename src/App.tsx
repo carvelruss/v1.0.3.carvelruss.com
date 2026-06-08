@@ -38,7 +38,7 @@ import WSFooter from './components/webstudio/WSFooter';
 import ProjectsPage    from './pages/ProjectsPage';
 import CaseStudyDetail from './pages/CaseStudyDetail';
 import BlogList        from './pages/BlogList';
-import BlogPost        from './pages/BlogPost';
+import BlogSingle      from './pages/BlogSingle';
 import ThankYou        from './pages/ThankYou';
 import ContactPage     from './pages/ContactPage';
 import SkillsPage      from './pages/SkillsPage';
@@ -77,7 +77,7 @@ function BlogPostLayout() {
     <div className="ws-page">
       <WSHeader />
       <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
-        <BlogPost />
+        <BlogSingle />
       </main>
       <WSFooter />
     </div>
