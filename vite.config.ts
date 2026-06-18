@@ -17,6 +17,11 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:8788',
+    },
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
