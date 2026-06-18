@@ -1210,6 +1210,12 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
     &::after { content: ' *'; color: $a-blue; }
   }
 
+  &__input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
   &__input {
     padding: 11px 14px;
     border: 1.5px solid #dddfe2;
@@ -1219,10 +1225,29 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
     color: #1c1e21;
     background: #ffffff;
     outline: none;
+    width: 100%;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
     &::placeholder { color: #b0b3b8; }
     &:focus { border-color: $a-blue; box-shadow: 0 0 0 3px rgba($a-blue, 0.12); }
+
+    &--padded { padding-right: 42px; }
+  }
+
+  &__toggle {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #b0b3b8;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: color 0.15s ease;
+    &:hover { color: #1c1e21; }
   }
 }
 

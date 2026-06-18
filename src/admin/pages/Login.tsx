@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -59,17 +61,27 @@ export default function Login() {
           <form className="al-form" onSubmit={handleSubmit}>
             <div className="al-field">
               <label className="al-field__label" htmlFor="admin-password">Password</label>
-              <input
-                id="admin-password"
-                className="al-field__input"
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="Enter admin password"
-                autoComplete="current-password"
-                autoFocus
-                required
-              />
+              <div className="al-field__input-wrap">
+                <input
+                  id="admin-password"
+                  className="al-field__input al-field__input--padded"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Enter admin password"
+                  autoComplete="current-password"
+                  autoFocus
+                  required
+                />
+                <button
+                  type="button"
+                  className="al-field__toggle"
+                  onClick={() => setShowPassword(v => !v)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                </button>
+              </div>
             </div>
 
             <button
