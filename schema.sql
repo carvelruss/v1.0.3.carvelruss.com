@@ -1,16 +1,18 @@
 -- ── Projects ──────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS projects (
-  id           INTEGER PRIMARY KEY AUTOINCREMENT,
-  title        TEXT    NOT NULL,
-  description  TEXT    NOT NULL,
-  tech         TEXT    NOT NULL DEFAULT '[]',  -- JSON array
-  role         TEXT    NOT NULL DEFAULT '',
-  live_url     TEXT,
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  title          TEXT    NOT NULL,
+  slug           TEXT    NOT NULL DEFAULT '',
+  description    TEXT    NOT NULL,
+  content        TEXT    NOT NULL DEFAULT '',
+  tech           TEXT    NOT NULL DEFAULT '[]',  -- JSON array
+  role           TEXT    NOT NULL DEFAULT '',
+  live_url       TEXT,
   case_study_url TEXT,
-  github_url   TEXT,
-  sort_order   INTEGER NOT NULL DEFAULT 0,
-  created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+  github_url     TEXT,
+  sort_order     INTEGER NOT NULL DEFAULT 0,
+  created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ── Blog posts ────────────────────────────────────────────────────────────────
