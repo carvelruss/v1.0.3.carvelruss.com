@@ -11,6 +11,7 @@ interface ProjectRow {
   tech: string;
   role: string;
   logo_url: string | null;
+  cover_url: string | null;
   live_url: string | null;
   case_study_url: string | null;
   github_url: string | null;
@@ -48,6 +49,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       tech: string[];
       role: string;
       logo_url?: string | null;
+      cover_url?: string | null;
       live_url?: string | null;
       case_study_url?: string | null;
       github_url?: string | null;
@@ -59,8 +61,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     }
 
     const result = await env.DB.prepare(
-      `INSERT INTO projects (title, slug, description, content, tech, role, logo_url, live_url, case_study_url, github_url, sort_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO projects (title, slug, description, content, tech, role, logo_url, cover_url, live_url, case_study_url, github_url, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
       .bind(
         body.title.trim(),
@@ -70,6 +72,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         JSON.stringify(body.tech ?? []),
         body.role?.trim() ?? '',
         body.logo_url ?? null,
+        body.cover_url ?? null,
         body.live_url ?? null,
         body.case_study_url ?? null,
         body.github_url ?? null,

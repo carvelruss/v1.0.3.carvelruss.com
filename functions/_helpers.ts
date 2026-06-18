@@ -2,8 +2,21 @@
 
 import { verifyJWT } from './_jwt';
 
+export interface StorageBucket {
+  put(
+    key: string,
+    value: ReadableStream | ArrayBuffer | ArrayBufferView | string | null | Blob,
+    options?: { httpMetadata?: { contentType?: string } }
+  ): Promise<unknown>;
+  get(key: string): Promise<{
+    body: ReadableStream;
+    writeHttpMetadata(headers: Headers): void;
+  } | null>;
+}
+
 export interface Env {
   DB: D1Database;
+  STORAGE: StorageBucket;
   ADMIN_PASSWORD: string;
   JWT_SECRET: string;
   TURNSTILE_SECRET: string;

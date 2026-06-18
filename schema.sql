@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS projects (
   case_study_url TEXT,
   github_url     TEXT,
   logo_url       TEXT,
+  cover_url      TEXT,
   sort_order     INTEGER NOT NULL DEFAULT 0,
   created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP

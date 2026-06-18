@@ -1663,6 +1663,19 @@
 }
 .ws-cs-meta-icon { opacity: .8; flex-shrink: 0; }
 
+/* Cover image */
+.ws-cs-cover {
+  background: var(--ws-bg-soft);
+  border-bottom: 1px solid var(--ws-border);
+  line-height: 0;
+}
+.ws-cs-cover__img {
+  width: 100%;
+  max-height: 480px;
+  object-fit: cover;
+  display: block;
+}
+
 /* Sidebar card */
 .ws-cs-sidebar-card {
   background: #fff;

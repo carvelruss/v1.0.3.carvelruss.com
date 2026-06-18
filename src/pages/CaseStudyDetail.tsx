@@ -93,8 +93,15 @@ export default function CaseStudyDetail() {
         </div>
       </div>
 
+      {/* Cover image */}
+      {project.cover_url && (
+        <div className="ws-cs-cover">
+          <img src={project.cover_url} alt={`${project.title} cover`} className="ws-cs-cover__img" />
+        </div>
+      )}
+
       {/* Body */}
-      <div className="container" style={{ paddingTop: '3.5rem', paddingBottom: '4rem' }}>
+      <div className="container" style={{ paddingTop: project.cover_url ? '2.5rem' : '3.5rem', paddingBottom: '4rem' }}>
         <div className="row g-5 align-items-start">
 
           <main className="col-lg-8">

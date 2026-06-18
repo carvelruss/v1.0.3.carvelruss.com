@@ -1,5 +1,6 @@
-import { useState, useRef, type FormEvent, type KeyboardEvent } from 'react';
+import { useState, useRef, useCallback, type FormEvent, type KeyboardEvent, type DragEvent } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
+import { FiUploadCloud, FiX } from 'react-icons/fi';
 import { api } from '../../lib/api';
 import type { Project } from '../../types';
 
@@ -23,18 +24,23 @@ interface Props {
 
 export default function ProjectForm({ project, onSaved, onCancel }: Props) {
   const isEdit = !!project;
-  const [tab, setTab]         = useState<Tab>('details');
-  const [title, setTitle]     = useState(project?.title ?? '');
-  const [description, setDesc]= useState(project?.description ?? '');
-  const [tech, setTech]       = useState<string[]>(project?.tech ?? []);
-  const [techInput, setTI]    = useState('');
-  const [role, setRole]       = useState(project?.role ?? '');
-  const [liveUrl, setLiveUrl] = useState(project?.live_url ?? '');
-  const [caseUrl, setCaseUrl] = useState(project?.case_study_url ?? '');
-  const [content, setContent] = useState(project?.content ?? '');
-  const [saving, setSaving]   = useState(false);
-  const [error, setError]     = useState('');
+  const [tab, setTab]           = useState<Tab>('details');
+  const [title, setTitle]       = useState(project?.title ?? '');
+  const [description, setDesc]  = useState(project?.description ?? '');
+  const [tech, setTech]         = useState<string[]>(project?.tech ?? []);
+  const [techInput, setTI]      = useState('');
+  const [role, setRole]         = useState(project?.role ?? '');
+  const [liveUrl, setLiveUrl]   = useState(project?.live_url ?? '');
+  const [caseUrl, setCaseUrl]   = useState(project?.case_study_url ?? '');
+  const [coverUrl, setCoverUrl] = useState<string>(project?.cover_url ?? '');
+  const [content, setContent]   = useState(project?.content ?? '');
+  const [saving, setSaving]     = useState(false);
+  const [error, setError]       = useState('');
+  const [dragOver, setDragOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   const caseUrlEdited = useRef(!!project?.case_study_url);
+  const fileInputRef  = useRef<HTMLInputElement>(null);
 
   const handleTitleChange = (val: string) => {
     setTitle(val);
@@ -54,6 +60,34 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
     else if (e.key === 'Backspace' && !techInput && tech.length) setTech(p => p.slice(0, -1));
   };
 
+  const uploadFile = useCallback(async (file: File) => {
+    setUploadError('');
+    setUploading(true);
+    try {
+      const { url } = await api.uploadImage(file);
+      setCoverUrl(url);
+    } catch (e: unknown) {
+      setUploadError(e instanceof Error ? e.message : 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+    e.target.value = '';
+  };
+
+  const handleDragOver = (e: DragEvent) => { e.preventDefault(); setDragOver(true); };
+  const handleDragLeave = () => setDragOver(false);
+  const handleDrop = (e: DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) uploadFile(file);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!title.trim())       { setError('Title is required');       setTab('details'); return; }
@@ -68,6 +102,7 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
         content,
         tech,
         role: role.trim(),
+        cover_url: coverUrl || null,
         live_url: liveUrl || null,
         case_study_url: caseUrl || null,
         github_url: null,
@@ -142,6 +177,60 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
             {/* ─── Details tab ─── */}
             {tab === 'details' && (
               <div className="a-form">
+
+                {/* Cover Photo */}
+                <div className="a-field">
+                  <label className="a-field__label">Cover Photo</label>
+                  <div
+                    className={`a-dropzone${dragOver ? ' a-dropzone--over' : ''}${uploading ? ' a-dropzone--uploading' : ''}`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => !uploading && fileInputRef.current?.click()}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Upload cover photo"
+                    onKeyDown={e => e.key === 'Enter' && fileInputRef.current?.click()}
+                  >
+                    {coverUrl ? (
+                      <div className="a-dropzone__preview">
+                        <img src={coverUrl} alt="Cover preview" />
+                        <button
+                          type="button"
+                          className="a-dropzone__remove"
+                          onClick={e => { e.stopPropagation(); setCoverUrl(''); }}
+                          aria-label="Remove cover photo"
+                        >
+                          <FiX size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="a-dropzone__prompt">
+                        <FiUploadCloud size={28} className="a-dropzone__icon" />
+                        {uploading ? (
+                          <span className="a-dropzone__label">Uploading…</span>
+                        ) : (
+                          <>
+                            <span className="a-dropzone__label">
+                              <strong>Click to upload</strong> or drag &amp; drop
+                            </span>
+                            <span className="a-dropzone__hint">PNG, JPG, WebP — max 5 MB</span>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {uploadError && (
+                    <span className="a-field__error">{uploadError}</span>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </div>
 
                 {/* Title + Description */}
                 <div className="a-field">
@@ -278,7 +367,7 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
                     image_advtab: true,
                     statusbar: true,
                     elementpath: false,
-                    wordcount_countregex: /[\w’\x27-]+/g,
+                    wordcount_countregex: /[\w'\x27-]+/g,
                   }}
                 />
               </div>
@@ -295,7 +384,7 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
                 Case Study →
               </button>
             )}
-            <button type="submit" className="a-btn a-btn--primary" disabled={saving}>
+            <button type="submit" className="a-btn a-btn--primary" disabled={saving || uploading}>
               {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Project'}
             </button>
           </div>

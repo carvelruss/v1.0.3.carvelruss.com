@@ -49,6 +49,22 @@ class ApiClient {
     return this.request('/auth', { method: 'POST', body: JSON.stringify({ password }) });
   }
 
+  // ── Uploads ─────────────────────────────────────────────────────────────────
+  async uploadImage(file: File): Promise<{ url: string }> {
+    const token = this.getToken();
+    if (!token) throw new Error('Not authenticated');
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+    const data = await res.json() as { url?: string; error?: string };
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    return { url: data.url! };
+  }
+
   // ── Projects ────────────────────────────────────────────────────────────────
   getProjects(): Promise<Project[]> {
     return this.request('/projects');

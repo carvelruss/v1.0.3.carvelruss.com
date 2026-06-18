@@ -454,7 +454,76 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
     .a-req { color: $a-red; margin-left: 2px; }
   }
 
-  &__hint { font-size: 11px; color: $a-muted; margin-top: 2px; }
+  &__hint  { font-size: 11px; color: $a-muted; margin-top: 2px; }
+  &__error { font-size: 11px; color: $a-red;  margin-top: 4px; }
+}
+
+// ── Cover photo dropzone ──────────────────────────────────────────────────────
+.a-dropzone {
+  border: 2px dashed $a-border;
+  border-radius: 12px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+  outline: none;
+
+  &:hover, &:focus, &--over {
+    border-color: $a-blue;
+    background: rgba($a-blue, 0.04);
+  }
+
+  &--uploading { opacity: 0.65; pointer-events: none; }
+
+  &__prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 28px 20px;
+    color: $a-muted;
+  }
+
+  &__icon { color: lighten($a-muted, 15%); }
+
+  &__label {
+    font-size: 13px;
+    strong { color: $a-blue; font-weight: 600; }
+  }
+
+  &__hint { font-size: 11px; }
+
+  &__preview {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    line-height: 0;
+
+    img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+
+    &:hover { background: rgba(0, 0, 0, 0.75); }
+  }
 }
 
 .a-input,

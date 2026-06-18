@@ -10,6 +10,11 @@ binding = "DB"
 database_name = "portfolio-db"
 database_id = "af268b31-12e9-49f2-a704-ed492a472819"
 
+# ── R2 Bucket (run: wrangler r2 bucket create portfolio-assets) ───────────────
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "portfolio-assets"
+
 # ── Secrets (set via CLI, NOT stored here) ────────────────────────────────────
 # wrangler secret put ADMIN_PASSWORD
 # wrangler secret put JWT_SECRET
