@@ -87,18 +87,18 @@
 
 /* ── Scoped utility classes ────────────────────────── */
 .ws-page .hero-title {
-  font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+  font-size: clamp(3rem, 6.5vw, 5.5rem);
   font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.045em;
+  line-height: 1.0;
+  letter-spacing: -0.05em;
   color: var(--ws-navy);
 }
 
 .ws-page .section-title {
-  font-size: clamp(1.875rem, 3vw, 2.75rem);
+  font-size: clamp(2rem, 3.5vw, 3.25rem);
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
   color: var(--ws-navy);
   margin-bottom: 0;
 }
@@ -371,7 +371,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--ws-violet);
+  background: var(--ws-charcoal);
   flex-shrink: 0;
 }
 
@@ -394,7 +394,7 @@
   top: 0;
   right: 0;
   bottom: 120px;
-  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  background: linear-gradient(145deg, #f5f5f7 0%, #e8e8ed 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -404,7 +404,7 @@
   height: 148px;
   bottom: 0;
   left: 0;
-  background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
+  background: #fff;
   display: flex;
   align-items: center;
 }
@@ -413,7 +413,7 @@
   height: 108px;
   bottom: 24px;
   right: 0;
-  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+  background: #fff;
   display: flex;
   align-items: center;
 }
@@ -441,7 +441,7 @@
   top: 50%;
   transform: translateY(-50%);
   right: -1rem;
-  background: var(--ws-violet);
+  background: var(--ws-navy);
   color: #fff;
 }
 
@@ -490,16 +490,16 @@
   justify-content: space-between;
 }
 .ws-industry-tab:hover {
-  background: var(--ws-violet-light);
+  background: var(--ws-bg-soft);
   color: var(--ws-charcoal);
 }
 .ws-industry-tab.active {
-  background: var(--ws-violet-light);
-  color: var(--ws-violet);
+  background: var(--ws-bg-soft);
+  color: var(--ws-navy);
   font-weight: 600;
 }
 .ws-industry-tab:focus-visible {
-  outline: 2px solid var(--ws-violet);
+  outline: 2px solid var(--ws-navy);
   outline-offset: 2px;
 }
 

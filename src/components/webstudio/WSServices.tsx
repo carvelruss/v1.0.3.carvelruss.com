@@ -13,8 +13,8 @@ interface Service {
 const SERVICES: Service[] = [
   {
     icon: <FiCode size={22} aria-hidden="true" />,
-    iconBg: '#eef2ff',
-    iconColor: '#6366f1',
+    iconBg: 'rgba(0,0,0,.06)',
+    iconColor: '#1d1d1f',
     title: 'Web development',
     description:
       'We craft scalable, performant web applications using modern frameworks and proven patterns. From landing pages to complex SaaS platforms — built to last.',
@@ -22,8 +22,8 @@ const SERVICES: Service[] = [
   },
   {
     icon: <FiSmartphone size={22} aria-hidden="true" />,
-    iconBg: '#f0fdf4',
-    iconColor: '#22c55e',
+    iconBg: 'rgba(0,0,0,.06)',
+    iconColor: '#1d1d1f',
     title: 'Mobile development',
     description:
       'Native and cross-platform mobile apps that deliver seamless experiences on iOS and Android. Built with React Native, optimized for app store success.',
@@ -31,8 +31,8 @@ const SERVICES: Service[] = [
   },
   {
     icon: <FiPenTool size={22} aria-hidden="true" />,
-    iconBg: '#fdf4ff',
-    iconColor: '#c026d3',
+    iconBg: 'rgba(0,0,0,.06)',
+    iconColor: '#1d1d1f',
     title: 'Graphic design',
     description:
       'Brand identity, UI/UX design, and visual communication that resonates with your audience. Every pixel crafted with purpose and aesthetic intentionality.',

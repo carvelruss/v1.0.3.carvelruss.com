@@ -37,9 +37,9 @@ const CARDS: Card[] = [
     type: 'icon',
     name: 'Python',
     emoji: '🐍',
-    bg: '#f0fdf4',
+    bg: '#f5f5f7',
     Icon: SiPython,
-    iconColor: '#3776ab',
+    iconColor: '#1d1d1f',
     description:
       'Python is a programming language that lets you work quickly and integrate systems more effectively.',
   },
@@ -60,9 +60,9 @@ const CARDS: Card[] = [
     type: 'icon',
     name: 'Figma',
     emoji: '🎨',
-    bg: '#fff7ed',
+    bg: '#f5f5f7',
     Icon: SiFigma,
-    iconColor: '#f24e1e',
+    iconColor: '#1d1d1f',
     description:
       'Figma is a collaborative interface design tool used to create and prototype UI/UX designs in real time.',
   },
@@ -83,9 +83,9 @@ const CARDS: Card[] = [
     type: 'icon',
     name: 'Bootstrap',
     emoji: '⚡',
-    bg: '#f5f3ff',
+    bg: '#f5f5f7',
     Icon: SiBootstrap,
-    iconColor: '#7952b3',
+    iconColor: '#1d1d1f',
     description:
       "Bootstrap is the world's most popular CSS framework for responsive, mobile-first web development.",
   },
@@ -106,15 +106,15 @@ const CARDS: Card[] = [
     type: 'icon',
     name: 'CSS3',
     emoji: '🌊',
-    bg: '#eff6ff',
+    bg: '#f5f5f7',
     Icon: SiCss,
-    iconColor: '#264de4',
+    iconColor: '#1d1d1f',
     description:
       'CSS3 powers modern layouts, animations, and responsive designs with custom properties and flexbox.',
   },
 ];
 
-const CARD_BG = '#f1f5f9';
+const CARD_BG = '#f5f5f7';
 
 export default function WSSkills() {
   const trackRef   = useRef<HTMLDivElement>(null);

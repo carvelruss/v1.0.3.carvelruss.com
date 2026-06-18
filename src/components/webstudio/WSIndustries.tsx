@@ -20,8 +20,8 @@ const INDUSTRIES: Industry[] = [
     description:
       'We build secure, compliant financial platforms — from trading dashboards to insurance claim portals. Our work meets the highest regulatory standards while delivering outstanding UX that customers actually enjoy using.',
     emoji: '🏦',
-    accentColor: '#0ea5e9',
-    accentBg: '#f0f9ff',
+    accentColor: 'rgba(0,0,0,.07)',
+    accentBg: '#f5f5f7',
     stats: [{ label: 'Projects', value: '40+' }, { label: 'Avg CSAT', value: '4.8★' }],
   },
   {
@@ -31,8 +31,8 @@ const INDUSTRIES: Industry[] = [
     description:
       'Move fast and ship quality. We partner with startups from MVP to scale, providing development velocity that matches your growth ambitions without sacrificing craft or maintainability.',
     emoji: '🚀',
-    accentColor: '#6366f1',
-    accentBg: '#eef2ff',
+    accentColor: 'rgba(0,0,0,.07)',
+    accentBg: '#f5f5f7',
     stats: [{ label: 'Startups', value: '60+' }, { label: 'Avg launch', value: '6 wk' }],
   },
   {
@@ -42,8 +42,8 @@ const INDUSTRIES: Industry[] = [
     description:
       'Thoughtful digital experiences for healthcare providers, wellness brands, and beauty businesses. We balance aesthetics with accessibility and compliance, including HIPAA where required.',
     emoji: '💊',
-    accentColor: '#ec4899',
-    accentBg: '#fdf2f8',
+    accentColor: 'rgba(0,0,0,.07)',
+    accentBg: '#f5f5f7',
     stats: [{ label: 'Clinics served', value: '25+' }, { label: 'WCAG', value: 'AA' }],
   },
   {
@@ -53,8 +53,8 @@ const INDUSTRIES: Industry[] = [
     description:
       'Conversion-optimized storefronts that delight customers and grow revenue. From Shopify customizations to fully bespoke commerce platforms built on a modern, headless stack.',
     emoji: '🛒',
-    accentColor: '#f59e0b',
-    accentBg: '#fffbeb',
+    accentColor: 'rgba(0,0,0,.07)',
+    accentBg: '#f5f5f7',
     stats: [{ label: 'Stores built', value: '80+' }, { label: 'Avg CR lift', value: '+34%' }],
   },
 ];
@@ -96,7 +96,7 @@ export default function WSIndustries() {
                       style={{
                         fontWeight: 700,
                         fontSize: '.75rem',
-                        color: activeId === ind.id ? 'var(--ws-violet)' : '#94a3b8',
+                        color: activeId === ind.id ? 'var(--ws-navy)' : '#aeaeb2',
                         minWidth: '1.5rem',
                         fontVariantNumeric: 'tabular-nums',
                       }}

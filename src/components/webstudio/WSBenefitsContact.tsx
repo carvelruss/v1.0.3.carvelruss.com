@@ -12,32 +12,32 @@ interface Benefit {
 const BENEFITS: Benefit[] = [
   {
     icon: <FiGlobe size={20} aria-hidden="true" />,
-    iconBg: '#eef2ff',
-    iconColor: '#6366f1',
+    iconBg: 'rgba(0,0,0,.06)',
+    iconColor: '#1d1d1f',
     title: "Time zones ain't no thing",
     description:
       'Async-first communication with daily written updates, flexible meeting windows, and always-on Slack support — wherever you are.',
   },
   {
     icon: <FiSliders size={20} aria-hidden="true" />,
-    iconBg: '#f0fdf4',
-    iconColor: '#22c55e',
+    iconBg: 'rgba(0,0,0,.06)',
+    iconColor: '#1d1d1f',
     title: 'Flexible work terms',
     description:
       'Fixed-price projects, hourly retainers, or a dedicated team model — choose the engagement that fits your budget and timeline.',
   },
   {
     icon: <FiLayers size={20} aria-hidden="true" />,
-    iconBg: '#fdf4ff',
-    iconColor: '#c026d3',
+    iconBg: 'rgba(0,0,0,.06)',
+    iconColor: '#1d1d1f',
     title: 'Full spectrum of services',
     description:
       'Design research, UI/UX, frontend, backend, mobile, DevOps — every layer of your product handled in-house by one cohesive team.',
   },
   {
     icon: <FiZap size={20} aria-hidden="true" />,
-    iconBg: '#fffbeb',
-    iconColor: '#d97706',
+    iconBg: 'rgba(0,0,0,.06)',
+    iconColor: '#1d1d1f',
     title: "Impossible? We're on it",
     description:
       'We thrive on complex, challenging projects. If other studios have turned you down, reach out — we love a great technical challenge.',
@@ -88,7 +88,7 @@ export default function WSBenefitsContact() {
                   <div
                     style={{
                       width: 72, height: 72,
-                      background: '#f0fdf4',
+                      background: 'rgba(0,0,0,.06)',
                       borderRadius: '50%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       margin: '0 auto 1.25rem',
@@ -187,7 +187,7 @@ export default function WSBenefitsContact() {
                     <FiArrowRight size={16} aria-hidden="true" />
                   </button>
 
-                  <p style={{ fontSize: '.8rem', color: '#94a3b8', textAlign: 'center', marginTop: '.875rem', marginBottom: 0 }}>
+                  <p style={{ fontSize: '.8rem', color: '#6e6e73', textAlign: 'center', marginTop: '.875rem', marginBottom: 0 }}>
                     We respect your privacy. No spam, ever.
                   </p>
                 </form>

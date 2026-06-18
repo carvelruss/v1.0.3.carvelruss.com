@@ -78,7 +78,7 @@ export default function WSHero() {
                   <div
                     style={{
                       width: 80, height: 80, borderRadius: '1.25rem',
-                      background: 'rgba(99,102,241,.15)',
+                      background: 'rgba(0,0,0,.06)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       margin: '0 auto 1rem',
                       fontSize: '2.5rem',
@@ -86,18 +86,18 @@ export default function WSHero() {
                   >
                     🎨
                   </div>
-                  <div style={{ fontWeight: 700, color: '#4f46e5', fontSize: '1.125rem' }}>
+                  <div style={{ fontWeight: 700, color: '#1d1d1f', fontSize: '1.125rem' }}>
                     Design Excellence
                   </div>
-                  <div style={{ fontSize: '.875rem', color: '#818cf8', marginTop: '.35rem' }}>
+                  <div style={{ fontSize: '.875rem', color: '#6e6e73', marginTop: '.35rem' }}>
                     UI/UX &amp; Development
                   </div>
                   {/* mini metrics */}
                   <div className="d-flex justify-content-center gap-4 mt-4">
                     {[['98%', 'Satisfaction'], ['4.2wk', 'Avg delivery'], ['5★', 'Rating']].map(([val, lbl]) => (
                       <div key={lbl} style={{ textAlign: 'center' }}>
-                        <div style={{ fontWeight: 800, fontSize: '1.125rem', color: '#4f46e5' }}>{val}</div>
-                        <div style={{ fontSize: '.7rem', color: '#818cf8' }}>{lbl}</div>
+                        <div style={{ fontWeight: 800, fontSize: '1.125rem', color: '#1d1d1f' }}>{val}</div>
+                        <div style={{ fontSize: '.7rem', color: '#6e6e73' }}>{lbl}</div>
                       </div>
                     ))}
                   </div>
@@ -110,7 +110,7 @@ export default function WSHero() {
                   <div
                     style={{
                       width: 44, height: 44, borderRadius: '.75rem',
-                      background: 'rgba(34,197,94,.18)',
+                      background: 'rgba(0,0,0,.06)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: '1.5rem', flexShrink: 0,
                     }}
@@ -118,8 +118,8 @@ export default function WSHero() {
                     📱
                   </div>
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: '.9375rem', color: '#166534', lineHeight: 1.2 }}>Mobile First</div>
-                    <div style={{ fontSize: '.8125rem', color: '#16a34a', marginTop: '.1rem' }}>Responsive &amp; fast</div>
+                    <div style={{ fontWeight: 700, fontSize: '.9375rem', color: '#1d1d1f', lineHeight: 1.2 }}>Mobile First</div>
+                    <div style={{ fontSize: '.8125rem', color: '#6e6e73', marginTop: '.1rem' }}>Responsive &amp; fast</div>
                   </div>
                 </div>
               </div>
@@ -130,7 +130,7 @@ export default function WSHero() {
                   <div
                     style={{
                       width: 38, height: 38, borderRadius: '.625rem',
-                      background: 'rgba(249,115,22,.15)',
+                      background: 'rgba(0,0,0,.06)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: '1.25rem', flexShrink: 0,
                     }}
@@ -138,8 +138,8 @@ export default function WSHero() {
                     ⚡
                   </div>
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: '.875rem', color: '#9a3412', lineHeight: 1.2 }}>Fast delivery</div>
-                    <div style={{ fontSize: '.75rem', color: '#c2410c', marginTop: '.1rem' }}>2–4 weeks</div>
+                    <div style={{ fontWeight: 700, fontSize: '.875rem', color: '#1d1d1f', lineHeight: 1.2 }}>Fast delivery</div>
+                    <div style={{ fontSize: '.75rem', color: '#6e6e73', marginTop: '.1rem' }}>2–4 weeks</div>
                   </div>
                 </div>
               </div>
