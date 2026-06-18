@@ -46,6 +46,13 @@ export default function CaseStudyDetail() {
             ← Back to Case Studies
           </button>
           <p className="ws-eyebrow">Case Study</p>
+          {project.logo_url && (
+            <img
+              src={project.logo_url}
+              alt={`${project.title} logo`}
+              style={{ display: 'block', height: '2.25rem', marginBottom: '1.25rem', objectFit: 'contain' }}
+            />
+          )}
           <h1 className="ws-cs-title">{project.title}</h1>
           <p className="ws-cs-desc">{project.description}</p>
           <div className="ws-proj-card__tech">
