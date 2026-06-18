@@ -10,6 +10,7 @@ interface ProjectRow {
   content: string;
   tech: string;
   role: string;
+  logo_url: string | null;
   live_url: string | null;
   case_study_url: string | null;
   github_url: string | null;
@@ -47,6 +48,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
       content?: string;
       tech?: string[];
       role?: string;
+      logo_url?: string | null;
       live_url?: string | null;
       case_study_url?: string | null;
       github_url?: string | null;
@@ -59,7 +61,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
     if (!existing) return err('Not found', 404);
 
     await env.DB.prepare(
-      `UPDATE projects SET title=?, slug=?, description=?, content=?, tech=?, role=?, live_url=?, case_study_url=?, github_url=?, sort_order=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`,
+      `UPDATE projects SET title=?, slug=?, description=?, content=?, tech=?, role=?, logo_url=?, live_url=?, case_study_url=?, github_url=?, sort_order=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`,
     )
       .bind(
         body.title?.trim() ?? existing.title,
@@ -68,6 +70,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
         body.content ?? existing.content,
         JSON.stringify(body.tech ?? JSON.parse(existing.tech)),
         body.role?.trim() ?? existing.role,
+        body.logo_url !== undefined ? body.logo_url : existing.logo_url,
         body.live_url !== undefined ? body.live_url : existing.live_url,
         body.case_study_url !== undefined ? body.case_study_url : existing.case_study_url,
         body.github_url !== undefined ? body.github_url : existing.github_url,

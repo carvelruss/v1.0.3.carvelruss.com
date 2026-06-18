@@ -6,6 +6,7 @@ export interface Project {
   content?: string;
   tech: string[];
   role: string;
+  logo_url?: string | null;
   live_url?: string | null;
   case_study_url?: string | null;
   github_url?: string | null;

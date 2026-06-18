@@ -33,12 +33,31 @@ function matchesFilter(project: Project, filter: Filter): boolean {
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <article className="ws-proj-card" aria-label={`Project: ${project.title}`}>
-      <div className="ws-proj-card__header" style={{ background: GRADIENTS[index % GRADIENTS.length] }}>
-        <span className="ws-proj-card__num" aria-hidden="true">
-          {String(index + 1).padStart(2, '0')}
-        </span>
-        <div className="ws-proj-card__role">{project.role}</div>
-      </div>
+      {project.logo_url ? (
+        <div
+          className="ws-proj-card__header"
+          style={{
+            background: '#f8f7ff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.75rem 2rem',
+          }}
+        >
+          <img
+            src={project.logo_url}
+            alt={`${project.title} logo`}
+            style={{ maxHeight: '2rem', maxWidth: '80%', objectFit: 'contain' }}
+          />
+        </div>
+      ) : (
+        <div className="ws-proj-card__header" style={{ background: GRADIENTS[index % GRADIENTS.length] }}>
+          <span className="ws-proj-card__num" aria-hidden="true">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <div className="ws-proj-card__role">{project.role}</div>
+        </div>
+      )}
 
       <div className="ws-proj-card__body">
         <h3 className="ws-proj-card__title">{project.title}</h3>

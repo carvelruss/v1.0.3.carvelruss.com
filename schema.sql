@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS projects (
   live_url       TEXT,
   case_study_url TEXT,
   github_url     TEXT,
+  logo_url       TEXT,
   sort_order     INTEGER NOT NULL DEFAULT 0,
   created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 -- ── Seed: Scoutlify case study ───────────────────────────────────────────────
-INSERT OR IGNORE INTO projects (id, title, slug, description, content, tech, role, live_url, case_study_url, github_url, sort_order) VALUES
+INSERT OR IGNORE INTO projects (id, title, slug, description, content, tech, role, logo_url, live_url, case_study_url, github_url, sort_order) VALUES
   (1, 'Scoutlify', 'scoutlify',
    'A modern real estate marketplace connecting property seekers, brokers, agents, agencies, and developers through a streamlined property discovery experience.',
    '## Overview
@@ -130,7 +131,7 @@ Building Scoutlify reinforced several important principles: user experience is c
 Product Strategy · UX Research · UI Design · Frontend Development · Backend Development · Database Architecture · API Development · System Architecture · Performance Optimisation · Responsive Web Development',
    '["Angular","TypeScript","Node.js","Express.js","MySQL","MapTiler","PayPal API","REST APIs","HTML5","CSS3","JavaScript"]',
    'Founder, UI/UX Designer, Frontend Developer, Backend Developer',
-   NULL, NULL, NULL, 1);
+   '/logos/scoutlify-logo.svg', NULL, NULL, NULL, 1);
 
 -- ── Client inquiries ──────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS inquiries (
