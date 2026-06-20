@@ -18,18 +18,13 @@
 }
 
 /* ── 2. HEADER — sticky, full-width, flat white ───────────── */
-/*
-   <header class="sh"> is rendered as a direct flex child of
-   .ws-page (display:flex; flex-direction:column). The full page
-   height is the containing block, so position:sticky works.
-   A wrapper div would make the containing block = header height,
-   leaving no room to stick — that's why we removed sh-shell.
-*/
+/* Fixed header — most reliable across all React/flex layouts */
 .sh {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
-  flex-shrink: 0;           /* don't let flex squish the header */
   background: var(--sh-bg);
   font-family: var(--sh-font);
   -webkit-font-smoothing: antialiased;
@@ -41,6 +36,23 @@
 .sh *::before,
 .sh *::after {
   box-sizing: border-box;
+}
+
+/* Reserve space so page content starts below the fixed header */
+.ws-page {
+  padding-top: 80px;
+}
+
+@media (max-width: 1199px) {
+  .ws-page { padding-top: 72px; }
+}
+
+@media (max-width: 767px) {
+  .ws-page { padding-top: 68px; }
+}
+
+@media (max-width: 400px) {
+  .ws-page { padding-top: 64px; }
 }
 
 /* Scrolled: add a subtle separator shadow */
