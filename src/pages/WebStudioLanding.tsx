@@ -1,5 +1,5 @@
 import Header from '../components/layout/Header';
-import WSHero from '../components/webstudio/WSHero';
+import HeroSection from '../components/public/HeroSection';
 import WSCaseStudies from '../components/webstudio/WSCaseStudies';
 import WSFooter from '../components/webstudio/WSFooter';
 
@@ -15,7 +15,7 @@ export default function WebStudioLanding() {
     <div className="ws-page">
       <Header />
       <main id="ws-main" tabIndex={-1}>
-        <WSHero />
+        <HeroSection />
         <WSCaseStudies />
         <section className="pf-section pf-section--sm" style={{ borderTop: '1px solid var(--pf-border-light)' }}>
           <div className="container">
