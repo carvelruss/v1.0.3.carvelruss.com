@@ -273,27 +273,6 @@
   border-radius: 10px;
 }
 
-.sh__mobile-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 6px;
-  background: linear-gradient(135deg, #7558f8 0%, var(--sh-primary) 50%, var(--sh-primary-dark) 100%);
-  color: #ffffff !important;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: var(--sh-btn-shadow);
-  transition: box-shadow 0.22s ease, transform 0.18s ease;
-}
-
-.sh__mobile-cta:hover {
-  color: #ffffff !important;
-  box-shadow: 0 12px 36px rgba(91, 53, 245, 0.42);
-  transform: translateY(-1px);
-}
 
 /* ── 11. RESPONSIVE ───────────────────────────────────────── */
 

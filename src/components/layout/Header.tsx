@@ -158,9 +158,6 @@ export default function Header() {
             ))}
           </nav>
 
-          <Link to="/contact" className="sh__mobile-cta" onClick={close}>
-            Work With Me
-          </Link>
         </div>
 
     </header>
