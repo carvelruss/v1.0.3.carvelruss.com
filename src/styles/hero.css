@@ -521,8 +521,8 @@
 /* ── 14. PHONE / APP CARD ─────────────────────────────────── */
 .hs__phone-card {
   position: absolute;
-  top: 148px;
-  left: 214px;
+  top: 130px;
+  left: 228px;
   width: 178px;
   background: #fff;
   border-radius: 22px;
@@ -530,7 +530,12 @@
   border: 1px solid var(--hero-border);
   overflow: hidden;
   z-index: 4;
-  animation: hsFloat 5.5s ease-in-out 1s infinite;
+  animation: hsPhoneFloat 5.5s ease-in-out 1s infinite;
+}
+
+@keyframes hsPhoneFloat {
+  0%, 100% { transform: rotate(5deg) translateY(0px); }
+  50%       { transform: rotate(5deg) translateY(-7px); }
 }
 
 .hs__phone-topbar {
@@ -960,8 +965,9 @@
 /* ── 19. REDUCED MOTION ───────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .hs__schedule-card,
-  .hs__phone-card,
   .hs__type-card    { animation: none !important; }
+
+  .hs__phone-card   { animation: none !important; transform: rotate(5deg); }
 
   .hs__dash-card,
   .hs__btn-primary,
