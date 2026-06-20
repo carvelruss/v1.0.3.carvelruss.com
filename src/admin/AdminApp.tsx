@@ -1,4 +1,4 @@
-import { Component, type ReactNode } from 'react';
+import { Component, lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { AuthProvider } from './context/AuthContext';
@@ -9,6 +9,9 @@ import PostsAdmin from './pages/PostsAdmin';
 import InboxAdmin from './pages/InboxAdmin';
 import PostForm from './components/PostForm';
 import './styles/admin.scss';
+
+const AdminMediaPage    = lazy(() => import('./pages/AdminMediaPage'));
+const AdminSettingsPage = lazy(() => import('./pages/AdminSettingsPage'));
 
 class AdminErrorBoundary extends Component<{ children: ReactNode }, { error: string | null }> {
   state = { error: null };
@@ -32,22 +35,51 @@ function AdminGuard({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+function AdminSuspense({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={
+      <div style={{ padding: '48px 32px', color: '#64748b', fontFamily: 'system-ui' }}>
+        Loading…
+      </div>
+    }>
+      {children}
+    </Suspense>
+  );
+}
+
 export default function AdminApp() {
   return (
     <AdminErrorBoundary>
-    <AuthProvider>
-      <Routes>
-        <Route path="login" element={<Login />} />
-        <Route path="" element={<Navigate to="dashboard" replace />} />
+      <AuthProvider>
+        <Routes>
+          <Route path="login"  element={<Login />} />
+          <Route path=""       element={<Navigate to="dashboard" replace />} />
 
-        <Route element={<AdminGuard><Dashboard /></AdminGuard>} path="dashboard" />
-        <Route element={<AdminGuard><ProjectsAdmin /></AdminGuard>} path="projects" />
-        <Route element={<AdminGuard><PostsAdmin /></AdminGuard>} path="posts" />
-        <Route element={<AdminGuard><PostForm /></AdminGuard>} path="posts/new" />
-        <Route element={<AdminGuard><PostForm /></AdminGuard>} path="posts/:slug/edit" />
-        <Route element={<AdminGuard><InboxAdmin /></AdminGuard>} path="inbox" />
-      </Routes>
-    </AuthProvider>
+          <Route element={<AdminGuard><Dashboard /></AdminGuard>}      path="dashboard" />
+          <Route element={<AdminGuard><ProjectsAdmin /></AdminGuard>}  path="projects" />
+          <Route element={<AdminGuard><PostsAdmin /></AdminGuard>}     path="posts" />
+          <Route element={<AdminGuard><PostForm /></AdminGuard>}       path="posts/new" />
+          <Route element={<AdminGuard><PostForm /></AdminGuard>}       path="posts/:slug/edit" />
+          <Route element={<AdminGuard><InboxAdmin /></AdminGuard>}     path="inbox" />
+
+          <Route
+            path="media"
+            element={
+              <AdminGuard>
+                <AdminSuspense><AdminMediaPage /></AdminSuspense>
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <AdminGuard>
+                <AdminSuspense><AdminSettingsPage /></AdminSuspense>
+              </AdminGuard>
+            }
+          />
+        </Routes>
+      </AuthProvider>
     </AdminErrorBoundary>
   );
 }
