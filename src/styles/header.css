@@ -17,32 +17,30 @@
   --sh-font:         -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── 2. SHELL — lightweight semantic wrapper only ─────────── */
-.sh-shell {
-  font-family: var(--sh-font);
-  -webkit-font-smoothing: antialiased;
-}
-
-.sh-shell *,
-.sh-shell *::before,
-.sh-shell *::after {
-  box-sizing: border-box;
-}
-
-/* ── 3. HEADER — sticky, full-width, flat white ───────────── */
+/* ── 2. HEADER — sticky, full-width, flat white ───────────── */
 /*
-   position: sticky lives here (on the <header>), NOT on the
-   .sh-shell wrapper. Placing it on the flex-child (.sh-shell)
-   breaks sticky in all browsers; <header> is a block child of
-   .sh-shell so sticky works correctly.
+   <header class="sh"> is rendered as a direct flex child of
+   .ws-page (display:flex; flex-direction:column). The full page
+   height is the containing block, so position:sticky works.
+   A wrapper div would make the containing block = header height,
+   leaving no room to stick — that's why we removed sh-shell.
 */
 .sh {
   position: sticky;
   top: 0;
   z-index: 1000;
+  flex-shrink: 0;           /* don't let flex squish the header */
   background: var(--sh-bg);
+  font-family: var(--sh-font);
+  -webkit-font-smoothing: antialiased;
   border-bottom: 1px solid transparent;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sh *,
+.sh *::before,
+.sh *::after {
+  box-sizing: border-box;
 }
 
 /* Scrolled: add a subtle separator shadow */
@@ -299,22 +297,14 @@
 
 /* ── 11. RESPONSIVE ───────────────────────────────────────── */
 
-/* Tablet 768–1199: nav visible + hamburger */
+/* Tablet 768–1199: hide nav, show hamburger */
 @media (max-width: 1199px) {
   .sh__inner    { padding: 0 28px; height: 72px; gap: 16px; }
-  .sh__nav      { gap: 24px; }
-  .sh__nav-link { font-size: 15px; }
+  .sh__nav      { display: none; }   /* nav hidden on tablet */
   .sh__ham      { display: flex; }
   .sh__cta      { padding: 13px 20px; font-size: 15px; }
   .sh__cta-icon { display: none; }
   .sh__mobile   { padding: 0 20px 20px; }
-}
-
-/* 900px: tighten nav gaps */
-@media (max-width: 900px) {
-  .sh__nav      { gap: 16px; }
-  .sh__nav-link { font-size: 14.5px; }
-  .sh__cta      { padding: 12px 16px; font-size: 14.5px; }
 }
 
 /* Mobile ≤767: hide desktop nav */

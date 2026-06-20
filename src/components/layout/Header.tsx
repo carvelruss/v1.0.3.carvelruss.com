@@ -65,16 +65,15 @@ export default function Header() {
     `sh__mobile-link${isActive ? ' is-active' : ''}`;
 
   return (
-    <div className="sh-shell">
-      <header
-        ref={cardRef}
-        className={[
-          'sh',
-          scrolled  ? 'sh--scrolled' : '',
-          isOpen    ? 'sh--open'     : '',
-        ].filter(Boolean).join(' ')}
-        aria-label="Site header"
-      >
+    <header
+      ref={cardRef}
+      className={[
+        'sh',
+        scrolled  ? 'sh--scrolled' : '',
+        isOpen    ? 'sh--open'     : '',
+      ].filter(Boolean).join(' ')}
+      aria-label="Site header"
+    >
 
         {/* ── Top row ─────────────────────────────────────────── */}
         <div className="sh__inner">
@@ -164,7 +163,6 @@ export default function Header() {
           </Link>
         </div>
 
-      </header>
-    </div>
+    </header>
   );
 }
