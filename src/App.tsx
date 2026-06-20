@@ -142,6 +142,8 @@ export default function App() {
         <Route path="/case-studies/:slug"    element={<CaseStudyLayout />} />
         <Route path="/blog"                  element={<BlogListLayout />} />
         <Route path="/blog/:slug"            element={<BlogPostLayout />} />
+        <Route path="/blogs"                 element={<BlogListLayout />} />
+        <Route path="/blogs/:slug"           element={<BlogPostLayout />} />
         <Route path="/skills"                element={<SkillsLayout />} />
         <Route path="/contact"               element={<ContactLayout />} />
         <Route path="/thank-you"             element={<ThankYouLayout />} />
