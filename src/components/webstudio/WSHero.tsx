@@ -1,158 +1,99 @@
-import { FiArrowRight, FiAward, FiStar, FiBriefcase, FiZap } from 'react-icons/fi';
-
-const PARTNERS = ['Clutch', 'Deloitte', 'Vue.js', 'Awwwards', 'Google', 'Stripe'];
+import { Link } from 'react-router-dom';
 
 export default function WSHero() {
   return (
-    <section id="ws-hero" className="ws-hero blob-bg">
+    <section className="pf-hero">
       <div className="container">
         <div className="row align-items-center g-5">
 
-          {/* Left: headline + CTAs */}
+          {/* Left column */}
           <div className="col-lg-6">
-            <div className="ws-hero-badge ws-fade-up" aria-label="Award-winning web studio">
-              <FiAward size={15} aria-hidden="true" />
-              Award‑winning developer
-            </div>
+            <div className="pf-hero__eyebrow">UI/UX DEVELOPER</div>
 
-            <h1 className="hero-title ws-fade-up ws-du-1">
-              Web studio of<br />
-              <span className="text-gradient">effective</span><br />
-              development
+            <h1 className="pf-hero__title">
+              Designing Meaningful<br />
+              <em>Digital Experiences</em>
             </h1>
 
-            <p
-              className="ws-fade-up ws-du-2"
-              style={{
-                fontSize: '1.125rem',
-                color: 'var(--ws-body)',
-                lineHeight: 1.75,
-                maxWidth: '500px',
-                marginTop: '1.5rem',
-                marginBottom: '2.25rem',
-                fontWeight: 400,
-              }}
-            >
-              We craft premium digital experiences that blend beautiful design with exceptional performance. Every pixel matters.
+            <p className="pf-hero__sub">
+              I create clean, user-centered interfaces that solve problems and drive results.
             </p>
 
-            <div className="d-flex flex-wrap gap-3 ws-fade-up ws-du-2">
-              <a href="#ws-contact" className="ws-btn-primary">
-                Let's partner
-                <FiArrowRight size={16} aria-hidden="true" />
-              </a>
-              <a href="#ws-case-studies" className="ws-btn-secondary">
-                View Case Studies
-              </a>
-            </div>
-
-            <div className="ws-hero-bullets ws-fade-up ws-du-3">
-              <div className="ws-hero-bullet">Full spectrum of services</div>
-              <div className="ws-hero-bullet">Flexible work terms</div>
-              <div className="ws-hero-bullet">Premium quality delivery</div>
+            <div className="pf-hero__ctas">
+              <Link to="/case-studies" className="ws-btn-primary">View Case Studies</Link>
+              <Link to="/contact" className="ws-btn-secondary">Contact Me</Link>
             </div>
           </div>
 
-          {/* Right: floating card composition */}
-          <div className="col-lg-6">
-            <div className="ws-hero-visual" aria-hidden="true">
+          {/* Right column — decorative */}
+          <div className="col-lg-6" aria-hidden="true">
+            <div className="pf-hero__visual">
+              <div className="pf-hero__preview">
 
-              {/* Floating badge — top left */}
-              <div className="ws-float-badge ws-float-badge-top">
-                <FiStar size={14} aria-hidden="true" style={{ color: '#22c55e' }} />
-                5‑star rated studio
-              </div>
+                {/* Floating typography card */}
+                <div className="pf-hero__type-card">
+                  <span className="pf-hero__type-sample">Aa</span>
+                  <span className="pf-hero__type-label">Typography</span>
+                </div>
 
-              {/* Floating badge — mid right */}
-              <div className="ws-float-badge ws-float-badge-mid">
-                <FiBriefcase size={13} aria-hidden="true" />
-                200+ projects delivered
-              </div>
+                {/* Main dark dashboard card */}
+                <div className="pf-hero__card">
+                  <div className="pf-hero__card-header">
+                    <span className="pf-hero__card-dot"></span>
+                    <span className="pf-hero__card-dot"></span>
+                    <span className="pf-hero__card-dot"></span>
+                    <span className="pf-hero__card-title">DASHBOARD</span>
+                  </div>
 
-              {/* Main card */}
-              <div className="ws-float-card ws-float-card-main">
-                <div className="text-center p-4 p-lg-5">
-                  <div
-                    style={{
-                      width: 88, height: 88, borderRadius: '1.5rem',
-                      background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      margin: '0 auto 1.25rem',
-                      fontSize: '2.75rem',
-                    }}
-                  >
-                    🎨
-                  </div>
-                  <div style={{ fontWeight: 700, color: '#1d1d1f', fontSize: '1.25rem', letterSpacing: '-0.02em' }}>
-                    Design Excellence
-                  </div>
-                  <div style={{ fontSize: '.9375rem', color: '#86868b', marginTop: '.5rem', fontWeight: 500 }}>
-                    UI/UX &amp; Development
-                  </div>
-                  {/* mini metrics */}
-                  <div className="d-flex justify-content-center gap-4 mt-4">
-                    {[['98%', 'Satisfaction'], ['4.2wk', 'Avg delivery'], ['5★', 'Rating']].map(([val, lbl]) => (
-                      <div key={lbl} style={{ textAlign: 'center' }}>
-                        <div style={{ fontWeight: 800, fontSize: '1.25rem', color: '#1d1d1f', letterSpacing: '-0.02em' }}>{val}</div>
-                        <div style={{ fontSize: '.75rem', color: '#86868b', fontWeight: 500, marginTop: '.15rem' }}>{lbl}</div>
+                  <div className="pf-hero__card-body">
+                    {/* Stats row */}
+                    <div className="pf-hero__card-stat">
+                      <span className="pf-hero__card-stat-label">Visitors</span>
+                      <span className="pf-hero__card-stat-value">8,392</span>
+                      <span className="pf-hero__card-stat-delta">+12%</span>
+                    </div>
+                    <div className="pf-hero__card-stat">
+                      <span className="pf-hero__card-stat-label">Conversion</span>
+                      <span className="pf-hero__card-stat-value">3.2%</span>
+                      <span className="pf-hero__card-stat-delta">+8%</span>
+                    </div>
+
+                    {/* Bar chart */}
+                    <div className="pf-hero__bar-group">
+                      <div className="pf-hero__bar-item">
+                        <span className="pf-hero__bar-label">UI</span>
+                        <div className="pf-hero__bar-track">
+                          <div className="pf-hero__bar-fill" style={{ width: '75%' }}></div>
+                        </div>
                       </div>
-                    ))}
+                      <div className="pf-hero__bar-item">
+                        <span className="pf-hero__bar-label">UX</span>
+                        <div className="pf-hero__bar-track">
+                          <div className="pf-hero__bar-fill" style={{ width: '60%' }}></div>
+                        </div>
+                      </div>
+                      <div className="pf-hero__bar-item">
+                        <span className="pf-hero__bar-label">Dev</span>
+                        <div className="pf-hero__bar-track">
+                          <div className="pf-hero__bar-fill" style={{ width: '88%' }}></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Bottom-left card */}
-              <div className="ws-float-card ws-float-card-accent">
-                <div className="p-3 d-flex align-items-center gap-3">
-                  <div
-                    style={{
-                      width: 48, height: 48, borderRadius: '.875rem',
-                      background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '1.625rem', flexShrink: 0,
-                    }}
-                  >
-                    📱
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1d1d1f', lineHeight: 1.2, letterSpacing: '-0.01em' }}>Mobile First</div>
-                    <div style={{ fontSize: '.875rem', color: '#86868b', marginTop: '.15rem', fontWeight: 500 }}>Responsive &amp; fast</div>
-                  </div>
+                {/* Floating color swatch card */}
+                <div className="pf-hero__swatch-card">
+                  <span className="pf-hero__swatch" style={{ background: '#6366f1' }}></span>
+                  <span className="pf-hero__swatch" style={{ background: '#818cf8' }}></span>
+                  <span className="pf-hero__swatch" style={{ background: '#1d1d1f' }}></span>
+                  <span className="pf-hero__swatch" style={{ background: '#f5f5f7' }}></span>
                 </div>
-              </div>
 
-              {/* Bottom-right card */}
-              <div className="ws-float-card ws-float-card-sm">
-                <div className="p-3 d-flex align-items-center gap-3">
-                  <div
-                    style={{
-                      width: 42, height: 42, borderRadius: '.75rem',
-                      background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '1.375rem', flexShrink: 0,
-                    }}
-                  >
-                    <FiZap size={20} style={{ color: '#6366f1' }} />
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: '.9375rem', color: '#1d1d1f', lineHeight: 1.2, letterSpacing: '-0.01em' }}>Fast delivery</div>
-                    <div style={{ fontSize: '.8125rem', color: '#86868b', marginTop: '.15rem', fontWeight: 500 }}>2–4 weeks</div>
-                  </div>
-                </div>
               </div>
-
             </div>
           </div>
-        </div>
 
-        {/* Partner strip */}
-        <div className="ws-partner-strip">
-          <div className="d-flex flex-wrap align-items-center gap-4">
-            <span className="ws-partner-label">Trusted by</span>
-            {PARTNERS.map(name => (
-              <span key={name} className="ws-partner-logo">{name}</span>
-            ))}
-          </div>
         </div>
       </div>
     </section>
