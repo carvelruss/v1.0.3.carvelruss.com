@@ -1,25 +1,25 @@
 -- Migration 003: Extend schema for enhanced portfolio features
--- Extends projects, inquiries tables; adds media_assets and site_settings
+-- Uses ADD COLUMN IF NOT EXISTS (SQLite 3.37+ / D1) for safe re-runs
 
 -- ── Extend projects table ────────────────────────────────────────────────────
-ALTER TABLE projects ADD COLUMN excerpt TEXT;
-ALTER TABLE projects ADD COLUMN project_type TEXT;
-ALTER TABLE projects ADD COLUMN client_name TEXT;
-ALTER TABLE projects ADD COLUMN tools TEXT;
-ALTER TABLE projects ADD COLUMN timeline TEXT;
-ALTER TABLE projects ADD COLUMN status TEXT NOT NULL DEFAULT 'published';
-ALTER TABLE projects ADD COLUMN featured INTEGER NOT NULL DEFAULT 0;
-ALTER TABLE projects ADD COLUMN seo_title TEXT;
-ALTER TABLE projects ADD COLUMN seo_description TEXT;
-ALTER TABLE projects ADD COLUMN published_at TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS excerpt TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS project_type TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS client_name TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS tools TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS timeline TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'published';
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS featured INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS seo_title TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS seo_description TEXT;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS published_at TEXT;
 
 -- ── Extend inquiries table ───────────────────────────────────────────────────
-ALTER TABLE inquiries ADD COLUMN subject TEXT;
-ALTER TABLE inquiries ADD COLUMN project_type TEXT;
-ALTER TABLE inquiries ADD COLUMN budget_range TEXT;
-ALTER TABLE inquiries ADD COLUMN timeline TEXT;
-ALTER TABLE inquiries ADD COLUMN status TEXT NOT NULL DEFAULT 'unread';
-ALTER TABLE inquiries ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS subject TEXT;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS project_type TEXT;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS budget_range TEXT;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS timeline TEXT;
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'unread';
+ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS updated_at DATETIME DEFAULT CURRENT_TIMESTAMP;
 
 -- ── Media assets table ───────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS media_assets (
