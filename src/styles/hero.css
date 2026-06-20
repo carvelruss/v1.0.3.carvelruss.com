@@ -542,7 +542,7 @@
   box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
   border: 1px solid var(--hero-border);
   overflow: hidden;
-  z-index: 4;
+  z-index: 3;
   animation: hsPhoneFloat 5.5s ease-in-out 1s infinite;
 }
 
@@ -706,7 +706,7 @@
   box-shadow: 0 16px 52px rgba(15, 23, 42, 0.12);
   border: 1px solid var(--hero-border);
   padding: 15px;
-  z-index: 3;
+  z-index: 5;
   animation: hsFloat 7s ease-in-out 0.5s infinite;
 }
 
