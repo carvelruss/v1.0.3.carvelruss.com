@@ -1,77 +1,111 @@
-import { skillCategories } from '../data/skills';
+import { useEffect } from 'react';
+
+const DESIGN_SKILLS = [
+  { name: 'UI Design', icon: '🖥' },
+  { name: 'UX Design', icon: '✏️' },
+  { name: 'Wireframing', icon: '📐' },
+  { name: 'Prototyping', icon: '▶️' },
+  { name: 'Design Systems', icon: '🔲' },
+  { name: 'Interaction Design', icon: '⚡' },
+  { name: 'User Research', icon: '🔍' },
+  { name: 'Responsive Design', icon: '📱' },
+];
+
+const RESEARCH_SKILLS = [
+  { name: 'User Research', icon: '👥' },
+  { name: 'Competitive Analysis', icon: '📊' },
+  { name: 'Information Architecture', icon: '🗂' },
+  { name: 'Usability Testing', icon: '🧪' },
+  { name: 'Conversion Optimization', icon: '📈' },
+];
+
+const FRONTEND_SKILLS = [
+  { name: 'HTML', icon: '🌐' },
+  { name: 'CSS', icon: '🎨' },
+  { name: 'Bootstrap', icon: '🅱' },
+  { name: 'React/JS', icon: '⚛️' },
+  { name: 'TypeScript', icon: '📘' },
+  { name: 'Responsive Design', icon: '📱' },
+];
+
+const TOOLS = [
+  { name: 'Figma', icon: '🎯' },
+  { name: 'Adobe XD', icon: '🔷' },
+  { name: 'Photoshop', icon: '🖼' },
+  { name: 'Illustrator', icon: '✏️' },
+  { name: 'Notion', icon: '📝' },
+  { name: 'FigJam', icon: '🟡' },
+];
 
 export default function SkillsPage() {
+  useEffect(() => {
+    document.title = 'My Skills | Carvel Russ';
+  }, []);
+
   return (
     <>
-      {/* Hero */}
-      <section className="ws-pg-hero ws-pg-hero--dark">
+      <div className="pf-page-hero">
         <div className="container">
-          <p className="ws-eyebrow">Full-stack skillset</p>
-          <h1 className="section-title">Skills &amp; Expertise</h1>
-          <p className="ws-pg-hero__sub">
-            A complete breakdown of the tools, technologies, and disciplines I use to take
-            a product from idea to a polished, production-ready experience.
+          <h1 className="pf-page-hero__title">My Skills</h1>
+          <p className="pf-page-hero__sub">
+            A combination of design thinking, technical skills and creative expertise.
           </p>
-          <div className="ws-pg-hero__stats" aria-label="Skill counts">
-            {skillCategories.map(cat => (
-              <div key={cat.label}>
-                <span className="ws-pg-hero__stat-value">{cat.skills.length}</span>
-                <span className="ws-pg-hero__stat-label">{cat.label}</span>
-              </div>
-            ))}
-          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Category sections */}
-      {skillCategories.map((cat, ci) => (
-        <section
-          key={cat.label}
-          className="ws-section"
-          style={{ background: ci % 2 === 1 ? 'var(--ws-bg-soft)' : '#fff' }}
-          aria-label={`${cat.label} skills`}
-        >
-          <div className="container">
-            <div className="row justify-content-center mb-5">
-              <div className="col-lg-7 text-center">
-                <span
-                  className="ws-skill-cat-badge"
-                  style={{
-                    background: `${cat.accent}18`,
-                    color: cat.accent,
-                    borderColor: `${cat.accent}30`,
-                  }}
-                >
-                  <span aria-hidden="true">{cat.icon}</span>
-                  {cat.label}
-                </span>
-                <h2 className="section-title">{cat.label} Skills</h2>
-                <p style={{ color: 'var(--ws-body)', fontSize: '1.0625rem', marginTop: '.5rem', marginBottom: 0 }}>
-                  {ci === 0 && 'Design thinking and tools I use to create clear, user-centred experiences from first sketch to final handoff.'}
-                  {ci === 1 && 'The technologies I write every day to build fast, accessible, and maintainable frontend applications.'}
-                  {ci === 2 && 'The workflow tools and platforms I rely on to ship quality work reliably and collaborate without friction.'}
-                </p>
-              </div>
-            </div>
+      <section className="pf-section">
+        <div className="container">
 
-            <div className="row g-4" role="list">
-              {cat.skills.map((skill, si) => (
-                <div key={skill.name} className="col-sm-6 col-md-4 col-lg-3" role="listitem">
-                  <article
-                    className="ws-skill-item"
-                    style={{ '--sp-accent': cat.accent } as React.CSSProperties}
-                    data-reveal
-                    data-reveal-delay={si * 50}
-                  >
-                    <h3 className="ws-skill-item__name">{skill.name}</h3>
-                    <p className="ws-skill-item__desc">{skill.description}</p>
-                  </article>
+          <div className="pf-skills-section">
+            <h3 className="pf-skills-section__title">Design Skills</h3>
+            <div className="pf-skill-grid">
+              {DESIGN_SKILLS.map(skill => (
+                <div key={skill.name} className="pf-skill-card">
+                  <span className="pf-skill-card__icon">{skill.icon}</span>
+                  <span className="pf-skill-card__name">{skill.name}</span>
                 </div>
               ))}
             </div>
           </div>
-        </section>
-      ))}
+
+          <div className="pf-skills-section">
+            <h3 className="pf-skills-section__title">Research &amp; Strategy</h3>
+            <div className="pf-skill-grid">
+              {RESEARCH_SKILLS.map(skill => (
+                <div key={skill.name} className="pf-skill-card">
+                  <span className="pf-skill-card__icon">{skill.icon}</span>
+                  <span className="pf-skill-card__name">{skill.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="pf-skills-section">
+            <h3 className="pf-skills-section__title">Frontend Skills</h3>
+            <div className="pf-skill-grid">
+              {FRONTEND_SKILLS.map(skill => (
+                <div key={skill.name} className="pf-skill-card">
+                  <span className="pf-skill-card__icon">{skill.icon}</span>
+                  <span className="pf-skill-card__name">{skill.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="pf-skills-section">
+            <h3 className="pf-skills-section__title">Tools I Use</h3>
+            <div className="pf-skill-grid">
+              {TOOLS.map(tool => (
+                <div key={tool.name} className="pf-tool-card">
+                  <span className="pf-tool-card__icon">{tool.icon}</span>
+                  <span className="pf-tool-card__name">{tool.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
     </>
   );
 }
