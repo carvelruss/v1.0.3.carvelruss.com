@@ -23,7 +23,16 @@
   --fcs-font:           -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── 2. SECTION WRAPPER ───────────────────────────────────── */
+/* ── 2. CONTAINER — match hero section width ──────────────── */
+@media (min-width: 1200px) {
+  .fcs > .container {
+    max-width: 1400px !important;
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+}
+
+/* ── 3. SECTION WRAPPER ───────────────────────────────────── */
 .fcs {
   background: var(--fcs-bg);
   padding: 96px 0 108px;
