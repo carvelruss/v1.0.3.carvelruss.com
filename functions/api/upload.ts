@@ -22,11 +22,22 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (file.size > MAX_BYTES) return err('File too large — maximum 5 MB');
 
   const ext = file.name.split('.').pop()?.toLowerCase() ?? 'bin';
-  const key = `cover-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const key = `media-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const url = `/api/assets/${key}`;
 
   await env.STORAGE.put(key, file.stream(), {
     httpMetadata: { contentType: file.type },
   });
 
-  return json({ url: `/api/assets/${key}` }, 201);
+  // Record in media_assets table (silently ignore if table doesn't exist yet)
+  try {
+    await env.DB.prepare(
+      `INSERT INTO media_assets (file_name, file_url, file_type, file_size)
+       VALUES (?, ?, ?, ?)`,
+    ).bind(file.name, url, file.type, file.size).run();
+  } catch {
+    // Table may not exist if migration 003 hasn't been applied yet — non-fatal
+  }
+
+  return json({ url }, 201);
 };

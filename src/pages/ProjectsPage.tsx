@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { projects as staticProjects } from '../data/projects';
+import { Link } from 'react-router-dom';
 import type { Project } from '../types';
 import CTABanner from '../components/CTABanner';
 
@@ -70,18 +70,18 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         </div>
 
         <div className="ws-proj-card__links">
+          {project.slug && (
+            <Link to={`/case-studies/${project.slug}`} className="ws-proj-link ws-proj-link--primary">
+              View Case Study →
+            </Link>
+          )}
           {project.live_url && project.live_url !== '#' && (
             <a href={project.live_url} className="ws-proj-link" target="_blank" rel="noopener noreferrer">↗ Live Demo</a>
-          )}
-          {project.case_study_url && project.case_study_url !== '#' && (
-            <a href={project.case_study_url} className="ws-proj-link" target="_blank" rel="noopener noreferrer">📄 Case Study</a>
           )}
           {project.github_url && project.github_url !== '#' && (
             <a href={project.github_url} className="ws-proj-link" target="_blank" rel="noopener noreferrer">⌥ GitHub</a>
           )}
-          {(!project.live_url || project.live_url === '#') &&
-           (!project.case_study_url || project.case_study_url === '#') &&
-           (!project.github_url || project.github_url === '#') && (
+          {!project.slug && (!project.live_url || project.live_url === '#') && (!project.github_url || project.github_url === '#') && (
             <span className="ws-proj-link ws-proj-link--dim">Coming soon</span>
           )}
         </div>
@@ -91,7 +91,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 }
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>(() => staticProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [filter, setFilter]     = useState<Filter>('all');
   const [loading, setLoading]   = useState(true);
 

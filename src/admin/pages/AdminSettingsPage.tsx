@@ -52,8 +52,6 @@ export default function AdminSettingsPage() {
     }
   };
 
-  const settingKeys = Object.keys(SETTING_LABELS);
-
   return (
     <AdminLayout pageTitle="Settings">
       {error   && <div className="a-alert a-alert--error"   role="alert"  style={{ marginBottom: 16 }} onClick={() => setError('')}>{error}</div>}
