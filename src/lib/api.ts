@@ -1,4 +1,4 @@
-import type { Project, Post, Inquiry } from '../types';
+import type { Project, Post, Inquiry, MediaAsset, SiteSetting } from '../types';
 
 const TOKEN_KEY = 'portfolio_admin_token';
 
@@ -44,12 +44,12 @@ class ApiClient {
     return data as T;
   }
 
-  // ── Auth ────────────────────────────────────────────────────────────────────
+  // ── Auth ─────────────────────────────────────────────────────────────────
   async login(password: string): Promise<{ token: string }> {
     return this.request('/auth', { method: 'POST', body: JSON.stringify({ password }) });
   }
 
-  // ── Uploads ─────────────────────────────────────────────────────────────────
+  // ── Uploads ──────────────────────────────────────────────────────────────
   async uploadImage(file: File): Promise<{ url: string }> {
     const token = this.getToken();
     if (!token) throw new Error('Not authenticated');
@@ -65,9 +65,9 @@ class ApiClient {
     return { url: data.url! };
   }
 
-  // ── Projects ────────────────────────────────────────────────────────────────
-  getProjects(): Promise<Project[]> {
-    return this.request('/projects');
+  // ── Projects ─────────────────────────────────────────────────────────────
+  getProjects(adminMode = false): Promise<Project[]> {
+    return this.request(`/projects${adminMode ? '?admin=true' : ''}`);
   }
   getProjectBySlug(slug: string): Promise<Project> {
     return this.request(`/projects/slug/${slug}`);
@@ -81,8 +81,14 @@ class ApiClient {
   deleteProject(id: number): Promise<{ success: boolean }> {
     return this.request(`/projects/${id}`, { method: 'DELETE' });
   }
+  toggleProjectFeatured(id: number, featured: boolean): Promise<{ success: boolean }> {
+    return this.request(`/projects/${id}`, { method: 'PUT', body: JSON.stringify({ featured: featured ? 1 : 0 }) });
+  }
+  toggleProjectStatus(id: number, status: 'draft' | 'published'): Promise<{ success: boolean }> {
+    return this.request(`/projects/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+  }
 
-  // ── Posts ───────────────────────────────────────────────────────────────────
+  // ── Posts ────────────────────────────────────────────────────────────────
   getPosts(adminMode = false): Promise<Post[]> {
     return this.request(`/posts${adminMode ? '?admin=true' : ''}`);
   }
@@ -99,22 +105,46 @@ class ApiClient {
     return this.request(`/posts/${slug}`, { method: 'DELETE' });
   }
 
-  // ── Inquiries ───────────────────────────────────────────────────────────────
-  getInquiries(): Promise<Inquiry[]> {
-    return this.request('/inquiries');
+  // ── Inquiries ────────────────────────────────────────────────────────────
+  getInquiries(status?: string): Promise<Inquiry[]> {
+    const qs = status ? `?status=${status}` : '';
+    return this.request(`/inquiries${qs}`);
+  }
+  updateInquiryStatus(id: number, status: 'unread' | 'read' | 'replied' | 'archived'): Promise<{ success: boolean; status: string }> {
+    return this.request(`/inquiries/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
   }
   markRead(id: number): Promise<{ success: boolean }> {
-    return this.request(`/inquiries/${id}`, { method: 'PATCH', body: JSON.stringify({ is_read: 1 }) });
+    return this.updateInquiryStatus(id, 'read');
   }
   deleteInquiry(id: number): Promise<{ success: boolean }> {
     return this.request(`/inquiries/${id}`, { method: 'DELETE' });
   }
 
-  // ── Contact (public) ────────────────────────────────────────────────────────
+  // ── Media ────────────────────────────────────────────────────────────────
+  getMedia(): Promise<MediaAsset[]> {
+    return this.request('/media');
+  }
+  deleteMedia(id: number): Promise<{ success: boolean }> {
+    return this.request(`/media/${id}`, { method: 'DELETE' });
+  }
+
+  // ── Settings ─────────────────────────────────────────────────────────────
+  getSettings(): Promise<SiteSetting[]> {
+    return this.request('/settings');
+  }
+  updateSettings(settings: Record<string, string>): Promise<{ success: boolean; updated: number }> {
+    return this.request('/settings', { method: 'PUT', body: JSON.stringify(settings) });
+  }
+
+  // ── Contact (public) ─────────────────────────────────────────────────────
   submitContact(data: {
     name: string;
     email: string;
+    subject?: string;
     message: string;
+    project_type?: string;
+    budget_range?: string;
+    timeline?: string;
     turnstileToken: string;
   }): Promise<{ success: boolean; message: string }> {
     return this.request('/contact', { method: 'POST', body: JSON.stringify(data) });
