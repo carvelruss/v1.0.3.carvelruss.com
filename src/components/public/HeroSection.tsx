@@ -27,9 +27,7 @@ interface FeatureItem {
 
 interface ToolItem {
   name: string;
-  abbr: string;
-  color: string;
-  bg: string;
+  icon: string;
 }
 
 interface ScheduleItem {
@@ -45,16 +43,16 @@ const FEATURES: FeatureItem[] = [
 ];
 
 const TOOLS: ToolItem[] = [
-  { name: 'Figma',         abbr: 'Fg', color: '#F24E1E', bg: '#fff0ed' },
-  { name: 'VSCode',        abbr: 'VS', color: '#007ACC', bg: '#e8f4ff' },
-  { name: 'ReactJS',       abbr: 'Rx', color: '#0d9ab5', bg: '#e8faff' },
-  { name: 'TypeScript',    abbr: 'TS', color: '#3178C6', bg: '#eef3fc' },
-  { name: 'Bootstrap',     abbr: 'Bs', color: '#7952B3', bg: '#f3eeff' },
-  { name: 'Vanilla JS',    abbr: 'JS', color: '#a08800', bg: '#fffde8' },
-  { name: 'HTML',          abbr: 'H5', color: '#E44D26', bg: '#fff1ee' },
-  { name: 'CSS',           abbr: 'C3', color: '#264DE4', bg: '#eef0ff' },
-  { name: 'WordPress CMS', abbr: 'WP', color: '#21759B', bg: '#e8f4fa' },
-  { name: 'GitHub',        abbr: 'GH', color: '#24292f', bg: '#f0f0f0' },
+  { name: 'Figma',         icon: '/tools-logo/figma.png'      },
+  { name: 'VSCode',        icon: '/tools-logo/vscode.png'     },
+  { name: 'ReactJS',       icon: '/tools-logo/reactjs.png'    },
+  { name: 'TypeScript',    icon: '/tools-logo/typescript.png' },
+  { name: 'Bootstrap',     icon: '/tools-logo/bootstrap.png'  },
+  { name: 'Vanilla JS',    icon: '/tools-logo/js.png'         },
+  { name: 'HTML',          icon: '/tools-logo/html.png'       },
+  { name: 'CSS',           icon: '/tools-logo/css.png'        },
+  { name: 'WordPress CMS', icon: '/tools-logo/wordpress.png'  },
+  { name: 'GitHub',        icon: '/tools-logo/github.png'     },
 ];
 
 const SCHEDULE: ScheduleItem[] = [
@@ -350,12 +348,12 @@ export default function HeroSection() {
           <div className="hs__marquee-track" aria-hidden="true">
             {[...TOOLS, ...TOOLS].map((tool, i) => (
               <div key={i} className="hs__marquee-item">
-                <span
+                <img
+                  src={tool.icon}
+                  alt={tool.name}
                   className="hs__marquee-icon"
-                  style={{ background: tool.bg, color: tool.color }}
-                >
-                  {tool.abbr}
-                </span>
+                  draggable={false}
+                />
                 <span className="hs__marquee-name">{tool.name}</span>
               </div>
             ))}
