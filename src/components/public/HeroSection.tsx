@@ -54,6 +54,7 @@ const TOOLS: ToolItem[] = [
   { name: 'HTML',          abbr: 'H5', color: '#E44D26', bg: '#fff1ee' },
   { name: 'CSS',           abbr: 'C3', color: '#264DE4', bg: '#eef0ff' },
   { name: 'WordPress CMS', abbr: 'WP', color: '#21759B', bg: '#e8f4fa' },
+  { name: 'GitHub',        abbr: 'GH', color: '#24292f', bg: '#f0f0f0' },
 ];
 
 const SCHEDULE: ScheduleItem[] = [
