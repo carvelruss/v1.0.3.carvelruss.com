@@ -1,0 +1,176 @@
+/* ================================================================
+   contact-hero.css  —  CTH = Contact Hero (centered)
+   Namespace: .cth, .cth__*
+   ================================================================ */
+
+/* ── 1. TOKENS ────────────────────────────────────────────────── */
+.cth {
+  --cth-primary:       #0D215A;
+  --cth-primary-light: #1E4ED8;
+  --cth-text-soft:     #334155;
+  --cth-muted:         #64748B;
+  --cth-border:        #DDE5F2;
+  --cth-font: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ── 2. SECTION ───────────────────────────────────────────────── */
+.cth {
+  position: relative;
+  overflow: hidden;
+  padding: 88px 0 72px;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(13, 33, 90, 0.07), transparent 50%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  font-family: var(--cth-font);
+  -webkit-font-smoothing: antialiased;
+  text-align: center;
+}
+
+.cth::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(13, 33, 90, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── 3. CONTAINER ─────────────────────────────────────────────── */
+.cth__container {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 1200px) {
+  .cth__container {
+    max-width: 1400px !important;
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+}
+
+/* ── 4. INNER (max-width centered) ───────────────────────────── */
+.cth__inner {
+  max-width: 680px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── 5. EYEBROW ───────────────────────────────────────────────── */
+.cth__eyebrow {
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cth-primary-light);
+  background: rgba(30, 78, 216, 0.08);
+  border: 1px solid rgba(30, 78, 216, 0.18);
+  padding: 6px 14px;
+  border-radius: 50px;
+  margin-bottom: 22px;
+}
+
+/* ── 6. TITLE ─────────────────────────────────────────────────── */
+.cth__title {
+  font-size: clamp(2rem, 4.5vw, 3.125rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--cth-primary);
+  margin: 0 0 20px;
+}
+
+/* ── 7. DESCRIPTION ───────────────────────────────────────────── */
+.cth__description {
+  font-size: 1.0625rem;
+  line-height: 1.78;
+  color: var(--cth-text-soft);
+  margin: 0 0 36px;
+  max-width: 580px;
+}
+
+/* ── 8. INFO ROW ──────────────────────────────────────────────── */
+.cth__info-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 8px;
+}
+
+.cth__info-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--cth-primary);
+}
+
+.cth__info-icon {
+  color: var(--cth-muted);
+  flex-shrink: 0;
+}
+
+.cth__avail-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2.5px rgba(34, 197, 94, 0.25);
+}
+
+.cth__info-link {
+  color: var(--cth-primary-light);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.18s ease;
+}
+
+.cth__info-link:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+.cth__info-text {
+  color: var(--cth-text-soft);
+  font-weight: 500;
+}
+
+.cth__info-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--cth-border);
+  flex-shrink: 0;
+}
+
+/* ── 9. RESPONSIVE ────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+  .cth {
+    padding: 72px 0 56px;
+  }
+
+  .cth__title {
+    font-size: clamp(1.875rem, 8vw, 2.5rem);
+  }
+
+  .cth__info-sep {
+    display: none;
+  }
+
+  .cth__info-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .cth {
+    padding: 64px 0 48px;
+  }
+}

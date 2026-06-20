@@ -157,13 +157,14 @@ export default function Contact() {
 
   if (submitted) {
     return (
-      <div className="pf-contact-success">
-        <div className="pf-contact-success__icon" aria-hidden="true">✓</div>
-        <h3>Message Sent!</h3>
-        <p>Thank you for reaching out. I'll get back to you within 24 hours.</p>
+      <div className="ctf-success">
+        <div className="ctf-success__icon" aria-hidden="true">✓</div>
+        <h3 className="ctf-success__title">Message Sent!</h3>
+        <p className="ctf-success__text">
+          Thank you for reaching out. I'll get back to you within 24 hours.
+        </p>
         <button
-          className="ws-btn-primary"
-          style={{ marginTop: '1.5rem' }}
+          className="ctf-success__btn"
           onClick={() => setSubmitted(false)}
         >
           Send Another Message
@@ -173,22 +174,23 @@ export default function Contact() {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} noValidate>
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="ctf">
+
       {globalError && (
-        <div role="alert" className="pf-form-error" style={{ marginBottom: '1rem' }}>{globalError}</div>
+        <div role="alert" className="ctf-global-error">{globalError}</div>
       )}
 
       {/* Name + Email row */}
-      <div className="pf-form-row">
-        <div className="pf-form-field">
-          <label className="pf-form-label" htmlFor="contact-name">
-            Full Name <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
+      <div className="ctf-row">
+        <div className="ctf-field">
+          <label className="ctf-label" htmlFor="contact-name">
+            Full Name <span className="ctf-required" aria-hidden="true">*</span>
           </label>
           <input
             id="contact-name"
             name="name"
             type="text"
-            className="pf-input"
+            className={`ctf-input${errors.name ? ' ctf-input--error' : ''}`}
             placeholder="Your full name"
             value={name}
             onChange={e => setName(e.target.value)}
@@ -197,18 +199,20 @@ export default function Contact() {
             aria-describedby={errors.name ? 'err-name' : undefined}
             aria-invalid={!!errors.name}
           />
-          {errors.name && <span id="err-name" className="pf-form-error" role="alert">{errors.name}</span>}
+          {errors.name && (
+            <span id="err-name" className="ctf-error" role="alert">{errors.name}</span>
+          )}
         </div>
 
-        <div className="pf-form-field">
-          <label className="pf-form-label" htmlFor="contact-email">
-            Email Address <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
+        <div className="ctf-field">
+          <label className="ctf-label" htmlFor="contact-email">
+            Email Address <span className="ctf-required" aria-hidden="true">*</span>
           </label>
           <input
             id="contact-email"
             name="email"
             type="email"
-            className="pf-input"
+            className={`ctf-input${errors.email ? ' ctf-input--error' : ''}`}
             placeholder="you@example.com"
             value={email}
             onChange={e => setEmail(e.target.value)}
@@ -217,18 +221,20 @@ export default function Contact() {
             aria-describedby={errors.email ? 'err-email' : undefined}
             aria-invalid={!!errors.email}
           />
-          {errors.email && <span id="err-email" className="pf-form-error" role="alert">{errors.email}</span>}
+          {errors.email && (
+            <span id="err-email" className="ctf-error" role="alert">{errors.email}</span>
+          )}
         </div>
       </div>
 
       {/* Subject */}
-      <div className="pf-form-field">
-        <label className="pf-form-label" htmlFor="contact-subject">Subject</label>
+      <div className="ctf-field">
+        <label className="ctf-label" htmlFor="contact-subject">Subject</label>
         <input
           id="contact-subject"
           name="subject"
           type="text"
-          className="pf-input"
+          className="ctf-input"
           placeholder="What's this about?"
           value={subject}
           onChange={e => setSubject(e.target.value)}
@@ -237,13 +243,13 @@ export default function Contact() {
       </div>
 
       {/* Project Type + Budget row */}
-      <div className="pf-form-row">
-        <div className="pf-form-field">
-          <label className="pf-form-label" htmlFor="contact-project-type">Project Type</label>
+      <div className="ctf-row">
+        <div className="ctf-field">
+          <label className="ctf-label" htmlFor="contact-project-type">Project Type</label>
           <select
             id="contact-project-type"
             name="project_type"
-            className="pf-form-select"
+            className="ctf-select"
             value={projectType}
             onChange={e => setProjectType(e.target.value)}
           >
@@ -254,12 +260,12 @@ export default function Contact() {
           </select>
         </div>
 
-        <div className="pf-form-field">
-          <label className="pf-form-label" htmlFor="contact-budget">Budget Range</label>
+        <div className="ctf-field">
+          <label className="ctf-label" htmlFor="contact-budget">Budget Range</label>
           <select
             id="contact-budget"
             name="budget_range"
-            className="pf-form-select"
+            className="ctf-select"
             value={budgetRange}
             onChange={e => setBudgetRange(e.target.value)}
           >
@@ -272,12 +278,12 @@ export default function Contact() {
       </div>
 
       {/* Timeline */}
-      <div className="pf-form-field">
-        <label className="pf-form-label" htmlFor="contact-timeline">Timeline</label>
+      <div className="ctf-field">
+        <label className="ctf-label" htmlFor="contact-timeline">Timeline</label>
         <select
           id="contact-timeline"
           name="timeline"
-          className="pf-form-select"
+          className="ctf-select"
           value={timeline}
           onChange={e => setTimeline(e.target.value)}
         >
@@ -289,14 +295,14 @@ export default function Contact() {
       </div>
 
       {/* Message */}
-      <div className="pf-form-field">
-        <label className="pf-form-label" htmlFor="contact-message">
-          Message <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
+      <div className="ctf-field">
+        <label className="ctf-label" htmlFor="contact-message">
+          Message <span className="ctf-required" aria-hidden="true">*</span>
         </label>
         <textarea
           id="contact-message"
           name="message"
-          className="pf-textarea"
+          className={`ctf-textarea${errors.message ? ' ctf-input--error' : ''}`}
           placeholder="Tell me about your project or idea…"
           value={message}
           onChange={e => setMessage(e.target.value)}
@@ -305,21 +311,23 @@ export default function Contact() {
           aria-describedby={errors.message ? 'err-message' : undefined}
           aria-invalid={!!errors.message}
         />
-        {errors.message && <span id="err-message" className="pf-form-error" role="alert">{errors.message}</span>}
+        {errors.message && (
+          <span id="err-message" className="ctf-error" role="alert">{errors.message}</span>
+        )}
       </div>
 
-      <div ref={turnstileRef} aria-label="Spam verification" style={{ marginBottom: '1.25rem' }} />
+      <div ref={turnstileRef} aria-label="Spam verification" className="ctf-turnstile" />
 
-      <div className="pf-form-submit">
+      <div className="ctf-submit">
         <button
           type="submit"
-          className="ws-btn-primary"
+          className="ctf-submit-btn"
           disabled={loading}
-          style={{ width: '100%', justifyContent: 'center' }}
         >
-          {loading ? 'Sending…' : 'Send Message'}
+          {loading ? 'Sending…' : 'Send Message →'}
         </button>
       </div>
+
     </form>
   );
 }
