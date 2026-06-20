@@ -143,18 +143,30 @@ export default function AdminCaseStudyFormPage() {
       const url    = isNew ? '/api/projects' : `/api/projects/${id}`;
       const method = isNew ? 'POST' : 'PUT';
 
+      const currentToken = localStorage.getItem('admin_token');
       const res = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${currentToken}`,
         },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || `Save failed (${res.status})`);
+        if (res.status === 401) {
+          navigate('/admin/login');
+          return;
+        }
+        let message = `Save failed (${res.status})`;
+        try {
+          const json = await res.json();
+          message = json.error ?? json.message ?? message;
+        } catch {
+          const text = await res.text();
+          if (text) message = text;
+        }
+        throw new Error(message);
       }
 
       setSuccess(isNew ? 'Case study created.' : 'Case study updated.');
