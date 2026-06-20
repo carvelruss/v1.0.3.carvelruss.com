@@ -22,7 +22,7 @@
 /* ── 2. SECTION WRAPPER ───────────────────────────────────── */
 .site-footer {
   background: var(--ft-bg);
-  padding: 0 0 48px;
+  padding: 48px 0 48px;
   font-family: var(--ft-font);
   -webkit-font-smoothing: antialiased;
 }
