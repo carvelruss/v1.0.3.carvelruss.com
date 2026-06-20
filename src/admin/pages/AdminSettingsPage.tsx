@@ -54,16 +54,16 @@ export default function AdminSettingsPage() {
 
   return (
     <AdminLayout pageTitle="Settings">
-      {error   && <div className="a-alert a-alert--error"   role="alert"  style={{ marginBottom: 16 }} onClick={() => setError('')}>{error}</div>}
-      {success && <div className="a-alert a-alert--success" role="status" style={{ marginBottom: 16 }} onClick={() => setSuccess('')}>{success}</div>}
+      {error   && <div className="a-alert a-alert--error"   role="alert"  onClick={() => setError('')}>{error}</div>}
+      {success && <div className="a-alert a-alert--success" role="status" onClick={() => setSuccess('')}>{success}</div>}
 
       {loading ? (
-        <p style={{ color: '#64748b', padding: '12px 0' }}>Loading settings…</p>
+        <p className="a-loading">Loading settings…</p>
       ) : (
         <form onSubmit={handleSave}>
           {/* Identity */}
           <div className="a-card" style={{ marginBottom: 20 }}>
-            <div className="a-section-head" style={{ marginBottom: 20 }}>
+            <div className="a-section-head">
               <span className="a-section-head__title">Identity</span>
             </div>
             <div className="a-form">
@@ -98,7 +98,7 @@ export default function AdminSettingsPage() {
 
           {/* Social Links */}
           <div className="a-card" style={{ marginBottom: 20 }}>
-            <div className="a-section-head" style={{ marginBottom: 20 }}>
+            <div className="a-section-head">
               <span className="a-section-head__title">Social Links</span>
             </div>
             <div className="a-form">
@@ -123,7 +123,7 @@ export default function AdminSettingsPage() {
 
           {/* Availability */}
           <div className="a-card" style={{ marginBottom: 24 }}>
-            <div className="a-section-head" style={{ marginBottom: 20 }}>
+            <div className="a-section-head">
               <span className="a-section-head__title">Availability</span>
             </div>
             <div className="a-form">
@@ -144,7 +144,7 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+          <div className="a-toolbar" style={{ justifyContent: 'flex-end' }}>
             <button type="submit" className="a-btn a-btn--primary" disabled={saving}>
               {saving ? 'Saving…' : 'Save Settings'}
             </button>
