@@ -80,22 +80,11 @@ export default function Header() {
           {/* Brand */}
           <Link to="/" className="sh__brand" onClick={close} aria-label="Home">
             <span className="sh__logo" aria-hidden="true">
-              {/* @ mark — matches the mockup's circular logo with white symbol */}
-              <svg
-                width="24" height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="4" />
-                <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94" />
-              </svg>
+              <span className="sh__logo-initials">CR</span>
             </span>
-            <span className="sh__brand-name">Your Name</span>
+            <span className="sh__brand-name">
+              Carvel Russ<span className="sh__brand-dot">.</span>
+            </span>
           </Link>
 
           {/* Desktop / Tablet Nav */}

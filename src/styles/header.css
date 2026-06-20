@@ -93,12 +93,24 @@
   box-shadow: 0 3px 12px rgba(91, 53, 245, 0.28);
 }
 
+.sh__logo-initials {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
 .sh__brand-name {
   font-size: 21px;
   font-weight: 700;
   color: var(--sh-text);
   letter-spacing: -0.5px;
   white-space: nowrap;
+}
+
+.sh__brand-dot {
+  color: var(--sh-primary);
 }
 
 /* ── 6. DESKTOP NAV ───────────────────────────────────────── */
