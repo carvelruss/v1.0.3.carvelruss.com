@@ -79,12 +79,12 @@
 .hs__container { position: relative; z-index: 1; }
 .hs__row       { min-height: 540px; }
 
-/* ── 5. CONTENT COL (right side on desktop) ───────────────── */
+/* ── 5. LEFT CONTENT COL ──────────────────────────────────── */
 .hs__content {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 32px;
+  padding-right: 32px;
 }
 
 /* ── 6. BADGE ─────────────────────────────────────────────── */
@@ -869,7 +869,7 @@
   .hs__content {
     align-items: center;
     text-align: center;
-    padding-left: 0;
+    padding-right: 0;
   }
 
   .hs__subtitle { max-width: 560px; }
