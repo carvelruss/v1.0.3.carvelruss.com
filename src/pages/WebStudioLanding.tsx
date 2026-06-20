@@ -1,4 +1,4 @@
-import WSHeader from '../components/webstudio/WSHeader';
+import Header from '../components/layout/Header';
 import WSHero from '../components/webstudio/WSHero';
 import WSCaseStudies from '../components/webstudio/WSCaseStudies';
 import WSFooter from '../components/webstudio/WSFooter';
@@ -13,7 +13,7 @@ const VALUES = [
 export default function WebStudioLanding() {
   return (
     <div className="ws-page">
-      <WSHeader />
+      <Header />
       <main id="ws-main" tabIndex={-1}>
         <WSHero />
         <WSCaseStudies />

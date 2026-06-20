@@ -1,0 +1,349 @@
+/* ============================================================
+   SITE HEADER — floating card design
+   Matches the portfolio UI mockup exactly.
+   All classes prefixed sh- / sh__ to avoid collisions.
+   ============================================================ */
+
+/* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
+:root {
+  --sh-primary:       #5b35f5;
+  --sh-primary-dark:  #4525d8;
+  --sh-primary-soft:  rgba(91, 53, 245, 0.09);
+  --sh-text:          #0f172a;
+  --sh-muted:         #64748b;
+  --sh-bg:            #ffffff;
+  --sh-page-bg:       #f4f5fb;
+  --sh-border:        rgba(15, 23, 42, 0.07);
+  --sh-shadow:        0 8px 48px rgba(15, 23, 42, 0.11);
+  --sh-shadow-sm:     0 4px 24px rgba(15, 23, 42, 0.10);
+  --sh-btn-shadow:    0 8px 24px rgba(91, 53, 245, 0.30);
+  --sh-ham-shadow:    0 2px 14px rgba(15, 23, 42, 0.12);
+  --sh-radius:        22px;
+  --sh-btn-radius:    13px;
+  --sh-ham-radius:    50%;
+  --sh-font:          -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── 2. SHELL — sticky outer wrapper with gray background ─── */
+.sh-shell {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--sh-page-bg);
+  padding: 14px 20px 0;
+  font-family: var(--sh-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.sh-shell *,
+.sh-shell *::before,
+.sh-shell *::after {
+  box-sizing: border-box;
+}
+
+/* ── 3. HEADER CARD ───────────────────────────────────────── */
+.sh {
+  background: var(--sh-bg);
+  border-radius: var(--sh-radius);
+  box-shadow: var(--sh-shadow);
+  max-width: 1380px;
+  margin: 0 auto;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.sh--scrolled {
+  box-shadow: var(--sh-shadow-sm);
+}
+
+/* ── 4. TOP ROW ────────────────────────────────────────────── */
+.sh__inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 44px;
+  height: 92px;
+}
+
+/* ── 5. BRAND ──────────────────────────────────────────────── */
+.sh__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.sh__logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #7c5cf8 0%, var(--sh-primary) 55%, var(--sh-primary-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(91, 53, 245, 0.30);
+}
+
+.sh__brand-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--sh-text);
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+/* ── 6. DESKTOP NAV ────────────────────────────────────────── */
+.sh__nav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex: 1;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sh__nav-link {
+  position: relative;
+  font-size: 16.5px;
+  font-weight: 500;
+  color: var(--sh-muted);
+  text-decoration: none;
+  padding-bottom: 4px;
+  white-space: nowrap;
+  letter-spacing: -0.1px;
+  transition: color 0.2s ease;
+}
+
+/* Active underline */
+.sh__nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 72%;
+  height: 2.5px;
+  background: var(--sh-primary);
+  border-radius: 2px;
+  transform-origin: center;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sh__nav-link:hover {
+  color: var(--sh-text);
+}
+
+.sh__nav-link.is-active {
+  color: var(--sh-primary);
+  font-weight: 600;
+}
+
+.sh__nav-link.is-active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.sh__nav-link:focus-visible {
+  outline: 2px solid rgba(91, 53, 245, 0.5);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* ── 7. END ZONE (CTA + Hamburger) ────────────────────────── */
+.sh__end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* ── 8. CTA BUTTON ─────────────────────────────────────────── */
+.sh__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #7558f8 0%, var(--sh-primary) 50%, var(--sh-primary-dark) 100%);
+  color: #ffffff !important;
+  text-decoration: none;
+  font-size: 15.5px;
+  font-weight: 600;
+  padding: 15px 28px;
+  border-radius: var(--sh-btn-radius);
+  box-shadow: var(--sh-btn-shadow);
+  white-space: nowrap;
+  letter-spacing: -0.1px;
+  transition: box-shadow 0.22s ease, transform 0.18s ease;
+}
+
+.sh__cta:hover {
+  color: #ffffff !important;
+  box-shadow: 0 12px 36px rgba(91, 53, 245, 0.42);
+  transform: translateY(-1px);
+}
+
+.sh__cta:focus-visible {
+  outline: 3px solid rgba(91, 53, 245, 0.5);
+  outline-offset: 3px;
+}
+
+.sh__cta-icon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.sh__cta:hover .sh__cta-icon {
+  transform: translateX(3px);
+}
+
+/* ── 9. HAMBURGER BUTTON ───────────────────────────────────── */
+.sh__ham {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--sh-ham-radius);
+  border: none;
+  background: var(--sh-bg);
+  box-shadow: var(--sh-ham-shadow);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--sh-text);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: box-shadow 0.2s ease, background 0.15s;
+}
+
+.sh__ham:hover {
+  box-shadow: 0 4px 22px rgba(15, 23, 42, 0.18);
+  background: #f8f9fc;
+}
+
+.sh__ham:focus-visible {
+  outline: 3px solid rgba(91, 53, 245, 0.5);
+  outline-offset: 2px;
+}
+
+/* ── 10. MOBILE PANEL ──────────────────────────────────────── */
+.sh__mobile {
+  display: none;
+  flex-direction: column;
+  border-top: 1px solid var(--sh-border);
+  padding: 0 20px 20px;
+}
+
+.sh__mobile.is-open {
+  display: flex;
+  animation: shSlideDown 0.22s ease;
+}
+
+@keyframes shSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile nav list */
+.sh__mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 0 8px;
+}
+
+/* Mobile nav links */
+.sh__mobile-link {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--sh-text);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sh__mobile-link:hover {
+  background: var(--sh-primary-soft);
+  color: var(--sh-primary);
+}
+
+.sh__mobile-link.is-active {
+  background: rgba(91, 53, 245, 0.10);
+  color: var(--sh-primary);
+  font-weight: 600;
+}
+
+.sh__mobile-link:focus-visible {
+  outline: 2px solid rgba(91, 53, 245, 0.5);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+/* Mobile full-width CTA */
+.sh__mobile-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6px;
+  background: linear-gradient(135deg, #7558f8 0%, var(--sh-primary) 50%, var(--sh-primary-dark) 100%);
+  color: #ffffff !important;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: var(--sh-btn-shadow);
+  letter-spacing: -0.1px;
+  transition: box-shadow 0.22s ease, transform 0.18s ease;
+}
+
+.sh__mobile-cta:hover {
+  color: #ffffff !important;
+  box-shadow: 0 12px 36px rgba(91, 53, 245, 0.42);
+  transform: translateY(-1px);
+}
+
+/* ── 11. RESPONSIVE BREAKPOINTS ────────────────────────────── */
+
+/* Tablet: 768–1199px
+   Nav links visible, hamburger appears on far right */
+@media (max-width: 1199px) {
+  .sh__inner   { padding: 0 28px; height: 82px; gap: 16px; }
+  .sh__nav     { gap: 26px; }
+  .sh__nav-link { font-size: 15px; }
+  .sh__ham     { display: flex; }
+  .sh__cta     { padding: 13px 22px; font-size: 15px; }
+  .sh__cta-icon { display: none; } /* arrow hidden on tablet */
+}
+
+/* Small tablet / large mobile threshold */
+@media (max-width: 900px) {
+  .sh__nav { gap: 18px; }
+  .sh__nav-link { font-size: 14.5px; }
+  .sh__cta  { padding: 12px 18px; font-size: 14.5px; }
+}
+
+/* Mobile: ≤767px
+   Nav completely hidden; CTA + hamburger on right */
+@media (max-width: 767px) {
+  .sh-shell   { padding: 10px 14px 0; }
+  .sh         { border-radius: 18px; }
+  .sh__inner  { padding: 0 20px; height: 72px; gap: 10px; }
+  .sh__nav    { display: none; }
+  .sh__cta    { padding: 13px 18px; font-size: 14px; border-radius: 11px; }
+  .sh__cta-icon { display: none; }
+  .sh__ham    { width: 50px; height: 50px; }
+}
+
+/* Very small: ≤400px */
+@media (max-width: 400px) {
+  .sh-shell          { padding: 8px 10px 0; }
+  .sh                { border-radius: 16px; }
+  .sh__inner         { padding: 0 14px; height: 68px; gap: 8px; }
+  .sh__logo          { width: 42px; height: 42px; }
+  .sh__brand-name    { font-size: 18px; }
+  .sh__cta           { padding: 11px 14px; font-size: 13px; }
+  .sh__ham           { width: 46px; height: 46px; }
+}

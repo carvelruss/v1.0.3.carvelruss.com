@@ -33,7 +33,7 @@ import './styles/public.css';
 import './styles/webStudio.css';
 import './styles/main.scss';
 
-import WSHeader from './components/webstudio/WSHeader';
+import Header   from './components/layout/Header';
 import WSFooter from './components/webstudio/WSFooter';
 
 import ProjectsPage    from './pages/ProjectsPage';
@@ -46,14 +46,11 @@ import SkillsPage      from './pages/SkillsPage';
 import AdminApp        from './admin/AdminApp';
 import WebStudioLanding from './pages/WebStudioLanding';
 
-// Pages that use WSHeader share this offset so content clears the fixed navbar
-const NAV_OFFSET: React.CSSProperties = { paddingTop: '72px' };
-
 function ProjectsLayout() {
   return (
     <div className="ws-page">
-      <WSHeader />
-      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
         <ProjectsPage />
       </main>
       <WSFooter />
@@ -64,8 +61,8 @@ function ProjectsLayout() {
 function BlogListLayout() {
   return (
     <div className="ws-page">
-      <WSHeader />
-      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
         <BlogList />
       </main>
       <WSFooter />
@@ -76,8 +73,8 @@ function BlogListLayout() {
 function BlogPostLayout() {
   return (
     <div className="ws-page">
-      <WSHeader />
-      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
         <BlogSingle />
       </main>
       <WSFooter />
@@ -88,8 +85,8 @@ function BlogPostLayout() {
 function SkillsLayout() {
   return (
     <div className="ws-page">
-      <WSHeader />
-      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
         <SkillsPage />
       </main>
       <WSFooter />
@@ -100,8 +97,8 @@ function SkillsLayout() {
 function ContactLayout() {
   return (
     <div className="ws-page">
-      <WSHeader />
-      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
         <ContactPage />
       </main>
       <WSFooter />
@@ -112,8 +109,8 @@ function ContactLayout() {
 function ThankYouLayout() {
   return (
     <div className="ws-page">
-      <WSHeader />
-      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
         <ThankYou />
       </main>
       <WSFooter />
@@ -124,8 +121,8 @@ function ThankYouLayout() {
 function CaseStudyLayout() {
   return (
     <div className="ws-page">
-      <WSHeader />
-      <main id="main-content" tabIndex={-1} style={NAV_OFFSET}>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
         <CaseStudyDetail />
       </main>
       <WSFooter />
