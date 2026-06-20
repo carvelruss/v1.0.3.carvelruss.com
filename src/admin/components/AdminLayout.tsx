@@ -65,11 +65,8 @@ export default function AdminLayout({
             onClick={() => handleNav('/admin/dashboard')}
             aria-label="Go to admin dashboard"
           >
-            <img
-              src="/logos/carvelruss-logo.png"
-              alt="Carvel Russ"
-              className="admin-sidebar__brand-logo"
-            />
+            <div className="admin-sidebar__brand-mark" aria-hidden="true">CR</div>
+            <span className="admin-sidebar__brand-name">Carvel Russ.</span>
             <span className="admin-sidebar__brand-admin">Admin</span>
           </button>
 
