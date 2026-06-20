@@ -91,7 +91,7 @@ export default function AdminCaseStudyFormPage() {
           live_url:        String(data.live_url        ?? ''),
           github_url:      String(data.github_url      ?? ''),
         });
-        setSlugTouched(true); // Editing: slug is already set, don't auto-regenerate
+        setSlugTouched(true);
       })
       .catch(err => setError(err instanceof Error ? err.message : 'Failed to load'))
       .finally(() => setLoading(false));
@@ -125,23 +125,23 @@ export default function AdminCaseStudyFormPage() {
     try {
       const payload = {
         ...form,
-        slug: form.slug || toSlug(form.title),
+        slug:            form.slug || toSlug(form.title),
         title:           form.title.trim(),
-        excerpt:         form.excerpt.trim() || null,
-        cover_url:       form.cover_url.trim() || null,
-        project_type:    form.project_type || null,
-        role:            form.role.trim() || null,
-        tools:           form.tools.trim() || null,
-        timeline:        form.timeline.trim() || null,
-        client_name:     form.client_name.trim() || null,
-        seo_title:       form.seo_title.trim() || null,
+        excerpt:         form.excerpt.trim()         || null,
+        cover_url:       form.cover_url.trim()       || null,
+        project_type:    form.project_type           || null,
+        role:            form.role.trim()            || null,
+        tools:           form.tools.trim()           || null,
+        timeline:        form.timeline.trim()        || null,
+        client_name:     form.client_name.trim()     || null,
+        seo_title:       form.seo_title.trim()       || null,
         seo_description: form.seo_description.trim() || null,
-        live_url:        form.live_url.trim() || null,
-        github_url:      form.github_url.trim() || null,
+        live_url:        form.live_url.trim()        || null,
+        github_url:      form.github_url.trim()      || null,
       };
 
-      const url     = isNew ? '/api/projects' : `/api/projects/${id}`;
-      const method  = isNew ? 'POST' : 'PUT';
+      const url    = isNew ? '/api/projects' : `/api/projects/${id}`;
+      const method = isNew ? 'POST' : 'PUT';
 
       const res = await fetch(url, {
         method,
@@ -180,7 +180,7 @@ export default function AdminCaseStudyFormPage() {
       headerAction={
         <button
           type="button"
-          className="a-btn a-btn--ghost"
+          className="a-btn a-btn--ghost a-btn--sm"
           onClick={() => navigate(-1)}
         >
           Cancel
@@ -189,21 +189,14 @@ export default function AdminCaseStudyFormPage() {
     >
       <form className="a-form" onSubmit={handleSubmit} noValidate>
 
-        {error && (
-          <div className="a-alert a-alert--error" role="alert" style={{ marginBottom: '1rem' }}>
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="a-alert a-alert--success" role="status" style={{ marginBottom: '1rem' }}>
-            {success}
-          </div>
-        )}
+        {error   && <div className="a-alert a-alert--error"   role="alert"  >{error}</div>}
+        {success && <div className="a-alert a-alert--success" role="status">{success}</div>}
 
         {/* ── Cover image ── */}
-        <div className="a-card" style={{ marginBottom: '1.25rem' }}>
-          <div className="a-field" style={{ marginBottom: '1rem' }}>
-            <label className="a-field__label" htmlFor="cs-cover-url">Cover Image URL</label>
+        <div className="a-card">
+          <div className="a-section-label">Cover Image</div>
+          <div className="a-field">
+            <label className="a-field__label" htmlFor="cs-cover-url">Image URL</label>
             <input
               id="cs-cover-url"
               className="a-input"
@@ -240,11 +233,14 @@ export default function AdminCaseStudyFormPage() {
         <div className="a-form-two-col">
 
           {/* ── LEFT: Main fields ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="a-form-col">
+
             <div className="a-card">
+              <div className="a-section-label">Content</div>
+
               <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-title">
-                  Title <span style={{ color: 'var(--a-danger, #ef4444)' }}>*</span>
+                  Title <span className="req">*</span>
                 </label>
                 <input
                   id="cs-title"
@@ -286,7 +282,7 @@ export default function AdminCaseStudyFormPage() {
                 <textarea
                   id="cs-content"
                   className="a-textarea"
-                  rows={10}
+                  rows={14}
                   value={form.content}
                   onChange={e => set('content', e.target.value)}
                   placeholder="Write your full case study here…"
@@ -296,9 +292,8 @@ export default function AdminCaseStudyFormPage() {
             </div>
 
             <div className="a-card">
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.07em', color: '#64748b', marginBottom: '0.75rem' }}>
-                Links
-              </div>
+              <div className="a-section-label">Links</div>
+
               <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-live-url">Live URL</label>
                 <input
@@ -310,7 +305,8 @@ export default function AdminCaseStudyFormPage() {
                   placeholder="https://…"
                 />
               </div>
-              <div className="a-field" style={{ marginBottom: 0 }}>
+
+              <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-github-url">GitHub URL</label>
                 <input
                   id="cs-github-url"
@@ -322,14 +318,14 @@ export default function AdminCaseStudyFormPage() {
                 />
               </div>
             </div>
+
           </div>
 
           {/* ── RIGHT: Sidebar ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="a-form-col">
+
             <div className="a-card">
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.07em', color: '#64748b', marginBottom: '0.75rem' }}>
-                Project Details
-              </div>
+              <div className="a-section-label">Project Details</div>
 
               <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-project-type">Project Type</label>
@@ -383,7 +379,7 @@ export default function AdminCaseStudyFormPage() {
                 />
               </div>
 
-              <div className="a-field" style={{ marginBottom: 0 }}>
+              <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-client">Client</label>
                 <input
                   id="cs-client"
@@ -396,9 +392,7 @@ export default function AdminCaseStudyFormPage() {
             </div>
 
             <div className="a-card">
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.07em', color: '#64748b', marginBottom: '0.75rem' }}>
-                Visibility
-              </div>
+              <div className="a-section-label">Visibility</div>
 
               <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-status">Status</label>
@@ -413,7 +407,7 @@ export default function AdminCaseStudyFormPage() {
                 </select>
               </div>
 
-              <div className="a-toggle-wrap" style={{ marginBottom: 0 }}>
+              <div className="a-toggle-wrap">
                 <label className="a-toggle">
                   <input
                     type="checkbox"
@@ -427,9 +421,7 @@ export default function AdminCaseStudyFormPage() {
             </div>
 
             <div className="a-card">
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.07em', color: '#64748b', marginBottom: '0.75rem' }}>
-                SEO
-              </div>
+              <div className="a-section-label">SEO</div>
 
               <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-seo-title">SEO Title</label>
@@ -442,23 +434,24 @@ export default function AdminCaseStudyFormPage() {
                 />
               </div>
 
-              <div className="a-field" style={{ marginBottom: 0 }}>
+              <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-seo-desc">SEO Description</label>
                 <textarea
                   id="cs-seo-desc"
                   className="a-textarea"
-                  rows={2}
+                  rows={3}
                   value={form.seo_description}
                   onChange={e => set('seo_description', e.target.value)}
-                  placeholder="Meta description for search results (150-160 chars)"
+                  placeholder="Meta description for search results (150–160 chars)"
                 />
               </div>
             </div>
+
           </div>
         </div>
 
         {/* ── Bottom actions ── */}
-        <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+        <div className="a-form-actions">
           <button
             type="button"
             className="a-btn a-btn--ghost"
