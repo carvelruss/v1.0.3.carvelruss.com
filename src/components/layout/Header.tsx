@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { label: 'Case Studies', to: '/case-studies' },
   { label: 'Blogs',        to: '/blogs'        },
   { label: 'Skills',       to: '/skills'       },
-  { label: 'Contact',      to: '/contact'      },
 ] as const;
 
 export default function Header() {
