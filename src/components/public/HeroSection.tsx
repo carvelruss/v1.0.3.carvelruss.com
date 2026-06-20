@@ -341,28 +341,28 @@ export default function HeroSection() {
 
         </div>{/* end .row */}
 
-        {/* ────────── BOTTOM MARQUEE ────────── */}
-        <div className="hs__bottom">
-          <p className="hs__marquee-label">Tools I Work With</p>
-          <div className="hs__marquee" aria-label="Tools I work with">
-            {/* Duplicated for seamless infinite loop */}
-            <div className="hs__marquee-track" aria-hidden="true">
-              {[...TOOLS, ...TOOLS].map((tool, i) => (
-                <div key={i} className="hs__marquee-item">
-                  <span
-                    className="hs__marquee-icon"
-                    style={{ background: tool.bg, color: tool.color }}
-                  >
-                    {tool.abbr}
-                  </span>
-                  <span className="hs__marquee-name">{tool.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+      </div>{/* end .container */}
 
+      {/* ────────── BOTTOM MARQUEE (full-width) ────────── */}
+      <div className="hs__bottom">
+        <p className="hs__marquee-label">Tools I Work With</p>
+        <div className="hs__marquee" aria-label="Tools I work with">
+          <div className="hs__marquee-track" aria-hidden="true">
+            {[...TOOLS, ...TOOLS].map((tool, i) => (
+              <div key={i} className="hs__marquee-item">
+                <span
+                  className="hs__marquee-icon"
+                  style={{ background: tool.bg, color: tool.color }}
+                >
+                  {tool.abbr}
+                </span>
+                <span className="hs__marquee-name">{tool.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
     </section>
   );
 }
