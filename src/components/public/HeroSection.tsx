@@ -46,10 +46,15 @@ const FEATURES: FeatureItem[] = [
 ];
 
 const TOOLS: ToolItem[] = [
-  { name: 'Figma',     abbr: 'Fig', color: '#F24E1E', bg: '#fff0ed' },
-  { name: 'Adobe XD',  abbr: 'Xd',  color: '#FF61F6', bg: '#fff0fe' },
-  { name: 'Sketch',    abbr: 'Sk',  color: '#F7B500', bg: '#fffaed' },
-  { name: 'Photoshop', abbr: 'Ps',  color: '#31A8FF', bg: '#edf8ff' },
+  { name: 'Figma',         abbr: 'Fg', color: '#F24E1E', bg: '#fff0ed' },
+  { name: 'VSCode',        abbr: 'VS', color: '#007ACC', bg: '#e8f4ff' },
+  { name: 'ReactJS',       abbr: 'Rx', color: '#0d9ab5', bg: '#e8faff' },
+  { name: 'TypeScript',    abbr: 'TS', color: '#3178C6', bg: '#eef3fc' },
+  { name: 'Bootstrap',     abbr: 'Bs', color: '#7952B3', bg: '#f3eeff' },
+  { name: 'Vanilla JS',    abbr: 'JS', color: '#a08800', bg: '#fffde8' },
+  { name: 'HTML',          abbr: 'H5', color: '#E44D26', bg: '#fff1ee' },
+  { name: 'CSS',           abbr: 'C3', color: '#264DE4', bg: '#eef0ff' },
+  { name: 'WordPress CMS', abbr: 'WP', color: '#21759B', bg: '#e8f4fa' },
 ];
 
 const SCHEDULE: ScheduleItem[] = [
