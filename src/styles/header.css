@@ -1,17 +1,17 @@
-/* ============================================================
+﻿/* ============================================================
    SITE HEADER — full-width flat design, sticky on scroll
    ============================================================ */
 
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
 :root {
-  --sh-primary:      #5b35f5;
-  --sh-primary-dark: #4525d8;
-  --sh-primary-soft: rgba(91, 53, 245, 0.09);
+  --sh-primary:      #0D215A;
+  --sh-primary-dark: #071440;
+  --sh-primary-soft: rgba(13, 33, 90, 0.09);
   --sh-text:         #0f172a;
   --sh-muted:        #64748b;
   --sh-bg:           #ffffff;
   --sh-border:       rgba(15, 23, 42, 0.08);
-  --sh-btn-shadow:   0 8px 24px rgba(91, 53, 245, 0.30);
+  --sh-btn-shadow:   0 8px 24px rgba(13, 33, 90, 0.30);
   --sh-ham-shadow:   0 2px 14px rgba(15, 23, 42, 0.12);
   --sh-btn-radius:   13px;
   --sh-font:         -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -85,12 +85,12 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #7c5cf8 0%, var(--sh-primary) 55%, var(--sh-primary-dark) 100%);
+  background: linear-gradient(145deg, #1a4a9e 0%, var(--sh-primary) 55%, var(--sh-primary-dark) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 3px 12px rgba(91, 53, 245, 0.28);
+  box-shadow: 0 3px 12px rgba(13, 33, 90, 0.28);
 }
 
 .sh__brand-name {
@@ -163,7 +163,7 @@
 }
 
 .sh__nav-link:focus-visible {
-  outline: 2px solid rgba(91, 53, 245, 0.5);
+  outline: 2px solid rgba(13, 33, 90, 0.5);
   outline-offset: 4px;
   border-radius: 4px;
 }
@@ -181,7 +181,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #7558f8 0%, var(--sh-primary) 50%, var(--sh-primary-dark) 100%);
+  background: linear-gradient(135deg, #1a4a9e 0%, var(--sh-primary) 50%, var(--sh-primary-dark) 100%);
   color: #ffffff !important;
   text-decoration: none;
   font-size: 15.5px;
@@ -196,12 +196,12 @@
 
 .sh__cta:hover {
   color: #ffffff !important;
-  box-shadow: 0 12px 36px rgba(91, 53, 245, 0.42);
+  box-shadow: 0 12px 36px rgba(13, 33, 90, 0.42);
   transform: translateY(-1px);
 }
 
 .sh__cta:focus-visible {
-  outline: 3px solid rgba(91, 53, 245, 0.5);
+  outline: 3px solid rgba(13, 33, 90, 0.5);
   outline-offset: 3px;
 }
 
@@ -239,7 +239,7 @@
 .sh__ham:active { background: var(--sh-bg); }
 
 .sh__ham:focus-visible {
-  outline: 3px solid rgba(91, 53, 245, 0.5);
+  outline: 3px solid rgba(13, 33, 90, 0.5);
   outline-offset: 2px;
 }
 
@@ -287,13 +287,13 @@
 }
 
 .sh__mobile-link.is-active {
-  background: rgba(91, 53, 245, 0.09);
+  background: rgba(13, 33, 90, 0.09);
   color: var(--sh-primary);
   font-weight: 600;
 }
 
 .sh__mobile-link:focus-visible {
-  outline: 2px solid rgba(91, 53, 245, 0.5);
+  outline: 2px solid rgba(13, 33, 90, 0.5);
   outline-offset: 2px;
   border-radius: 10px;
 }

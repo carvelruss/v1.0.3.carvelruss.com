@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    PORTFOLIO PUBLIC SITE — design token + component styles
    Matches the attached UI mockup exactly.
    Prefix: pf- for new, ws- kept for backward compat
@@ -7,11 +7,11 @@
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
 :root {
   /* Brand */
-  --pf-primary:        #6366f1;
-  --pf-primary-dark:   #4f46e5;
-  --pf-primary-light:  #818cf8;
-  --pf-primary-soft:   #eef2ff;
-  --pf-primary-border: #c7d2fe;
+  --pf-primary:        #0D215A;
+  --pf-primary-dark:   #071440;
+  --pf-primary-light:  #3a6abf;
+  --pf-primary-soft:   #e8edf7;
+  --pf-primary-border: #c0d0ea;
 
   /* Background */
   --pf-bg:        #ffffff;
@@ -450,7 +450,7 @@ p { margin: 0; }
 .pf-hero__title em {
   font-style: normal;
   color: var(--pf-primary);
-  background: linear-gradient(135deg, var(--pf-primary) 0%, #818cf8 100%);
+  background: linear-gradient(135deg, var(--pf-primary) 0%, #3a6abf 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -758,7 +758,7 @@ p { margin: 0; }
 .pf-cs-card__cover-fallback {
   width: 100%;
   aspect-ratio: 16/9;
-  background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+  background: linear-gradient(135deg, #0D215A 0%, #3a6abf 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1758,7 +1758,7 @@ p { margin: 0; }
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--pf-primary) 0%, #818cf8 100%);
+  background: linear-gradient(135deg, var(--pf-primary) 0%, #3a6abf 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

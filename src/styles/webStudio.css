@@ -1,4 +1,4 @@
-/* =====================================================
+﻿/* =====================================================
    Premium Web Studio Landing — Complete Redesign
    Apple-inspired luxury aesthetic with sophisticated design tokens
    ===================================================== */
@@ -63,9 +63,9 @@
   --ws-primary-light: #f5f5f7;
 
   /* Accent Colors - Premium Violet */
-  --ws-violet:        #7c3aed;
+  --ws-violet:        #1a4a9e;
   --ws-violet-dark:   #5b21b6;
-  --ws-violet-light:  #ede9fe;
+  --ws-violet-light:  #dde6f2;
 
   /* Secondary Accent - Blue */
   --ws-blue:          #3b82f6;
@@ -89,8 +89,8 @@
   --ws-info:          #3b82f6;
 
   /* Premium Gradients */
-  --ws-gradient-primary: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
-  --ws-gradient-secondary: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
+  --ws-gradient-primary: linear-gradient(135deg, #1a4a9e 0%, #3a6abf 50%, #3a6abf 100%);
+  --ws-gradient-secondary: linear-gradient(135deg, #3b82f6 0%, #0D215A 50%, #3a6abf 100%);
   --ws-gradient-subtle: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 100%);
   --ws-gradient-glow: radial-gradient(ellipse at center, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
 
@@ -773,7 +773,7 @@
 .ws-form-card .form-control,
 .ws-form-card textarea.form-control {
   border-radius: .75rem;
-  border: 1.5px solid #c7d2fe;
+  border: 1.5px solid #c0d0ea;
   background: #fff;
   padding: .75rem 1rem;
   font-size: .9375rem;
@@ -1243,7 +1243,7 @@
   font-size: .8125rem;
   transition: background .2s, opacity .2s;
 }
-.ws-proj-link--primary:hover { background: #ddd6fe; opacity: 1; text-decoration: none; }
+.ws-proj-link--primary:hover { background: #c5d5ea; opacity: 1; text-decoration: none; }
 
 /* ── Blog hero ─────────────────────────────────────── */
 .ws-blog-hero {
