@@ -78,7 +78,7 @@ export default function HeroSection() {
         <div className="row align-items-center hs__row">
 
           {/* ────────── LEFT: CONTENT ────────── */}
-          <div className="col-lg-5 hs__content">
+          <div className="col-lg-7 hs__content">
 
             {/* Badge */}
             <div className="hs__badge">
@@ -125,7 +125,7 @@ export default function HeroSection() {
           </div>
 
           {/* ────────── RIGHT: VISUAL ────────── */}
-          <div className="col-lg-7 hs__visual">
+          <div className="col-lg-5 hs__visual">
             <div className="hs__visual-wrap" aria-hidden="true">
 
               {/* Soft purple orb behind cards */}
