@@ -86,11 +86,13 @@
   display: flex;
   align-items: center;
   gap: .75rem;
-  padding: 1.125rem 1.125rem 1rem;
-  margin-bottom: .5rem;
+  padding: 0 1.125rem;
+  height: var(--adm-topbar-h);
+  flex-shrink: 0;
   text-align: left;
   background: var(--adm-surface);
   border: none;
+  border-bottom: 1px solid var(--adm-border);
 }
 
 .admin-sidebar__brand-icon {
