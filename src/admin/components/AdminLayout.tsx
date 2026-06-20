@@ -28,10 +28,12 @@ export default function AdminLayout({
   const { logout } = useAuth();
 
   const navItems: NavItem[] = [
-    { icon: '📊', label: 'Dashboard', path: '/admin/dashboard' },
-    { icon: '🗂', label: 'Case Studies', path: '/admin/projects' },
-    { icon: '✏️', label: 'Blog Posts', path: '/admin/posts' },
-    { icon: '📩', label: 'Inbox', path: '/admin/inbox', badgeCount: unreadInquiries },
+    { icon: '📊', label: 'Dashboard',   path: '/admin/dashboard' },
+    { icon: '🗂',  label: 'Case Studies', path: '/admin/projects' },
+    { icon: '✏️', label: 'Blog Posts',  path: '/admin/posts' },
+    { icon: '📩', label: 'Inbox',       path: '/admin/inbox', badgeCount: unreadInquiries },
+    { icon: '🖼',  label: 'Media',       path: '/admin/media' },
+    { icon: '⚙️', label: 'Settings',    path: '/admin/settings' },
   ];
 
   const handleNav = (path: string) => {
@@ -67,9 +69,9 @@ export default function AdminLayout({
             {navItems.map(item => (
               <button
                 key={item.path}
-                className={`admin-sidebar__nav-item${location.pathname === item.path ? ' active' : ''}`}
+                className={`admin-sidebar__nav-item${location.pathname.startsWith(item.path) ? ' active' : ''}`}
                 onClick={() => handleNav(item.path)}
-                aria-current={location.pathname === item.path ? 'page' : undefined}
+                aria-current={location.pathname.startsWith(item.path) ? 'page' : undefined}
               >
                 <span className="admin-sidebar__nav-item__icon" aria-hidden="true">{item.icon}</span>
                 {item.label}
