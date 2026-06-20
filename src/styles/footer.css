@@ -47,7 +47,7 @@
   border-radius: var(--ft-radius);
   box-shadow: var(--ft-shadow);
   overflow: hidden;
-  padding: 52px;
+  padding: 52px 52px 0;
 }
 
 /* ── 5. MAIN GRID ─────────────────────────────────────────── */
@@ -285,7 +285,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 24px 0 0;
+  padding: 24px 0;
 }
 
 .footer-copyright,
@@ -305,7 +305,7 @@
 /* Tablet */
 @media (max-width: 991.98px) {
   .footer-card {
-    padding: 40px;
+    padding: 40px 40px 0;
   }
 
   .footer-main {
@@ -367,7 +367,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
-    padding: 20px 0 0;
+    padding: 20px 0;
   }
 
   .footer-built-with { text-align: left; }
