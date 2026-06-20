@@ -28,12 +28,12 @@ export default function AdminLayout({
   const { logout } = useAuth();
 
   const navItems: NavItem[] = [
-    { icon: '📊', label: 'Dashboard',   path: '/admin/dashboard' },
+    { icon: '⊞',  label: 'Dashboard',    path: '/admin/dashboard' },
     { icon: '🗂',  label: 'Case Studies', path: '/admin/projects' },
-    { icon: '✏️', label: 'Blog Posts',  path: '/admin/posts' },
-    { icon: '📩', label: 'Inbox',       path: '/admin/inbox', badgeCount: unreadInquiries },
-    { icon: '🖼',  label: 'Media',       path: '/admin/media' },
-    { icon: '⚙️', label: 'Settings',    path: '/admin/settings' },
+    { icon: '✏️', label: 'Blogs',        path: '/admin/posts' },
+    { icon: '📩', label: 'Inquiries',    path: '/admin/inbox', badgeCount: unreadInquiries },
+    { icon: '🖼',  label: 'Media',        path: '/admin/media' },
+    { icon: '⚙️', label: 'Settings',     path: '/admin/settings' },
   ];
 
   const handleNav = (path: string) => {
@@ -85,6 +85,14 @@ export default function AdminLayout({
           </nav>
 
           <div className="admin-sidebar__footer">
+            <button
+              className="admin-sidebar__nav-item"
+              onClick={() => window.open('/', '_blank')}
+              aria-label="View site in new tab"
+            >
+              <span className="admin-sidebar__nav-item__icon" aria-hidden="true">↗</span>
+              View Site
+            </button>
             <div className="admin-sidebar__user">
               <div className="admin-sidebar__user-avatar" aria-hidden="true">A</div>
               <span className="admin-sidebar__user-name">Admin</span>
