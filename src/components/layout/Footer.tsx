@@ -98,10 +98,10 @@ export default function Footer() {
               <ul className="footer-contact-list" role="list">
                 <li className="footer-contact-item">
                   <a
-                    href="mailto:development@astraresults.com"
+                    href="mailto:hello@carvelruss.com"
                     className="footer-contact-link"
                   >
-                    development@astraresults.com
+                    hello@carvelruss.com
                   </a>
                 </li>
                 <li className="footer-contact-item">
