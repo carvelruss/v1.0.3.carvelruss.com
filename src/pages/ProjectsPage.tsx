@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import type { Project } from '../types';
+import CaseStudiesHero from '../components/public/CaseStudiesHero';
 
 const GRADIENTS = [
   'linear-gradient(135deg,#6366f1 0%,#818cf8 100%)',
@@ -89,18 +90,10 @@ export default function ProjectsPage() {
 
   return (
     <>
-      {/* Page hero */}
-      <div className="pf-page-hero">
-        <div className="container">
-          <h1 className="pf-page-hero__title">Case Studies</h1>
-          <p className="pf-page-hero__sub">
-            Explore my selected projects and the impactful solutions I've designed.
-          </p>
-        </div>
-      </div>
+      <CaseStudiesHero />
 
-      {/* Filter bar + grid */}
-      <section className="pf-section pf-section--sm">
+      {/* Filter bar + project grid */}
+      <section id="case-studies-list" className="pf-section pf-section--sm">
         <div className="container">
 
           <div className="pf-filter-bar">

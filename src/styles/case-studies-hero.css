@@ -1,0 +1,674 @@
+/* ================================================================
+   case-studies-hero.css  —  CSH = Case Studies Hero
+   Namespace: .csh, .csh__*
+   ================================================================ */
+
+/* ── 1. DESIGN TOKENS ─────────────────────────────────────────── */
+.csh {
+  --csh-primary:       #0D215A;
+  --csh-primary-dark:  #091842;
+  --csh-primary-light: #1E4ED8;
+  --csh-bg:            #ffffff;
+  --csh-bg-soft:       #F3F6FC;
+  --csh-text:          #0F172A;
+  --csh-text-soft:     #334155;
+  --csh-muted:         #64748B;
+  --csh-border:        #DDE5F2;
+  --csh-radius-sm:     10px;
+  --csh-radius-md:     16px;
+  --csh-radius-lg:     24px;
+  --csh-shadow-soft:   0 16px 45px rgba(13, 33, 90, 0.08);
+  --csh-shadow-card:   0 24px 70px rgba(13, 33, 90, 0.12);
+  --csh-shadow-btn:    0 14px 30px rgba(13, 33, 90, 0.22);
+  --csh-font: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ── 2. SECTION WRAPPER ───────────────────────────────────────── */
+.csh {
+  position: relative;
+  overflow: hidden;
+  padding: 96px 0 88px;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(13, 33, 90, 0.08), transparent 34%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  font-family: var(--csh-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dot grid decoration */
+.csh::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(13, 33, 90, 0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── 3. CONTAINER — exact match to homepage hero ──────────────── */
+.csh__container {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 1200px) {
+  .csh__container {
+    max-width: 1400px !important;
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+}
+
+/* ── 4. TWO-COLUMN GRID ───────────────────────────────────────── */
+.csh__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(40px, 6vw, 72px);
+  align-items: center;
+}
+
+/* ── 5. LEFT CONTENT COLUMN ───────────────────────────────────── */
+.csh__content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Eyebrow badge */
+.csh__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--csh-primary-light);
+  background: rgba(30, 78, 216, 0.08);
+  border: 1px solid rgba(30, 78, 216, 0.18);
+  padding: 6px 14px;
+  border-radius: 50px;
+  margin-bottom: 22px;
+}
+
+/* Heading */
+.csh__title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  color: var(--csh-primary);
+  margin: 0 0 20px;
+  max-width: 640px;
+}
+
+/* Description */
+.csh__description {
+  font-size: 1.0625rem;
+  line-height: 1.78;
+  color: var(--csh-text-soft);
+  margin: 0 0 32px;
+  max-width: 560px;
+}
+
+/* ── 6. CTA BUTTONS ───────────────────────────────────────────── */
+.csh__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.csh__btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--csh-primary) 0%, var(--csh-primary-light) 100%);
+  padding: 12px 24px;
+  border-radius: 50px;
+  box-shadow: var(--csh-shadow-btn);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.csh__btn-primary:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(13, 33, 90, 0.30);
+}
+
+.csh__btn-primary:focus-visible {
+  outline: 2px solid var(--csh-primary-light);
+  outline-offset: 3px;
+}
+
+.csh__btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--csh-primary);
+  text-decoration: none;
+  background: #fff;
+  border: 1.5px solid var(--csh-border);
+  padding: 12px 24px;
+  border-radius: 50px;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.csh__btn-secondary:hover {
+  color: var(--csh-primary);
+  border-color: rgba(13, 33, 90, 0.35);
+  background: rgba(13, 33, 90, 0.03);
+  transform: translateY(-2px);
+}
+
+.csh__btn-secondary:focus-visible {
+  outline: 2px solid var(--csh-primary);
+  outline-offset: 3px;
+}
+
+/* ── 7. STATS ROW ─────────────────────────────────────────────── */
+.csh__stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.csh__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: #fff;
+  border: 1px solid var(--csh-border);
+  border-radius: var(--csh-radius-sm);
+  padding: 14px 18px;
+  box-shadow: 0 4px 12px rgba(13, 33, 90, 0.05);
+  min-width: 112px;
+}
+
+.csh__stat-value {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--csh-primary);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.csh__stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--csh-muted);
+  line-height: 1.4;
+}
+
+/* ── 8. RIGHT VISUAL COLUMN ───────────────────────────────────── */
+.csh__visual {
+  position: relative;
+}
+
+/* Decorative glow */
+.csh__glow {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(30, 78, 216, 0.10) 0%, transparent 70%);
+  top: -80px;
+  right: -80px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Frame — padding creates room for floating cards */
+.csh__visual-frame {
+  position: relative;
+  padding: 20px 20px 36px 4px;
+  z-index: 1;
+}
+
+/* ── 9. MAIN PREVIEW CARD ─────────────────────────────────────── */
+.csh__main-card {
+  background: #fff;
+  border: 1px solid var(--csh-border);
+  border-radius: var(--csh-radius-lg);
+  box-shadow: var(--csh-shadow-card);
+  overflow: hidden;
+}
+
+/* Card header strip */
+.csh__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--csh-border);
+  background: #fff;
+}
+
+.csh__card-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.csh__card-project-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--csh-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.csh__card-project-type {
+  font-size: 10px;
+  color: var(--csh-muted);
+  font-weight: 500;
+}
+
+.csh__card-live-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.20);
+  padding: 3px 9px;
+  border-radius: 50px;
+}
+
+/* Browser chrome */
+.csh__browser {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--csh-bg-soft);
+  border-bottom: 1px solid var(--csh-border);
+}
+
+.csh__browser-dots {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.csh__dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.csh__dot--red    { background: #FC605B; }
+.csh__dot--yellow { background: #FDBC40; }
+.csh__dot--green  { background: #35CD4B; }
+
+.csh__browser-bar {
+  flex: 1;
+  height: 18px;
+  background: rgba(13, 33, 90, 0.08);
+  border-radius: 4px;
+}
+
+/* Dashboard layout */
+.csh__dashboard {
+  display: flex;
+  height: 240px;
+}
+
+/* Sidebar */
+.csh__dash-sidebar {
+  width: 50px;
+  background: var(--csh-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.csh__dash-logo {
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.csh__dash-nav {
+  width: 28px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 2px;
+}
+
+.csh__dash-nav--active {
+  background: rgba(255, 255, 255, 0.90);
+}
+
+/* Main dash area */
+.csh__dash-main {
+  flex: 1;
+  padding: 10px 12px;
+  background: var(--csh-bg-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+/* Mini stat cards row */
+.csh__dash-row-stats {
+  display: flex;
+  gap: 7px;
+}
+
+.csh__dash-mini-stat {
+  flex: 1;
+  background: #fff;
+  border: 1px solid var(--csh-border);
+  border-radius: 7px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.csh__dash-mini-val {
+  display: block;
+  height: 11px;
+  width: 52%;
+  background: var(--csh-primary);
+  border-radius: 3px;
+  opacity: 0.82;
+}
+
+.csh__dash-mini-lbl {
+  display: block;
+  height: 7px;
+  width: 70%;
+  background: var(--csh-border);
+  border-radius: 2px;
+}
+
+/* Line chart */
+.csh__dash-chart {
+  flex: 1;
+  background: #fff;
+  border: 1px solid var(--csh-border);
+  border-radius: 7px;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}
+
+.csh__dash-chart svg {
+  display: block;
+  width: 100%;
+}
+
+/* Table rows */
+.csh__dash-table {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.csh__dash-table-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid var(--csh-border);
+  border-radius: 5px;
+  padding: 5px 8px;
+}
+
+.csh__dash-table-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--csh-primary-light);
+  flex-shrink: 0;
+}
+
+.csh__dash-table-bar {
+  height: 5px;
+  border-radius: 2px;
+  background: rgba(13, 33, 90, 0.10);
+}
+
+.csh__dash-table-num {
+  width: 26px;
+  height: 5px;
+  background: var(--csh-primary);
+  border-radius: 2px;
+  opacity: 0.65;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ── 10. FLOATING FOCUS CARD ──────────────────────────────────── */
+.csh__focus-card {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  background: #fff;
+  border: 1px solid var(--csh-border);
+  border-radius: var(--csh-radius-md);
+  box-shadow: 0 8px 28px rgba(13, 33, 90, 0.10);
+  padding: 14px 16px;
+  min-width: 148px;
+}
+
+.csh__focus-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--csh-muted);
+  margin: 0 0 10px;
+}
+
+.csh__focus-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--csh-text-soft);
+  margin-bottom: 7px;
+}
+
+.csh__focus-item:last-child {
+  margin-bottom: 0;
+}
+
+.csh__focus-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--csh-primary-light);
+  flex-shrink: 0;
+}
+
+/* ── 11. FLOATING RESULTS CARD ────────────────────────────────── */
+.csh__results-card {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  z-index: 10;
+  background: linear-gradient(135deg, var(--csh-primary) 0%, var(--csh-primary-light) 100%);
+  border-radius: var(--csh-radius-md);
+  box-shadow: 0 12px 32px rgba(13, 33, 90, 0.28);
+  padding: 14px 18px;
+  min-width: 160px;
+}
+
+.csh__results-value {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+
+.csh__results-label {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.csh__results-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #86efac;
+}
+
+/* ── 12. CATEGORY BADGES ──────────────────────────────────────── */
+.csh__badges-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.csh__badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--csh-primary);
+  background: rgba(13, 33, 90, 0.06);
+  border: 1px solid rgba(13, 33, 90, 0.12);
+  padding: 5px 13px;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+
+/* ── 13. RESPONSIVE ───────────────────────────────────────────── */
+
+/* Tablet (≤991px) */
+@media (max-width: 991.98px) {
+  .csh {
+    padding: 72px 0 64px;
+  }
+
+  .csh__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .csh__content {
+    max-width: 720px;
+    margin-inline: auto;
+    align-items: center;
+    text-align: center;
+  }
+
+  .csh__eyebrow {
+    align-self: center;
+  }
+
+  .csh__title,
+  .csh__description {
+    max-width: none;
+  }
+
+  .csh__actions {
+    justify-content: center;
+  }
+
+  .csh__stats {
+    justify-content: center;
+  }
+
+  .csh__visual {
+    max-width: 620px;
+    margin-inline: auto;
+  }
+}
+
+/* Mobile (≤575px) */
+@media (max-width: 575.98px) {
+  .csh {
+    padding: 64px 0 72px;
+  }
+
+  .csh__title {
+    font-size: clamp(1.85rem, 8vw, 2.4rem);
+  }
+
+  .csh__description {
+    font-size: 1rem;
+  }
+
+  .csh__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .csh__btn-primary,
+  .csh__btn-secondary {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .csh__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .csh__stat {
+    min-width: 0;
+    align-items: center;
+    text-align: center;
+    padding: 12px 10px;
+  }
+
+  .csh__stat-value {
+    font-size: 1.2rem;
+  }
+
+  /* Hide floating cards on mobile — layout gets too cramped */
+  .csh__focus-card,
+  .csh__results-card,
+  .csh__glow {
+    display: none;
+  }
+
+  .csh__dashboard {
+    height: 200px;
+  }
+}
+
+/* Very small (≤359px) */
+@media (max-width: 359.98px) {
+  .csh__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .csh__badge {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+}
