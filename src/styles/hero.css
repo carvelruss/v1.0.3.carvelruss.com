@@ -914,7 +914,7 @@
   }
 
   .hs__btn-primary,
-  .hs__btn-secondary { justify-content: center; }
+  .hs__btn-secondary { justify-content: center; width: 100%; }
 
   .hs__features {
     flex-direction: column;
