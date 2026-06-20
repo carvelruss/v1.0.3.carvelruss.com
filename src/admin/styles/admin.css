@@ -1,34 +1,33 @@
 /* ============================================================
-   ADMIN DASHBOARD — dark navy theme
-   Matches the dark admin mockup exactly.
+   ADMIN DASHBOARD — light theme
    ============================================================ */
 
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
 .admin-root {
-  --adm-bg:          #070b14;
-  --adm-surface:     #0d1220;
-  --adm-surface-2:   #131a2d;
-  --adm-surface-3:   #182035;
-  --adm-border:      #1e2d42;
-  --adm-border-2:    #243452;
-  --adm-text:        #f1f5f9;
-  --adm-text-2:      #cbd5e1;
-  --adm-muted:       #64748b;
-  --adm-muted-2:     #475569;
+  --adm-bg:          #F3F6FC;
+  --adm-surface:     #FFFFFF;
+  --adm-surface-2:   #F8FAFF;
+  --adm-surface-3:   #EFF2F8;
+  --adm-border:      #E2E8F0;
+  --adm-border-2:    #CBD5E1;
+  --adm-text:        #0F172A;
+  --adm-text-2:      #334155;
+  --adm-muted:       #64748B;
+  --adm-muted-2:     #94A3B8;
 
-  --adm-primary:       #6366f1;
-  --adm-primary-dark:  #4f46e5;
-  --adm-primary-soft:  rgba(99,102,241,.15);
-  --adm-primary-text:  #818cf8;
+  --adm-primary:       #1E4ED8;
+  --adm-primary-dark:  #1638B8;
+  --adm-primary-soft:  rgba(30,78,216,0.08);
+  --adm-primary-text:  #1E4ED8;
 
-  --adm-success:      #22c55e;
-  --adm-success-soft: rgba(34,197,94,.15);
-  --adm-warning:      #f59e0b;
-  --adm-warning-soft: rgba(245,158,11,.15);
-  --adm-danger:       #ef4444;
-  --adm-danger-soft:  rgba(239,68,68,.15);
-  --adm-info:         #38bdf8;
-  --adm-info-soft:    rgba(56,189,248,.15);
+  --adm-success:      #16a34a;
+  --adm-success-soft: rgba(22,163,74,.09);
+  --adm-warning:      #d97706;
+  --adm-warning-soft: rgba(217,119,6,.09);
+  --adm-danger:       #dc2626;
+  --adm-danger-soft:  rgba(220,38,38,.08);
+  --adm-info:         #0284c7;
+  --adm-info-soft:    rgba(2,132,199,.08);
 
   --adm-sidebar-w:   220px;
   --adm-topbar-h:    60px;
@@ -39,8 +38,8 @@
   --adm-r-lg:    20px;
   --adm-r-full:  9999px;
 
-  --adm-shadow:    0 4px 24px rgba(0,0,0,.32);
-  --adm-shadow-sm: 0 2px 8px rgba(0,0,0,.24);
+  --adm-shadow:    0 4px 24px rgba(13,33,90,0.08);
+  --adm-shadow-sm: 0 2px 8px rgba(13,33,90,0.05);
 
   --adm-ease: cubic-bezier(.4,0,.2,1);
   --adm-font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -1206,6 +1205,7 @@
   object-fit: contain;
   flex-shrink: 0;
   display: block;
+  border-radius: 5px;
 }
 
 .admin-sidebar__brand-admin {
@@ -1215,7 +1215,7 @@
   text-transform: uppercase;
   background: var(--adm-primary-soft);
   color: var(--adm-primary-text);
-  border: 1px solid rgba(99,102,241,.25);
+  border: 1px solid rgba(30,78,216,.18);
   padding: .2rem .5rem;
   border-radius: var(--adm-r-full);
   white-space: nowrap;
@@ -1287,11 +1287,11 @@
   border: 1px solid transparent;
 }
 
-.adm-stat__icon-wrap--primary { background: var(--adm-primary-soft);  border-color: rgba(99,102,241,.2);  color: var(--adm-primary-text); }
-.adm-stat__icon-wrap--success { background: var(--adm-success-soft);  border-color: rgba(34,197,94,.2);   color: var(--adm-success);      }
-.adm-stat__icon-wrap--warning { background: var(--adm-warning-soft);  border-color: rgba(245,158,11,.2);  color: var(--adm-warning);      }
-.adm-stat__icon-wrap--info    { background: var(--adm-info-soft);     border-color: rgba(56,189,248,.2);  color: var(--adm-info);         }
-.adm-stat__icon-wrap--danger  { background: var(--adm-danger-soft);   border-color: rgba(239,68,68,.2);   color: var(--adm-danger);       }
+.adm-stat__icon-wrap--primary { background: var(--adm-primary-soft);  border-color: rgba(30,78,216,.15);   color: var(--adm-primary-text); }
+.adm-stat__icon-wrap--success { background: var(--adm-success-soft);  border-color: rgba(22,163,74,.15);   color: var(--adm-success);      }
+.adm-stat__icon-wrap--warning { background: var(--adm-warning-soft);  border-color: rgba(217,119,6,.15);   color: var(--adm-warning);      }
+.adm-stat__icon-wrap--info    { background: var(--adm-info-soft);     border-color: rgba(2,132,199,.15);   color: var(--adm-info);         }
+.adm-stat__icon-wrap--danger  { background: var(--adm-danger-soft);   border-color: rgba(220,38,38,.15);   color: var(--adm-danger);       }
 
 /* ── 30. QUICK ACTIONS ──────────────────────────────────────── */
 .adm-quick-actions {
@@ -1369,11 +1369,11 @@
   font-family: var(--adm-font);
 }
 
-/* Left photo/brand panel */
+/* Left photo/brand panel — always dark navy (deliberate two-tone login design) */
 .al-photo {
   flex: 1;
   position: relative;
-  background: linear-gradient(135deg, var(--adm-surface) 0%, var(--adm-surface-3) 100%);
+  background: linear-gradient(135deg, #0D215A 0%, #091842 100%);
   display: flex;
   align-items: flex-end;
   padding: 2.5rem;
@@ -1384,7 +1384,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(99,102,241,.06) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(255,255,255,.07) 1px, transparent 1px);
   background-size: 28px 28px;
   pointer-events: none;
 }
@@ -1394,8 +1394,8 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(7, 11, 20, .75) 0%,
-    rgba(7, 11, 20, .15) 60%,
+    rgba(9, 24, 66, .6) 0%,
+    rgba(9, 24, 66, .1) 60%,
     transparent 100%
   );
 }
@@ -1449,7 +1449,7 @@
   width: auto;
   object-fit: contain;
   display: block;
-  filter: brightness(1.2);
+  border-radius: 5px;
 }
 
 .al-panel__title {

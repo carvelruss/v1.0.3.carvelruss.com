@@ -279,9 +279,9 @@ export default function Dashboard() {
                         className="a-recent-item__avatar"
                         style={{
                           background: item.type === 'Blog'
-                            ? 'rgba(56,189,248,.15)'
-                            : 'rgba(99,102,241,.15)',
-                          color: item.type === 'Blog' ? '#38bdf8' : '#818cf8',
+                            ? 'rgba(2,132,199,.10)'
+                            : 'rgba(30,78,216,.10)',
+                          color: item.type === 'Blog' ? '#0284c7' : '#1E4ED8',
                         }}
                       >
                         {item.type === 'Blog' ? 'B' : 'C'}
