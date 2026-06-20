@@ -93,14 +93,6 @@
   box-shadow: 0 3px 12px rgba(91, 53, 245, 0.28);
 }
 
-.sh__logo-initials {
-  font-size: 15px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-
 .sh__brand-name {
   font-size: 21px;
   font-weight: 700;
@@ -109,9 +101,16 @@
   white-space: nowrap;
 }
 
-.sh__brand-dot {
-  color: var(--sh-primary);
+.sh__logo-img {
+  height: 40px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
+
+@media (max-width: 1199px) { .sh__logo-img { height: 36px; } }
+@media (max-width: 767px)  { .sh__logo-img { height: 32px; } }
+@media (max-width: 400px)  { .sh__logo-img { height: 28px; } }
 
 /* ── 6. DESKTOP NAV ───────────────────────────────────────── */
 .sh__nav {

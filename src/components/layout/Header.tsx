@@ -78,13 +78,12 @@ export default function Header() {
         <div className="sh__inner">
 
           {/* Brand */}
-          <Link to="/" className="sh__brand" onClick={close} aria-label="Home">
-            <span className="sh__logo" aria-hidden="true">
-              <span className="sh__logo-initials">CR</span>
-            </span>
-            <span className="sh__brand-name">
-              Carvel Russ<span className="sh__brand-dot">.</span>
-            </span>
+          <Link to="/" className="sh__brand" onClick={close} aria-label="Carvel Russ – Home">
+            <img
+              src="/logos/carvelruss-logo.png"
+              alt="Carvel Russ – Committed to Quality"
+              className="sh__logo-img"
+            />
           </Link>
 
           {/* Desktop / Tablet Nav */}
