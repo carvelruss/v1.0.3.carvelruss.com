@@ -1,0 +1,713 @@
+/* ============================================================
+   RECENT BLOGS — Premium homepage section
+   Namespace: .rb__ (section) + .blog-card__ (cards)
+   ============================================================ */
+
+/* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
+:root {
+  --rb-primary:       #0D215A;
+  --rb-primary-dark:  #091842;
+  --rb-primary-light: #1E4ED8;
+  --rb-bg:            #ffffff;
+  --rb-surface:       #ffffff;
+  --rb-text:          #0F172A;
+  --rb-text-soft:     #334155;
+  --rb-muted:         #64748B;
+  --rb-border:        #DDE5F2;
+  --rb-radius-md:     16px;
+  --rb-radius-lg:     24px;
+  --rb-shadow-soft:   0 16px 45px rgba(13, 33, 90, 0.07);
+  --rb-shadow-hover:  0 32px 90px rgba(13, 33, 90, 0.14);
+  --rb-font:          -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── 2. SECTION WRAPPER ───────────────────────────────────── */
+.rb {
+  background: var(--rb-bg);
+  padding: 96px 0 108px;
+  font-family: var(--rb-font);
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* Subtle top separator from the section above */
+.rb::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rb-border), transparent);
+}
+
+/* ── 3. SECTION HEADER ────────────────────────────────────── */
+.rb__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 52px;
+}
+
+.rb__head-left {
+  max-width: 540px;
+}
+
+.rb__eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rb-primary-light);
+  margin-bottom: 10px;
+  padding: 4px 12px;
+  background: rgba(30, 78, 216, 0.08);
+  border-radius: 20px;
+  border: 1px solid rgba(30, 78, 216, 0.18);
+}
+
+.rb__title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  color: var(--rb-text);
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin: 0 0 12px;
+}
+
+.rb__description {
+  font-size: 16px;
+  color: var(--rb-muted);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 440px;
+}
+
+.rb__view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rb-primary);
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 1.5px solid rgba(13, 33, 90, 0.20);
+  border-radius: 50px;
+  background: var(--rb-surface);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease,
+              color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+}
+
+.rb__view-all:hover {
+  background: var(--rb-primary);
+  border-color: var(--rb-primary);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(13, 33, 90, 0.28);
+}
+
+.rb__view-all:focus-visible {
+  outline: 3px solid rgba(13, 33, 90, 0.4);
+  outline-offset: 3px;
+}
+
+/* ── 4. CARD GRID ─────────────────────────────────────────── */
+.rb__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+/* ── 5. BLOG CARD ─────────────────────────────────────────── */
+.blog-card {
+  background: var(--rb-surface);
+  border-radius: var(--rb-radius-lg);
+  border: 1px solid var(--rb-border);
+  box-shadow: var(--rb-shadow-soft);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.22s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-7px);
+  box-shadow: var(--rb-shadow-hover);
+  border-color: rgba(13, 33, 90, 0.16);
+}
+
+/* ── 6. CARD MEDIA ────────────────────────────────────────── */
+.blog-card__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.blog-card__cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.blog-card:hover .blog-card__cover-img {
+  transform: scale(1.04);
+}
+
+/* ── 7. CARD BODY ─────────────────────────────────────────── */
+.blog-card__body {
+  padding: 28px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.blog-card__category {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--rb-primary-light);
+  background: rgba(30, 78, 216, 0.07);
+  border: 1px solid rgba(30, 78, 216, 0.15);
+  border-radius: 20px;
+  padding: 4px 11px;
+  margin-bottom: 14px;
+  width: fit-content;
+}
+
+.blog-card__title {
+  font-size: 18px;
+  font-weight: 750;
+  color: var(--rb-text);
+  letter-spacing: -0.35px;
+  line-height: 1.35;
+  margin: 0 0 10px;
+}
+
+.blog-card__excerpt {
+  font-size: 14.5px;
+  color: var(--rb-text-soft);
+  line-height: 1.65;
+  margin: 0 0 18px;
+  flex: 1;
+}
+
+.blog-card__meta {
+  font-size: 12px;
+  color: var(--rb-muted);
+  font-weight: 500;
+  margin-bottom: 20px;
+  letter-spacing: 0.1px;
+}
+
+.blog-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--rb-primary);
+  text-decoration: none;
+  letter-spacing: -0.1px;
+  width: fit-content;
+  margin-top: auto;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.blog-card__link:hover {
+  color: var(--rb-primary-light);
+  gap: 9px;
+}
+
+.blog-card__link:focus-visible {
+  outline: 2px solid rgba(13, 33, 90, 0.5);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.blog-card__link-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.blog-card__link:hover .blog-card__link-arrow {
+  transform: translateX(4px);
+}
+
+/* ── 8. CSS THUMBNAIL MOCKUPS ─────────────────────────────── */
+
+.blog-mock {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  MOCKUP 1: UI/UX PRINCIPLES                                */
+/* ─────────────────────────────────────────────────────────── */
+.blog-mock--principles {
+  background: linear-gradient(145deg, #f3f6fc 0%, #e8eef8 100%);
+  padding: 18px 16px;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Top nav bar mockup */
+.blog-mock__nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 7px 10px;
+  border: 1px solid #dde5f2;
+  width: 100%;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(13,33,90,0.06);
+}
+
+.blog-mock__nav-logo {
+  width: 32px;
+  height: 8px;
+  background: var(--rb-primary);
+  border-radius: 4px;
+  opacity: 0.9;
+}
+
+.blog-mock__nav-spacer { flex: 1; }
+
+.blog-mock__nav-links {
+  display: flex;
+  gap: 5px;
+}
+
+.blog-mock__nav-links > div {
+  width: 18px;
+  height: 5px;
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.blog-mock__nav-btn {
+  width: 28px;
+  height: 14px;
+  background: var(--rb-primary);
+  border-radius: 4px;
+  opacity: 0.85;
+}
+
+/* Cards grid below nav */
+.blog-mock__cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  width: 100%;
+  flex: 1;
+}
+
+.blog-mock__card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dde5f2;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(13,33,90,0.05);
+}
+
+.blog-mock__card-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #0D215A 0%, #1E4ED8 100%);
+  opacity: 0.85;
+}
+
+.blog-mock__card-line {
+  height: 5px;
+  background: #cbd5e1;
+  border-radius: 3px;
+  width: 80%;
+}
+
+.blog-mock__card-line--short {
+  width: 55%;
+  height: 4px;
+}
+
+.blog-mock__card-line--accent {
+  width: 40%;
+  height: 4px;
+  background: rgba(13,33,90,0.22);
+}
+
+/* Cursor detail */
+.blog-mock__cursor {
+  position: absolute;
+  bottom: 28px;
+  right: 28px;
+  width: 14px;
+  height: 18px;
+  filter: drop-shadow(0 2px 4px rgba(13,33,90,0.2));
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  MOCKUP 2: DESIGN SYSTEM                                   */
+/* ─────────────────────────────────────────────────────────── */
+.blog-mock--system {
+  background: #f8faff;
+  padding: 16px;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* Color swatches row */
+.blog-mock__swatches {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.blog-mock__swatch {
+  flex: 1;
+  height: 28px;
+  border-radius: 7px;
+}
+
+.blog-mock__swatch:nth-child(1) { background: var(--rb-primary); }
+.blog-mock__swatch:nth-child(2) { background: #1E4ED8; }
+.blog-mock__swatch:nth-child(3) { background: #3B82F6; }
+.blog-mock__swatch:nth-child(4) { background: #93C5FD; }
+.blog-mock__swatch:nth-child(5) { background: #E2E8F0; }
+
+/* Typography block */
+.blog-mock__type-block {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dde5f2;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.blog-mock__type-heading {
+  height: 10px;
+  background: var(--rb-primary);
+  border-radius: 5px;
+  width: 60%;
+  opacity: 0.9;
+}
+
+.blog-mock__type-body {
+  height: 5px;
+  background: #cbd5e1;
+  border-radius: 3px;
+  width: 90%;
+}
+
+.blog-mock__type-body--mid { width: 72%; }
+
+/* Button components row */
+.blog-mock__buttons {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.blog-mock__btn {
+  height: 22px;
+  border-radius: 7px;
+  flex: 1;
+}
+
+.blog-mock__btn--filled {
+  background: var(--rb-primary);
+  opacity: 0.88;
+}
+
+.blog-mock__btn--outline {
+  background: transparent;
+  border: 1.5px solid var(--rb-primary);
+  opacity: 0.5;
+}
+
+.blog-mock__btn--ghost {
+  background: #f0f4fc;
+  border: 1px solid #dde5f2;
+}
+
+/* Token grid */
+.blog-mock__tokens {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  width: 100%;
+  flex: 1;
+}
+
+.blog-mock__token {
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #dde5f2;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  gap: 3px;
+}
+
+.blog-mock__token-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: #e8eef8;
+}
+
+.blog-mock__token-dot:nth-child(1) { background: rgba(13,33,90,0.85); }
+
+.blog-mock__token-label {
+  height: 4px;
+  background: #dde5f2;
+  border-radius: 2px;
+  width: 80%;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  MOCKUP 3: COLOR PSYCHOLOGY                                */
+/* ─────────────────────────────────────────────────────────── */
+.blog-mock--colors {
+  background: linear-gradient(135deg, #0D215A 0%, #1635a0 60%, #1E4ED8 100%);
+  flex-direction: column;
+  padding: 20px;
+  gap: 14px;
+  justify-content: center;
+}
+
+/* Abstract color orbs */
+.blog-mock__orbs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: -10px;
+  position: relative;
+  flex-shrink: 0;
+  height: 64px;
+}
+
+.blog-mock__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: 0.82;
+}
+
+.blog-mock__orb:nth-child(1) {
+  width: 50px; height: 50px;
+  background: #60a5fa;
+  left: calc(50% - 80px);
+  top: 8px;
+}
+
+.blog-mock__orb:nth-child(2) {
+  width: 58px; height: 58px;
+  background: #f472b6;
+  left: calc(50% - 30px);
+  top: 4px;
+}
+
+.blog-mock__orb:nth-child(3) {
+  width: 46px; height: 46px;
+  background: #34d399;
+  left: calc(50% + 22px);
+  top: 10px;
+}
+
+.blog-mock__orb:nth-child(4) {
+  width: 36px; height: 36px;
+  background: #fbbf24;
+  left: calc(50% + 56px);
+  top: 14px;
+}
+
+/* Text lines on dark background */
+.blog-mock__dark-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.blog-mock__dark-line {
+  height: 7px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.22);
+}
+
+.blog-mock__dark-line:nth-child(1) { width: 70%; }
+.blog-mock__dark-line:nth-child(2) { width: 50%; height: 5px; background: rgba(255,255,255,0.14); }
+
+/* Color palette bar */
+.blog-mock__palette {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  height: 22px;
+}
+
+.blog-mock__palette-swatch {
+  flex: 1;
+}
+
+.blog-mock__palette-swatch:nth-child(1) { background: #0D215A; }
+.blog-mock__palette-swatch:nth-child(2) { background: #1E4ED8; }
+.blog-mock__palette-swatch:nth-child(3) { background: #60a5fa; }
+.blog-mock__palette-swatch:nth-child(4) { background: #34d399; }
+.blog-mock__palette-swatch:nth-child(5) { background: #f472b6; }
+.blog-mock__palette-swatch:nth-child(6) { background: #fbbf24; }
+.blog-mock__palette-swatch:nth-child(7) { background: #f1f5f9; }
+
+/* ── 9. LOADING SKELETON ──────────────────────────────────── */
+.rb__loading {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.rb__skeleton {
+  background: var(--rb-surface);
+  border-radius: var(--rb-radius-lg);
+  border: 1px solid var(--rb-border);
+  overflow: hidden;
+}
+
+.rb__skeleton-media {
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(90deg, #e8eef8 25%, #f3f6fc 50%, #e8eef8 75%);
+  background-size: 200% 100%;
+  animation: rbSkeleton 1.6s ease-in-out infinite;
+}
+
+.rb__skeleton-body {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rb__skeleton-line {
+  height: 10px;
+  background: linear-gradient(90deg, #e8eef8 25%, #f3f6fc 50%, #e8eef8 75%);
+  background-size: 200% 100%;
+  animation: rbSkeleton 1.6s ease-in-out infinite;
+  border-radius: 5px;
+}
+
+.rb__skeleton-line--short { width: 36%; }
+.rb__skeleton-line--title { height: 14px; width: 88%; }
+.rb__skeleton-line--full  { width: 100%; }
+.rb__skeleton-line--mid   { width: 68%; }
+
+@keyframes rbSkeleton {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── 10. RESPONSIVE ───────────────────────────────────────── */
+
+@media (max-width: 991.98px) {
+  .rb {
+    padding: 72px 0 80px;
+  }
+
+  .rb__head {
+    margin-bottom: 40px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .rb__grid,
+  .rb__loading {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .rb {
+    padding: 56px 0 64px;
+  }
+
+  .rb__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .rb__title {
+    font-size: 26px;
+  }
+
+  .rb__description {
+    font-size: 15px;
+  }
+
+  .rb__grid,
+  .rb__loading {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .blog-card__body {
+    padding: 22px 22px 26px;
+  }
+
+  .blog-card__title {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 359.98px) {
+  .rb__title        { font-size: 22px; }
+  .blog-card__body  { padding: 18px 18px 22px; }
+}
+
+/* ── 11. REDUCED MOTION ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .blog-card,
+  .blog-card__cover-img,
+  .blog-card__link-arrow,
+  .rb__view-all     { transition: none !important; }
+
+  .rb__skeleton-line,
+  .rb__skeleton-media { animation: none !important; }
+}

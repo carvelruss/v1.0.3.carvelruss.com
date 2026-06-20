@@ -1,6 +1,7 @@
 import Header from '../components/layout/Header';
 import HeroSection from '../components/public/HeroSection';
 import FeaturedCaseStudies from '../components/public/FeaturedCaseStudies';
+import RecentBlogs from '../components/public/RecentBlogs';
 import WSFooter from '../components/webstudio/WSFooter';
 
 const VALUES = [
@@ -17,6 +18,7 @@ export default function WebStudioLanding() {
       <main id="ws-main" tabIndex={-1}>
         <HeroSection />
         <FeaturedCaseStudies />
+        <RecentBlogs />
         <section className="pf-section pf-section--sm" style={{ borderTop: '1px solid var(--pf-border-light)' }}>
           <div className="container">
             <div className="pf-value-grid">
