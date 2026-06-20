@@ -13,11 +13,15 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const body = await request.json<{
       name?: string;
       email?: string;
+      subject?: string;
       message?: string;
+      project_type?: string;
+      budget_range?: string;
+      timeline?: string;
       turnstileToken?: string;
     }>();
 
-    const { name, email, message, turnstileToken } = body;
+    const { name, email, subject, message, project_type, budget_range, timeline, turnstileToken } = body;
 
     // Basic field validation
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
@@ -45,12 +49,22 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       return err('Spam verification failed. Please try again.', 403);
     }
 
-    // Store in D1
+    // Store in D1 with all extended fields
     const ip = request.headers.get('CF-Connecting-IP') ?? request.headers.get('X-Forwarded-For');
     await env.DB.prepare(
-      'INSERT INTO inquiries (name, email, message, ip_address) VALUES (?, ?, ?, ?)',
+      `INSERT INTO inquiries (name, email, subject, message, project_type, budget_range, timeline, ip_address, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'unread')`,
     )
-      .bind(name.trim(), email.trim(), message.trim(), ip)
+      .bind(
+        name.trim(),
+        email.trim(),
+        subject?.trim() ?? null,
+        message.trim(),
+        project_type?.trim() ?? null,
+        budget_range?.trim() ?? null,
+        timeline?.trim() ?? null,
+        ip,
+      )
       .run();
 
     return json({ success: true, message: 'Your message has been received. I will get back to you soon!' });
