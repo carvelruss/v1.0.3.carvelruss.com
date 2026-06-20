@@ -11,12 +11,6 @@ declare global {
   }
 }
 
-const CONTACT_LINKS = [
-  { icon: '✉',  label: 'Email',    href: 'mailto:hello@carvelruss.com',                      display: 'hello@carvelruss.com'           },
-  { icon: 'in', label: 'LinkedIn', href: 'https://linkedin.com/in/carvelruss',               display: 'linkedin.com/in/carvelruss'      },
-  { icon: '⌥',  label: 'GitHub',   href: 'https://github.com/carvelruss',                    display: 'github.com/carvelruss'           },
-];
-
 const PROJECT_TYPES = [
   'Website Design',
   'UI/UX Design',
@@ -31,17 +25,17 @@ const PROJECT_TYPES = [
 const BUDGET_RANGES = [
   'Not sure yet',
   'Below $500',
-  '$500 – $1,000',
-  '$1,000 – $3,000',
-  '$3,000 – $5,000',
+  '$500–$1,000',
+  '$1,000–$3,000',
+  '$3,000–$5,000',
   '$5,000+',
 ];
 
 const TIMELINES = [
   'ASAP',
-  '1 – 2 weeks',
-  '2 – 4 weeks',
-  '1 – 2 months',
+  '1–2 weeks',
+  '2–4 weeks',
+  '1–2 months',
   'Flexible',
 ];
 
@@ -51,10 +45,18 @@ export default function Contact() {
   const formRef      = useRef<HTMLFormElement>(null);
   const turnstileRef = useRef<HTMLDivElement>(null);
   const widgetIdRef  = useRef<string | null>(null);
-  const [sending, setSending]   = useState(false);
-  const [error,   setError]     = useState('');
-  const [success, setSuccess]   = useState(false);
-  const [errors,  setErrors]    = useState<Record<string, string>>({});
+
+  const [name,        setName]        = useState('');
+  const [email,       setEmail]       = useState('');
+  const [subject,     setSubject]     = useState('');
+  const [projectType, setProjectType] = useState('');
+  const [budgetRange, setBudgetRange] = useState('');
+  const [timeline,    setTimeline]    = useState('');
+  const [message,     setMessage]     = useState('');
+  const [errors,      setErrors]      = useState<Record<string, string>>({});
+  const [loading,     setLoading]     = useState(false);
+  const [submitted,   setSubmitted]   = useState(false);
+  const [globalError, setGlobalError] = useState('');
 
   useEffect(() => {
     const mount = () => {
@@ -85,15 +87,15 @@ export default function Contact() {
 
   const validate = (fd: FormData): Record<string, string> => {
     const errs: Record<string, string> = {};
-    const name    = (fd.get('name')    as string)?.trim();
-    const email   = (fd.get('email')   as string)?.trim();
-    const message = (fd.get('message') as string)?.trim();
+    const nameVal    = (fd.get('name')    as string)?.trim();
+    const emailVal   = (fd.get('email')   as string)?.trim();
+    const messageVal = (fd.get('message') as string)?.trim();
 
-    if (!name)    errs.name    = 'Your name is required.';
-    if (!email)   errs.email   = 'Your email address is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = 'Please enter a valid email.';
-    if (!message) errs.message = 'Please write a message.';
-    else if (message.length < 10) errs.message = 'Message must be at least 10 characters.';
+    if (!nameVal)    errs.name    = 'Your name is required.';
+    if (!emailVal)   errs.email   = 'Your email address is required.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) errs.email = 'Please enter a valid email.';
+    if (!messageVal) errs.message = 'Please write a message.';
+    else if (messageVal.length < 10) errs.message = 'Message must be at least 10 characters.';
 
     return errs;
   };
@@ -112,12 +114,12 @@ export default function Contact() {
       : '';
 
     if (!turnstileToken) {
-      setError('Please complete the spam check first.');
+      setGlobalError('Please complete the spam check first.');
       return;
     }
 
-    setError('');
-    setSending(true);
+    setGlobalError('');
+    setLoading(true);
 
     try {
       const res  = await fetch('/api/contact', {
@@ -137,201 +139,187 @@ export default function Contact() {
       const data = await res.json() as { success?: boolean; error?: string };
 
       if (res.ok && data.success) {
-        setSuccess(true);
+        setSubmitted(true);
         formRef.current?.reset();
+        setName(''); setEmail(''); setSubject('');
+        setProjectType(''); setBudgetRange(''); setTimeline(''); setMessage('');
         if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
       } else {
-        setError(data.error ?? 'Something went wrong. Please try again.');
+        setGlobalError(data.error ?? 'Something went wrong. Please try again.');
         if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
       }
     } catch {
-      setError('Network error. Please check your connection and try again.');
+      setGlobalError('Network error. Please check your connection and try again.');
     } finally {
-      setSending(false);
+      setLoading(false);
     }
   };
 
-  if (success) {
+  if (submitted) {
     return (
-      <div className="ws-contact-grid">
-        <div className="ws-contact-info">
-          <h3>Let's work together</h3>
-          <p>Have a project in mind? I'd love to hear about it.</p>
-          <nav className="ws-contact-links" aria-label="Contact links">
-            {CONTACT_LINKS.map(link => (
-              <a key={link.label} href={link.href} className="ws-contact-link"
-                target={link.href.startsWith('mailto') ? undefined : '_blank'}
-                rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-                aria-label={`${link.label}: ${link.display}`}>
-                <span className="ws-contact-link-icon" aria-hidden="true">{link.icon}</span>
-                <span>{link.display}</span>
-              </a>
-            ))}
-          </nav>
-        </div>
-        <div className="ws-contact-form-card ws-contact-form-card--success">
-          <div className="ws-contact-success-icon" aria-hidden="true">✓</div>
-          <h3>Message Sent!</h3>
-          <p>Thanks for reaching out. I'll get back to you within 24–48 hours.</p>
-          <button
-            className="ws-btn-primary"
-            style={{ marginTop: '1.5rem' }}
-            onClick={() => setSuccess(false)}
-          >
-            Send Another Message
-          </button>
-        </div>
+      <div className="pf-contact-success">
+        <div className="pf-contact-success__icon" aria-hidden="true">✓</div>
+        <h3>Message Sent!</h3>
+        <p>Thank you for reaching out. I'll get back to you within 24 hours.</p>
+        <button
+          className="ws-btn-primary"
+          style={{ marginTop: '1.5rem' }}
+          onClick={() => setSubmitted(false)}
+        >
+          Send Another Message
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="ws-contact-grid">
+    <form ref={formRef} onSubmit={handleSubmit} noValidate>
+      {globalError && (
+        <div role="alert" className="pf-form-error" style={{ marginBottom: '1rem' }}>{globalError}</div>
+      )}
 
-      {/* Info panel */}
-      <div className="ws-contact-info">
-        <h3>Let's work together</h3>
-        <p>
-          Have a project in mind? I'd love to hear about it. Send me a message and
-          I'll get back to you within 24–48 hours.
-        </p>
-        <nav className="ws-contact-links" aria-label="Contact links">
-          {CONTACT_LINKS.map(link => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="ws-contact-link"
-              target={link.href.startsWith('mailto') ? undefined : '_blank'}
-              rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-              aria-label={`${link.label}: ${link.display}`}
-            >
-              <span className="ws-contact-link-icon" aria-hidden="true">{link.icon}</span>
-              <span>{link.display}</span>
-            </a>
-          ))}
-        </nav>
+      {/* Name + Email row */}
+      <div className="pf-form-row">
+        <div className="pf-form-field">
+          <label className="pf-form-label" htmlFor="contact-name">
+            Full Name <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
+          </label>
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            className="pf-input"
+            placeholder="Your full name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            required
+            autoComplete="name"
+            aria-describedby={errors.name ? 'err-name' : undefined}
+            aria-invalid={!!errors.name}
+          />
+          {errors.name && <span id="err-name" className="pf-form-error" role="alert">{errors.name}</span>}
+        </div>
 
-        <div className="ws-contact-availability" style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', display: 'inline-block', flexShrink: 0 }} aria-hidden="true" />
-          <span style={{ fontSize: '0.875rem', color: '#4b5563' }}>Available for new projects</span>
+        <div className="pf-form-field">
+          <label className="pf-form-label" htmlFor="contact-email">
+            Email Address <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
+          </label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            className="pf-input"
+            placeholder="you@example.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            aria-describedby={errors.email ? 'err-email' : undefined}
+            aria-invalid={!!errors.email}
+          />
+          {errors.email && <span id="err-email" className="pf-form-error" role="alert">{errors.email}</span>}
         </div>
       </div>
 
-      {/* Form panel */}
-      <div className="ws-contact-form-card">
-        <h3>Send a message</h3>
-
-        {error && (
-          <div role="alert" className="ws-contact-error">{error}</div>
-        )}
-
-        <form ref={formRef} onSubmit={handleSubmit} noValidate>
-          {/* Name + Email row */}
-          <div className="ws-contact-row">
-            <div className="ws-contact-field">
-              <label htmlFor="contact-name">
-                Name <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
-              </label>
-              <input
-                id="contact-name" name="name" type="text"
-                placeholder="Your full name"
-                required autoComplete="name"
-                aria-describedby={errors.name ? 'err-name' : undefined}
-                aria-invalid={!!errors.name}
-              />
-              {errors.name && <span id="err-name" className="ws-field-error" role="alert">{errors.name}</span>}
-            </div>
-
-            <div className="ws-contact-field">
-              <label htmlFor="contact-email">
-                Email <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
-              </label>
-              <input
-                id="contact-email" name="email" type="email"
-                placeholder="you@example.com"
-                required autoComplete="email"
-                aria-describedby={errors.email ? 'err-email' : undefined}
-                aria-invalid={!!errors.email}
-              />
-              {errors.email && <span id="err-email" className="ws-field-error" role="alert">{errors.email}</span>}
-            </div>
-          </div>
-
-          {/* Subject */}
-          <div className="ws-contact-field">
-            <label htmlFor="contact-subject">Subject</label>
-            <input
-              id="contact-subject" name="subject" type="text"
-              placeholder="What's this about?"
-              autoComplete="off"
-            />
-          </div>
-
-          {/* Project Type + Budget row */}
-          <div className="ws-contact-row">
-            <div className="ws-contact-field">
-              <label htmlFor="contact-project-type">Project Type</label>
-              <select id="contact-project-type" name="project_type" defaultValue="">
-                <option value="">Select a type…</option>
-                {PROJECT_TYPES.map(t => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="ws-contact-field">
-              <label htmlFor="contact-budget">Budget Range</label>
-              <select id="contact-budget" name="budget_range" defaultValue="">
-                <option value="">Select a budget…</option>
-                {BUDGET_RANGES.map(b => (
-                  <option key={b} value={b}>{b}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Timeline */}
-          <div className="ws-contact-field">
-            <label htmlFor="contact-timeline">Timeline</label>
-            <select id="contact-timeline" name="timeline" defaultValue="">
-              <option value="">Select a timeline…</option>
-              {TIMELINES.map(t => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Message */}
-          <div className="ws-contact-field">
-            <label htmlFor="contact-message">
-              Message <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <textarea
-              id="contact-message" name="message"
-              placeholder="Tell me about your project or idea…"
-              required
-              rows={5}
-              aria-describedby={errors.message ? 'err-message' : undefined}
-              aria-invalid={!!errors.message}
-            />
-            {errors.message && <span id="err-message" className="ws-field-error" role="alert">{errors.message}</span>}
-          </div>
-
-          <div ref={turnstileRef} aria-label="Spam verification" style={{ marginBottom: '1.25rem' }} />
-
-          <button
-            type="submit"
-            className="ws-btn-primary"
-            disabled={sending}
-            style={{ width: '100%', justifyContent: 'center' }}
-          >
-            {sending ? 'Sending…' : 'Send Message →'}
-          </button>
-
-          <p className="ws-contact-note">Protected by Cloudflare Turnstile · No spam bots</p>
-        </form>
+      {/* Subject */}
+      <div className="pf-form-field">
+        <label className="pf-form-label" htmlFor="contact-subject">Subject</label>
+        <input
+          id="contact-subject"
+          name="subject"
+          type="text"
+          className="pf-input"
+          placeholder="What's this about?"
+          value={subject}
+          onChange={e => setSubject(e.target.value)}
+          autoComplete="off"
+        />
       </div>
 
-    </div>
+      {/* Project Type + Budget row */}
+      <div className="pf-form-row">
+        <div className="pf-form-field">
+          <label className="pf-form-label" htmlFor="contact-project-type">Project Type</label>
+          <select
+            id="contact-project-type"
+            name="project_type"
+            className="pf-form-select"
+            value={projectType}
+            onChange={e => setProjectType(e.target.value)}
+          >
+            <option value="">Select a type…</option>
+            {PROJECT_TYPES.map(t => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="pf-form-field">
+          <label className="pf-form-label" htmlFor="contact-budget">Budget Range</label>
+          <select
+            id="contact-budget"
+            name="budget_range"
+            className="pf-form-select"
+            value={budgetRange}
+            onChange={e => setBudgetRange(e.target.value)}
+          >
+            <option value="">Select a budget…</option>
+            {BUDGET_RANGES.map(b => (
+              <option key={b} value={b}>{b}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Timeline */}
+      <div className="pf-form-field">
+        <label className="pf-form-label" htmlFor="contact-timeline">Timeline</label>
+        <select
+          id="contact-timeline"
+          name="timeline"
+          className="pf-form-select"
+          value={timeline}
+          onChange={e => setTimeline(e.target.value)}
+        >
+          <option value="">Select a timeline…</option>
+          {TIMELINES.map(t => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Message */}
+      <div className="pf-form-field">
+        <label className="pf-form-label" htmlFor="contact-message">
+          Message <span aria-hidden="true" style={{ color: '#ef4444' }}>*</span>
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          className="pf-textarea"
+          placeholder="Tell me about your project or idea…"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          required
+          rows={5}
+          aria-describedby={errors.message ? 'err-message' : undefined}
+          aria-invalid={!!errors.message}
+        />
+        {errors.message && <span id="err-message" className="pf-form-error" role="alert">{errors.message}</span>}
+      </div>
+
+      <div ref={turnstileRef} aria-label="Spam verification" style={{ marginBottom: '1.25rem' }} />
+
+      <div className="pf-form-submit">
+        <button
+          type="submit"
+          className="ws-btn-primary"
+          disabled={loading}
+          style={{ width: '100%', justifyContent: 'center' }}
+        >
+          {loading ? 'Sending…' : 'Send Message'}
+        </button>
+      </div>
+    </form>
   );
 }
