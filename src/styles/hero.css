@@ -743,7 +743,7 @@
 
 /* ── 16. BOTTOM MARQUEE ───────────────────────────────────── */
 .hs__bottom {
-  padding: 40px 0 52px;
+  padding: 40px 0 0;
 }
 
 .hs__marquee-label {
