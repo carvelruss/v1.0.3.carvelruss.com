@@ -205,13 +205,15 @@
   color: var(--sh-text);
   cursor: pointer;
   flex-shrink: 0;
-  transition: box-shadow 0.2s ease, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: box-shadow 0.2s ease;
 }
 
-.sh__ham:hover {
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.18);
-  background: #f8f9fc;
-}
+.sh__ham:hover  { box-shadow: 0 4px 20px rgba(15, 23, 42, 0.18); }
+.sh__ham:focus  { outline: none; background: var(--sh-bg); }
+.sh__ham:active { background: var(--sh-bg); }
 
 .sh__ham:focus-visible {
   outline: 3px solid rgba(91, 53, 245, 0.5);
