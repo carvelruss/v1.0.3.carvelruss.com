@@ -915,12 +915,18 @@
 /* Small mobile (< 576px) */
 @media (max-width: 575px) {
   .hs__actions {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
   }
 
   .hs__btn-primary,
-  .hs__btn-secondary { justify-content: center; width: 100%; }
+  .hs__btn-secondary {
+    justify-content: center;
+    width: auto;
+    font-size: 13px;
+    padding: 12px 18px;
+  }
 
   .hs__features {
     flex-direction: column;
