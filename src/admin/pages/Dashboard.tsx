@@ -66,7 +66,6 @@ export default function Dashboard() {
   // ── Derived stats ──────────────────────────────────────────────────────────
   const publishedProjects = projects.filter(p => p.status === 'published').length;
   const draftProjects     = projects.filter(p => p.status === 'draft').length;
-  const publishedPosts    = posts.filter(p => p.status === 'published').length;
   const unreadCount       = inquiries.filter(i => i.status === 'unread').length;
 
   const stats = [

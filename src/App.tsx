@@ -29,6 +29,7 @@ function RevealObserver() {
 }
 
 import 'bootstrap/dist/css/bootstrap-grid.min.css';
+import './styles/public.css';
 import './styles/webStudio.css';
 import './styles/main.scss';
 

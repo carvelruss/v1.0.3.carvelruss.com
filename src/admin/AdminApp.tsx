@@ -8,10 +8,12 @@ import ProjectsAdmin from './pages/ProjectsAdmin';
 import PostsAdmin from './pages/PostsAdmin';
 import InboxAdmin from './pages/InboxAdmin';
 import PostForm from './components/PostForm';
-import './styles/admin.scss';
+import './styles/admin.css';
 
-const AdminMediaPage    = lazy(() => import('./pages/AdminMediaPage'));
-const AdminSettingsPage = lazy(() => import('./pages/AdminSettingsPage'));
+const AdminMediaPage           = lazy(() => import('./pages/AdminMediaPage'));
+const AdminSettingsPage        = lazy(() => import('./pages/AdminSettingsPage'));
+const AdminCaseStudyFormPage   = lazy(() => import('./pages/AdminCaseStudyFormPage'));
+const AdminInquiryDetailPage   = lazy(() => import('./pages/AdminInquiryDetailPage'));
 
 class AdminErrorBoundary extends Component<{ children: ReactNode }, { error: string | null }> {
   state = { error: null };
@@ -19,9 +21,9 @@ class AdminErrorBoundary extends Component<{ children: ReactNode }, { error: str
   render() {
     if (this.state.error) {
       return (
-        <div style={{ padding: 32, fontFamily: 'monospace', color: '#c00', background: '#fff1f0', minHeight: '100vh' }}>
+        <div className="admin-root" style={{ padding: 32, fontFamily: 'monospace', color: '#fca5a5', minHeight: '100vh' }}>
           <strong>Admin render error:</strong>
-          <pre style={{ marginTop: 12, whiteSpace: 'pre-wrap' }}>{this.state.error}</pre>
+          <pre style={{ marginTop: 12, whiteSpace: 'pre-wrap', color: '#ef4444' }}>{this.state.error}</pre>
         </div>
       );
     }
@@ -38,8 +40,8 @@ function AdminGuard({ children }: { children: ReactNode }) {
 function AdminSuspense({ children }: { children: ReactNode }) {
   return (
     <Suspense fallback={
-      <div style={{ padding: '48px 32px', color: '#64748b', fontFamily: 'system-ui' }}>
-        Loading…
+      <div className="admin-root" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="a-loading">Loading…</div>
       </div>
     }>
       {children}
@@ -47,37 +49,43 @@ function AdminSuspense({ children }: { children: ReactNode }) {
   );
 }
 
+function G({ children }: { children: ReactNode }) {
+  return <AdminGuard>{children}</AdminGuard>;
+}
+
+function GS({ children }: { children: ReactNode }) {
+  return <AdminGuard><AdminSuspense>{children}</AdminSuspense></AdminGuard>;
+}
+
 export default function AdminApp() {
   return (
     <AdminErrorBoundary>
       <AuthProvider>
         <Routes>
-          <Route path="login"  element={<Login />} />
-          <Route path=""       element={<Navigate to="dashboard" replace />} />
+          <Route path="login"               element={<Login />} />
+          <Route path=""                    element={<Navigate to="dashboard" replace />} />
 
-          <Route element={<AdminGuard><Dashboard /></AdminGuard>}      path="dashboard" />
-          <Route element={<AdminGuard><ProjectsAdmin /></AdminGuard>}  path="projects" />
-          <Route element={<AdminGuard><PostsAdmin /></AdminGuard>}     path="posts" />
-          <Route element={<AdminGuard><PostForm /></AdminGuard>}       path="posts/new" />
-          <Route element={<AdminGuard><PostForm /></AdminGuard>}       path="posts/:slug/edit" />
-          <Route element={<AdminGuard><InboxAdmin /></AdminGuard>}     path="inbox" />
+          <Route path="dashboard"           element={<G><Dashboard /></G>} />
 
-          <Route
-            path="media"
-            element={
-              <AdminGuard>
-                <AdminSuspense><AdminMediaPage /></AdminSuspense>
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <AdminGuard>
-                <AdminSuspense><AdminSettingsPage /></AdminSuspense>
-              </AdminGuard>
-            }
-          />
+          {/* Case Studies */}
+          <Route path="projects"            element={<G><ProjectsAdmin /></G>} />
+          <Route path="projects/new"        element={<GS><AdminCaseStudyFormPage /></GS>} />
+          <Route path="projects/:id/edit"   element={<GS><AdminCaseStudyFormPage /></GS>} />
+
+          {/* Blog Posts */}
+          <Route path="posts"               element={<G><PostsAdmin /></G>} />
+          <Route path="posts/new"           element={<G><PostForm /></G>} />
+          <Route path="posts/:slug/edit"    element={<G><PostForm /></G>} />
+
+          {/* Inquiries */}
+          <Route path="inbox"               element={<G><InboxAdmin /></G>} />
+          <Route path="inbox/:id"           element={<GS><AdminInquiryDetailPage /></GS>} />
+
+          {/* Media */}
+          <Route path="media"               element={<GS><AdminMediaPage /></GS>} />
+
+          {/* Settings */}
+          <Route path="settings"            element={<GS><AdminSettingsPage /></GS>} />
         </Routes>
       </AuthProvider>
     </AdminErrorBoundary>
