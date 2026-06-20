@@ -1,327 +1,341 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
 import AdminLayout from '../components/AdminLayout';
 import type { Inquiry } from '../../types';
 
 type InquiryStatus = 'unread' | 'read' | 'replied' | 'archived';
 
-function ChevronIcon({ open }: { open: boolean }) {
+const STATUS_BADGE: Record<InquiryStatus, string> = {
+  unread:   'a-badge--unread',
+  read:     'a-badge--read',
+  replied:  'a-badge--replied',
+  archived: 'a-badge--archived',
+};
+
+const STATUS_LABELS: Record<InquiryStatus, string> = {
+  unread:   'Unread',
+  read:     'Read',
+  replied:  'Replied',
+  archived: 'Archived',
+};
+
+const PROJECT_TYPES = [
+  'Website Design',
+  'Web Application',
+  'E-commerce',
+  'Landing Page',
+  'Branding',
+  'Consulting',
+  'Other',
+];
+
+const PAGE_SIZE = 10;
+
+function EyeIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" strokeWidth="2.5"
-      style={{ transition: 'transform .2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }}>
-      <polyline points="6 9 12 15 18 9" />
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      aria-hidden="true">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
 
-const STATUS_CONFIG: Record<InquiryStatus, { label: string; bg: string; color: string }> = {
-  unread:   { label: 'New',      bg: '#eff6ff', color: '#2563eb' },
-  read:     { label: 'Read',     bg: '#f3f4f6', color: '#6b7280' },
-  replied:  { label: 'Replied',  bg: '#dcfce7', color: '#16a34a' },
-  archived: { label: 'Archived', bg: '#fef3c7', color: '#d97706' },
-};
-
-function StatusBadge({ status }: { status: InquiryStatus }) {
-  const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.read;
+function TrashIcon() {
   return (
-    <span style={{
-      background: cfg.bg, color: cfg.color,
-      borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600,
-      display: 'inline-flex', alignItems: 'center', gap: 5,
-    }}>
-      {status === 'unread' && (
-        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#2563eb', display: 'inline-block' }} aria-hidden="true" />
-      )}
-      {cfg.label}
-    </span>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      aria-hidden="true">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14H6L5 6" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M9 6V4h6v2" />
+    </svg>
   );
 }
 
-const FILTER_TABS: { value: string; label: string }[] = [
-  { value: 'all',      label: 'All'      },
-  { value: 'unread',   label: 'Unread'   },
-  { value: 'replied',  label: 'Replied'  },
-  { value: 'archived', label: 'Archived' },
-];
+function SearchIcon() {
+  return (
+    <svg className="a-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      aria-hidden="true">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
+
+function exportCSV(rows: Inquiry[]) {
+  const headers = ['ID', 'Name', 'Email', 'Project Type', 'Status', 'Subject', 'Message', 'Date'];
+  const escape = (v: string | null | undefined) =>
+    `"${(v ?? '').replace(/"/g, '""')}"`;
+  const lines = [
+    headers.join(','),
+    ...rows.map(r =>
+      [
+        r.id,
+        escape(r.name),
+        escape(r.email),
+        escape(r.project_type),
+        r.status,
+        escape(r.subject),
+        escape(r.message),
+        new Date(r.created_at).toISOString(),
+      ].join(','),
+    ),
+  ];
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `inquiries-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function InboxAdmin() {
+  const navigate = useNavigate();
+
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-  const [expanded, setExpanded]   = useState<number | null>(null);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState('');
-  const [success, setSuccess]     = useState('');
-  const [filter, setFilter]       = useState('all');
   const [search, setSearch]       = useState('');
+  const [statusFilter, setStatusFilter]   = useState('');
+  const [projectFilter, setProjectFilter] = useState('');
+  const [page, setPage]           = useState(1);
 
   const load = () => {
     setLoading(true);
     api.getInquiries()
       .then(setInquiries)
-      .catch(() => setError('Failed to load inquiries'))
+      .catch(() => setError('Failed to load inquiries.'))
       .finally(() => setLoading(false));
   };
 
   useEffect(load, []);
 
-  const handleExpand = async (inq: Inquiry) => {
-    if (expanded === inq.id) { setExpanded(null); return; }
-    setExpanded(inq.id);
-    if (inq.status === 'unread') {
-      try {
-        await api.updateInquiryStatus(inq.id, 'read');
-        setInquiries(prev => prev.map(i => i.id === inq.id ? { ...i, status: 'read', is_read: 1 } : i));
-      } catch { /* ignore */ }
-    }
-  };
+  const unreadCount = useMemo(
+    () => inquiries.filter(i => i.status === 'unread').length,
+    [inquiries],
+  );
 
-  const handleStatusChange = async (inq: Inquiry, newStatus: InquiryStatus) => {
-    try {
-      await api.updateInquiryStatus(inq.id, newStatus);
-      setInquiries(prev => prev.map(i =>
-        i.id === inq.id
-          ? { ...i, status: newStatus, is_read: newStatus !== 'unread' ? 1 : 0 }
-          : i,
-      ));
-      setSuccess(`Marked as ${newStatus}.`);
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Update failed');
-    }
-  };
+  const filtered = useMemo(() => {
+    return inquiries.filter(inq => {
+      if (statusFilter && inq.status !== statusFilter) return false;
+      if (projectFilter && inq.project_type !== projectFilter) return false;
+      if (search) {
+        const q = search.toLowerCase();
+        return (
+          inq.name.toLowerCase().includes(q) ||
+          inq.email.toLowerCase().includes(q) ||
+          (inq.subject ?? '').toLowerCase().includes(q) ||
+          inq.message.toLowerCase().includes(q) ||
+          (inq.project_type ?? '').toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+  }, [inquiries, statusFilter, projectFilter, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage   = Math.min(page, totalPages);
+  const pageRows   = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  // Reset to page 1 when filters change
+  useEffect(() => { setPage(1); }, [search, statusFilter, projectFilter]);
 
   const handleDelete = async (inq: Inquiry) => {
     if (!window.confirm(`Delete message from "${inq.name}"? This cannot be undone.`)) return;
     try {
       await api.deleteInquiry(inq.id);
-      setSuccess('Message deleted.');
-      setExpanded(null);
       load();
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Delete failed');
     }
   };
 
-  const effectiveStatus = (inq: Inquiry): InquiryStatus =>
-    (inq.status as InquiryStatus) ?? (inq.is_read ? 'read' : 'unread');
-
-  const unread = inquiries.filter(i => effectiveStatus(i) === 'unread').length;
-
-  const filtered = inquiries.filter(inq => {
-    const status = effectiveStatus(inq);
-    if (filter !== 'all' && status !== filter) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return (
-        inq.name.toLowerCase().includes(q) ||
-        inq.email.toLowerCase().includes(q) ||
-        (inq.subject ?? '').toLowerCase().includes(q) ||
-        inq.message.toLowerCase().includes(q)
-      );
-    }
-    return true;
-  });
-
   const formatDate = (d: string) =>
     new Date(d).toLocaleDateString('en-US', {
       month: 'short', day: 'numeric', year: 'numeric',
-      hour: '2-digit', minute: '2-digit',
     });
 
-  const avatarColor = (name: string) => {
-    const colors = [
-      { bg: '#eef2ff', text: '#6366f1' },
-      { bg: '#dcfce7', text: '#16a34a' },
-      { bg: '#fef3c7', text: '#d97706' },
-      { bg: '#fee2e2', text: '#ef4444' },
-      { bg: '#f0f9ff', text: '#0284c7' },
-      { bg: '#fdf4ff', text: '#a855f7' },
-    ];
-    return colors[name.charCodeAt(0) % colors.length];
-  };
-
   return (
-    <AdminLayout pageTitle="Inbox" unreadInquiries={unread}>
-      {error   && <div className="a-alert a-alert--error"   role="alert"  style={{ marginBottom: 16 }} onClick={() => setError('')}>{error}</div>}
-      {success && <div className="a-alert a-alert--success" role="status" style={{ marginBottom: 16 }} onClick={() => setSuccess('')}>{success}</div>}
+    <AdminLayout pageTitle="Inquiries" unreadInquiries={unreadCount}>
+      {error && (
+        <div className="a-alert a-alert--error" role="alert"
+          style={{ marginBottom: 16 }} onClick={() => setError('')}>
+          {error}
+        </div>
+      )}
 
-      {/* Header + Search */}
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 16 }}>
-        <div style={{ flex: 1, minWidth: 200 }}>
+      {/* Toolbar */}
+      <div className="a-toolbar" style={{ marginBottom: 20 }}>
+        <div className="a-search-wrap">
+          <SearchIcon />
           <input
+            className="a-search"
             type="search"
             placeholder="Search inquiries…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="a-input"
             aria-label="Search inquiries"
           />
         </div>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {FILTER_TABS.map(tab => (
-            <button
-              key={tab.value}
-              className={`a-btn a-btn--sm ${filter === tab.value ? 'a-btn--primary' : 'a-btn--ghost'}`}
-              onClick={() => setFilter(tab.value)}
-              aria-pressed={filter === tab.value}
-            >
-              {tab.label}
-              {tab.value === 'unread' && unread > 0 && (
-                <span style={{ marginLeft: 4, background: '#2563eb', color: '#fff', borderRadius: 10, padding: '0 5px', fontSize: 10, fontWeight: 700 }}>
-                  {unread}
-                </span>
-              )}
-            </button>
+
+        <select
+          className="a-filter-select"
+          value={statusFilter}
+          onChange={e => setStatusFilter(e.target.value)}
+          aria-label="Filter by status"
+        >
+          <option value="">All Status</option>
+          <option value="unread">Unread</option>
+          <option value="read">Read</option>
+          <option value="replied">Replied</option>
+          <option value="archived">Archived</option>
+        </select>
+
+        <select
+          className="a-filter-select"
+          value={projectFilter}
+          onChange={e => setProjectFilter(e.target.value)}
+          aria-label="Filter by project type"
+        >
+          <option value="">All Project Types</option>
+          {PROJECT_TYPES.map(pt => (
+            <option key={pt} value={pt}>{pt}</option>
           ))}
-        </div>
+        </select>
+
+        <button
+          className="a-btn a-btn--ghost"
+          onClick={() => exportCSV(filtered)}
+          aria-label="Export inquiries as CSV"
+        >
+          Export
+        </button>
       </div>
 
+      {/* Table */}
       <div className="a-card">
-        {loading ? (
-          <p style={{ padding: 32, color: '#64748b', textAlign: 'center' }}>Loading…</p>
-        ) : filtered.length === 0 ? (
-          <div style={{ padding: '48px 24px', textAlign: 'center' }}>
-            <div style={{ fontSize: 32, marginBottom: 10 }}>📭</div>
-            <p style={{ color: '#64748b', fontSize: 14 }}>
-              {search || filter !== 'all'
-                ? 'No inquiries match your search or filter.'
-                : 'No inquiries yet. Messages from your contact form will appear here.'}
-            </p>
-          </div>
-        ) : (
-          <div>
-            {filtered.map((inq, idx) => {
-              const av     = avatarColor(inq.name);
-              const isOpen = expanded === inq.id;
-              const status = effectiveStatus(inq);
-              return (
-                <div key={inq.id} style={{ borderBottom: idx < filtered.length - 1 ? '1px solid #e5e7eb' : 'none' }}>
-                  {/* Row header */}
-                  <div
-                    style={{
-                      display: 'flex', alignItems: 'flex-start',
-                      gap: 13, padding: '14px 20px', cursor: 'pointer',
-                      background: isOpen ? '#fafbfd' : (status === 'unread' ? '#f8faff' : undefined),
-                      transition: 'background .12s',
-                    }}
-                    onClick={() => handleExpand(inq)}
-                    role="button" tabIndex={0}
-                    onKeyDown={e => e.key === 'Enter' && handleExpand(inq)}
-                    aria-expanded={isOpen}
-                    aria-label={`Message from ${inq.name}`}
+        <div className="a-table-wrap">
+          {loading ? (
+            <div className="a-loading" style={{ padding: 48, textAlign: 'center', color: '#64748b' }}>
+              Loading…
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="a-empty" style={{ padding: '48px 24px', textAlign: 'center' }}>
+              <div className="a-empty__icon" style={{ fontSize: 32, marginBottom: 10 }}>📭</div>
+              <p style={{ color: '#64748b', fontSize: 14 }}>
+                {search || statusFilter || projectFilter
+                  ? 'No inquiries match your filters.'
+                  : 'No inquiries yet. Contact form submissions will appear here.'}
+              </p>
+            </div>
+          ) : (
+            <table className="a-table" aria-label="Inquiries list">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Project Type</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageRows.map(inq => (
+                  <tr
+                    key={inq.id}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => navigate(`/admin/inbox/${inq.id}`)}
+                    tabIndex={0}
+                    onKeyDown={e => e.key === 'Enter' && navigate(`/admin/inbox/${inq.id}`)}
+                    aria-label={`View inquiry from ${inq.name}`}
                   >
-                    {/* Avatar */}
-                    <div style={{
-                      width: 38, height: 38, borderRadius: '50%',
-                      background: av.bg, color: av.text,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontWeight: 700, fontSize: 14, flexShrink: 0,
-                    }} aria-hidden="true">
-                      {inq.name.charAt(0).toUpperCase()}
-                    </div>
+                    <td style={{ maxWidth: 260 }}>
+                      <div className="a-table__title">{inq.name}</div>
+                      <div className="a-table__sub">{inq.email}</div>
+                    </td>
 
-                    {/* Content */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                          <span style={{ fontWeight: status === 'unread' ? 700 : 500, fontSize: 14, color: '#0f172a' }}>
-                            {inq.name}
-                          </span>
-                          <StatusBadge status={status} />
-                          {inq.project_type && (
-                            <span style={{ fontSize: 11, background: '#ede9fe', color: '#7c3aed', borderRadius: 10, padding: '2px 8px', fontWeight: 500 }}>
-                              {inq.project_type}
-                            </span>
-                          )}
-                        </div>
-                        <span style={{ fontSize: 11.5, color: '#64748b', flexShrink: 0, whiteSpace: 'nowrap' }}>
-                          {formatDate(inq.created_at)}
-                        </span>
-                      </div>
-                      <div style={{ fontSize: 12, color: '#64748b', marginTop: 1 }}>
-                        {inq.email}
-                        {inq.subject && <span style={{ marginLeft: 8, color: '#374151' }}>· {inq.subject}</span>}
-                      </div>
-                      {!isOpen && (
-                        <div style={{ fontSize: 13, color: '#64748b', marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {inq.message}
-                        </div>
-                      )}
-                    </div>
+                    <td style={{ color: '#64748b', fontSize: 13 }}>
+                      {inq.project_type ?? <span style={{ color: '#9ca3af' }}>—</span>}
+                    </td>
 
-                    <span style={{ color: '#64748b', flexShrink: 0 }}>
-                      <ChevronIcon open={isOpen} />
-                    </span>
-                  </div>
+                    <td>
+                      <span className={`a-badge ${STATUS_BADGE[inq.status]}`}>
+                        {STATUS_LABELS[inq.status]}
+                      </span>
+                    </td>
 
-                  {/* Expanded body */}
-                  {isOpen && (
-                    <div style={{ padding: '0 20px 20px 71px' }}>
-                      {/* Meta row */}
-                      {(inq.project_type || inq.budget_range || inq.timeline) && (
-                        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 12 }}>
-                          {inq.project_type  && <div style={{ fontSize: 12, color: '#64748b' }}><strong>Project:</strong> {inq.project_type}</div>}
-                          {inq.budget_range  && <div style={{ fontSize: 12, color: '#64748b' }}><strong>Budget:</strong>  {inq.budget_range}</div>}
-                          {inq.timeline      && <div style={{ fontSize: 12, color: '#64748b' }}><strong>Timeline:</strong> {inq.timeline}</div>}
-                        </div>
-                      )}
+                    <td style={{ color: '#64748b', fontSize: 12, whiteSpace: 'nowrap' }}>
+                      {formatDate(inq.created_at)}
+                    </td>
 
-                      {/* Message */}
-                      <div style={{
-                        background: '#f6f8fb', border: '1px solid #e5e7eb',
-                        borderRadius: 10, padding: '13px 16px',
-                        fontSize: 13.5, color: '#0f172a', lineHeight: 1.65,
-                        whiteSpace: 'pre-wrap', marginBottom: 14,
-                      }}>
-                        {inq.message}
-                      </div>
-
-                      {/* From row */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 12, color: '#64748b', marginBottom: 14, flexWrap: 'wrap' }}>
-                        <span>From: <a href={`mailto:${inq.email}`} style={{ color: '#6366f1', fontWeight: 500 }}>{inq.email}</a></span>
-                        {inq.ip_address && <span>IP: {inq.ip_address}</span>}
-                      </div>
-
-                      {/* Actions */}
-                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                        <a href={`mailto:${inq.email}?subject=Re: ${inq.subject || 'Your message'}`}
-                          className="a-btn a-btn--primary a-btn--sm">
-                          ↩ Reply via email
-                        </a>
-                        {status !== 'replied' && (
-                          <button className="a-btn a-btn--ghost a-btn--sm"
-                            onClick={() => handleStatusChange(inq, 'replied')}>
-                            ✓ Mark as Replied
-                          </button>
-                        )}
-                        {status !== 'archived' && (
-                          <button className="a-btn a-btn--ghost a-btn--sm"
-                            onClick={() => handleStatusChange(inq, 'archived')}>
-                            Archive
-                          </button>
-                        )}
-                        {status === 'archived' && (
-                          <button className="a-btn a-btn--ghost a-btn--sm"
-                            onClick={() => handleStatusChange(inq, 'read')}>
-                            Unarchive
-                          </button>
-                        )}
-                        {status !== 'unread' && (
-                          <button className="a-btn a-btn--ghost a-btn--sm"
-                            onClick={() => handleStatusChange(inq, 'unread')}>
-                            Mark Unread
-                          </button>
-                        )}
-                        <button className="a-btn a-btn--danger a-btn--sm"
-                          onClick={() => handleDelete(inq)}>
-                          Delete
+                    <td>
+                      <div className="a-table__actions" onClick={e => e.stopPropagation()}>
+                        <button
+                          className="a-action-btn a-action-btn--view"
+                          onClick={() => navigate(`/admin/inbox/${inq.id}`)}
+                          aria-label={`View inquiry from ${inq.name}`}
+                          title="View"
+                        >
+                          <EyeIcon />
+                        </button>
+                        <button
+                          className="a-action-btn a-action-btn--delete"
+                          onClick={() => handleDelete(inq)}
+                          aria-label={`Delete inquiry from ${inq.name}`}
+                          title="Delete"
+                        >
+                          <TrashIcon />
                         </button>
                       </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="a-pagination">
+            <span className="a-pagination__info">
+              {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)} of {filtered.length}
+            </span>
+            <div className="a-pagination__btns">
+              <button
+                className={`a-pager${safePage === 1 ? ' active' : ''}`}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={safePage === 1}
+                aria-label="Previous page"
+              >
+                ‹
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+                <button
+                  key={n}
+                  className={`a-pager${n === safePage ? ' active' : ''}`}
+                  onClick={() => setPage(n)}
+                  aria-label={`Page ${n}`}
+                  aria-current={n === safePage ? 'page' : undefined}
+                >
+                  {n}
+                </button>
+              ))}
+              <button
+                className={`a-pager${safePage === totalPages ? ' active' : ''}`}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={safePage === totalPages}
+                aria-label="Next page"
+              >
+                ›
+              </button>
+            </div>
           </div>
         )}
       </div>
