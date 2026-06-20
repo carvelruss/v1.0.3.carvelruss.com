@@ -875,7 +875,7 @@
   .hs__phone-card { left: 202px; }
   .hs__type-card  { right: 4px; }
 
-  .hs__bottom { justify-content: center; padding-top: 64px; }
+  .hs__bottom { justify-content: center; padding-top: 96px; }
 }
 
 /* Tablet (768–991px): keep visual visible, slightly smaller */
