@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import type { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -342,39 +341,23 @@ export default function HeroSection() {
 
         </div>{/* end .row */}
 
-        {/* ────────── BOTTOM STRIP ────────── */}
+        {/* ────────── BOTTOM MARQUEE ────────── */}
         <div className="hs__bottom">
-
-          {/* Tools I Use */}
-          <div className="hs__tools-strip">
-            <span className="hs__tools-label">Tools I Use</span>
-            {TOOLS.map((tool, i) => (
-              <Fragment key={tool.name}>
-                {i > 0 && <span className="hs__tool-sep" />}
-                <div className="hs__tool">
+          <p className="hs__marquee-label">Tools I Work With</p>
+          <div className="hs__marquee" aria-label="Tools I work with">
+            {/* Duplicated for seamless infinite loop */}
+            <div className="hs__marquee-track" aria-hidden="true">
+              {[...TOOLS, ...TOOLS].map((tool, i) => (
+                <div key={i} className="hs__marquee-item">
                   <span
-                    className="hs__tool-icon"
+                    className="hs__marquee-icon"
                     style={{ background: tool.bg, color: tool.color }}
                   >
                     {tool.abbr}
                   </span>
-                  <span className="hs__tool-name">{tool.name}</span>
+                  <span className="hs__marquee-name">{tool.name}</span>
                 </div>
-              </Fragment>
-            ))}
-          </div>
-
-          {/* Happy Clients */}
-          <div className="hs__clients">
-            <div className="hs__client-avatars">
-              <span className="hs__client-avatar hs__client-avatar--a">JD</span>
-              <span className="hs__client-avatar hs__client-avatar--b">AM</span>
-              <span className="hs__client-avatar hs__client-avatar--c">SK</span>
-              <span className="hs__client-avatar hs__client-avatar--plus">+</span>
-            </div>
-            <div className="hs__client-text">
-              <strong>10+ Happy Clients</strong>
-              <span>Worldwide</span>
+              ))}
             </div>
           </div>
 
