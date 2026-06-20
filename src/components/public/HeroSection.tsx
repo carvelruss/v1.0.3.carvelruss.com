@@ -345,8 +345,7 @@ export default function HeroSection() {
 
       {/* ────────── BOTTOM MARQUEE (full-width) ────────── */}
       <div className="hs__bottom">
-        <p className="hs__marquee-label">Tools I Work With</p>
-        <div className="hs__marquee" aria-label="Tools I work with">
+<div className="hs__marquee" aria-label="Tools I work with">
           <div className="hs__marquee-track" aria-hidden="true">
             {[...TOOLS, ...TOOLS].map((tool, i) => (
               <div key={i} className="hs__marquee-item">
