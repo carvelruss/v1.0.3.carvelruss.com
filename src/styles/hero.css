@@ -76,25 +76,18 @@
 }
 
 /* ── 4. CONTAINER / ROW ───────────────────────────────────── */
-/* Mirror header's .sh__inner exactly at every breakpoint */
 .hs__container {
   position: relative;
   z-index: 1;
-  max-width: 1400px !important;
-  padding-left: 48px !important;
-  padding-right: 48px !important;
 }
 
-@media (max-width: 1199px) {
-  .hs__container { padding-left: 28px !important; padding-right: 28px !important; }
-}
-
-@media (max-width: 767px) {
-  .hs__container { padding-left: 20px !important; padding-right: 20px !important; }
-}
-
-@media (max-width: 400px) {
-  .hs__container { padding-left: 14px !important; padding-right: 14px !important; }
+/* Match header's .sh__inner at ≥1200px */
+@media (min-width: 1200px) {
+  .hs__container {
+    max-width: 1400px !important;
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
 }
 
 .hs__row { min-height: 540px; }
@@ -105,7 +98,6 @@
   flex-direction: column;
   justify-content: center;
   padding-right: 32px;
-  overflow: hidden;
 }
 
 /* ── 6. BADGE ─────────────────────────────────────────────── */
@@ -268,10 +260,7 @@
 }
 
 /* ── 11. RIGHT VISUAL ─────────────────────────────────────── */
-.hs__visual {
-  position: relative;
-  overflow: hidden;
-}
+.hs__visual { position: relative; }
 
 .hs__visual-wrap {
   position: relative;
