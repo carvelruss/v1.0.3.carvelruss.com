@@ -1,0 +1,393 @@
+/* ============================================================
+   SITE FOOTER — Premium card footer, aligned to hero width
+   Namespace: .ft__ (tokens) + .footer-* (classes)
+   ============================================================ */
+
+/* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
+:root {
+  --ft-primary:       #0D215A;
+  --ft-primary-dark:  #091842;
+  --ft-primary-light: #1E4ED8;
+  --ft-bg:            #F3F6FC;
+  --ft-surface:       #ffffff;
+  --ft-text:          #0F172A;
+  --ft-text-soft:     #334155;
+  --ft-muted:         #64748B;
+  --ft-border:        #DDE5F2;
+  --ft-radius:        28px;
+  --ft-shadow:        0 16px 45px rgba(13, 33, 90, 0.08);
+  --ft-font:          -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── 2. SECTION WRAPPER ───────────────────────────────────── */
+.site-footer {
+  background: var(--ft-bg);
+  padding: 0 0 48px;
+  font-family: var(--ft-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── 3. CONTAINER — exact match to hero section width ─────── */
+.site-footer > .container {
+  position: relative;
+}
+
+@media (min-width: 1200px) {
+  .site-footer > .container {
+    max-width: 1400px !important;
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+}
+
+/* ── 4. FOOTER CARD ───────────────────────────────────────── */
+.footer-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid var(--ft-border);
+  border-radius: var(--ft-radius);
+  box-shadow: var(--ft-shadow);
+  overflow: hidden;
+  padding: 52px 52px 0;
+}
+
+/* ── 5. MAIN GRID ─────────────────────────────────────────── */
+.footer-main {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 48px;
+}
+
+/* ── 6. BRAND COLUMN ──────────────────────────────────────── */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.footer-logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.footer-description {
+  font-size: 14.5px;
+  color: var(--ft-muted);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 300px;
+}
+
+.footer-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--ft-primary) 0%, var(--ft-primary-light) 100%);
+  padding: 11px 22px;
+  border-radius: 50px;
+  width: fit-content;
+  letter-spacing: -0.1px;
+  transition: box-shadow 0.22s ease, transform 0.18s ease;
+}
+
+.footer-cta:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(13, 33, 90, 0.30);
+}
+
+.footer-cta:focus-visible {
+  outline: 3px solid rgba(13, 33, 90, 0.45);
+  outline-offset: 3px;
+}
+
+.footer-cta-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.footer-cta:hover .footer-cta-arrow { transform: translateX(3px); }
+
+/* ── 7. FOOTER COLUMNS ────────────────────────────────────── */
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-column-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ft-primary);
+  margin: 0;
+}
+
+/* ── 8. NAV LINKS ─────────────────────────────────────────── */
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-link {
+  font-size: 14.5px;
+  color: var(--ft-text-soft);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  width: fit-content;
+}
+
+.footer-link:hover {
+  color: var(--ft-primary);
+  transform: translateX(4px);
+}
+
+.footer-link:focus-visible {
+  outline: 2px solid rgba(13, 33, 90, 0.5);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── 9. EXPERTISE ITEMS ───────────────────────────────────── */
+.footer-expertise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-expertise-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  color: var(--ft-text-soft);
+  line-height: 1.4;
+}
+
+.footer-expertise-item::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ft-primary-light);
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* ── 10. CONTACT DETAILS ──────────────────────────────────── */
+.footer-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-contact-item {
+  font-size: 14px;
+  color: var(--ft-muted);
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.footer-contact-link {
+  color: var(--ft-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer-contact-link:hover { color: var(--ft-primary-light); }
+
+.footer-contact-link:focus-visible {
+  outline: 2px solid rgba(13, 33, 90, 0.5);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ── 11. SOCIAL BUTTONS ───────────────────────────────────── */
+.footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.footer-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ft-surface);
+  border: 1.5px solid var(--ft-border);
+  color: var(--ft-text-soft);
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.2s ease, border-color 0.2s ease,
+              color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+
+.footer-social-link:hover {
+  background: var(--ft-primary);
+  border-color: var(--ft-primary);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(13, 33, 90, 0.25);
+}
+
+.footer-social-link:focus-visible {
+  outline: 3px solid rgba(13, 33, 90, 0.45);
+  outline-offset: 2px;
+}
+
+/* ── 12. DIVIDER ──────────────────────────────────────────── */
+.footer-divider {
+  height: 1px;
+  background: var(--ft-border);
+  margin: 0 -52px;
+}
+
+/* ── 13. BOTTOM BAR ───────────────────────────────────────── */
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 0;
+}
+
+.footer-copyright,
+.footer-built-with {
+  font-size: 13px;
+  color: var(--ft-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.footer-built-with {
+  text-align: right;
+}
+
+/* ── 14. RESPONSIVE ───────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 991.98px) {
+  .footer-card {
+    padding: 40px 40px 0;
+  }
+
+  .footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+    padding-bottom: 40px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .footer-brand-text {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-description { max-width: 400px; }
+
+  .footer-divider { margin: 0 -40px; }
+}
+
+/* Mobile */
+@media (max-width: 575.98px) {
+  .site-footer {
+    padding: 0 0 32px;
+  }
+
+  .footer-card {
+    padding: 28px 24px 0;
+    border-radius: 20px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-bottom: 28px;
+  }
+
+  .footer-brand {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .footer-brand-text {
+    width: 100%;
+  }
+
+  .footer-description { max-width: 100%; }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 20px 0;
+  }
+
+  .footer-built-with { text-align: left; }
+
+  .footer-divider { margin: 0 -24px; }
+}
+
+/* Very small */
+@media (max-width: 359.98px) {
+  .footer-card {
+    padding: 24px 18px 0;
+    border-radius: 16px;
+  }
+
+  .footer-divider { margin: 0 -18px; }
+}
+
+/* ── 15. REDUCED MOTION ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .footer-link,
+  .footer-social-link,
+  .footer-cta,
+  .footer-cta-arrow { transition: none !important; }
+}

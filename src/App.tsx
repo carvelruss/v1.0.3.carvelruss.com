@@ -34,7 +34,7 @@ import './styles/webStudio.css';
 import './styles/main.scss';
 
 import Header   from './components/layout/Header';
-import WSFooter from './components/webstudio/WSFooter';
+import Footer from './components/layout/Footer';
 
 import ProjectsPage    from './pages/ProjectsPage';
 import CaseStudyDetail from './pages/CaseStudyDetail';
@@ -53,7 +53,7 @@ function ProjectsLayout() {
       <main id="main-content" tabIndex={-1}>
         <ProjectsPage />
       </main>
-      <WSFooter />
+      <Footer />
     </div>
   );
 }
@@ -65,7 +65,7 @@ function BlogListLayout() {
       <main id="main-content" tabIndex={-1}>
         <BlogList />
       </main>
-      <WSFooter />
+      <Footer />
     </div>
   );
 }
@@ -77,7 +77,7 @@ function BlogPostLayout() {
       <main id="main-content" tabIndex={-1}>
         <BlogSingle />
       </main>
-      <WSFooter />
+      <Footer />
     </div>
   );
 }
@@ -89,7 +89,7 @@ function SkillsLayout() {
       <main id="main-content" tabIndex={-1}>
         <SkillsPage />
       </main>
-      <WSFooter />
+      <Footer />
     </div>
   );
 }
@@ -101,7 +101,7 @@ function ContactLayout() {
       <main id="main-content" tabIndex={-1}>
         <ContactPage />
       </main>
-      <WSFooter />
+      <Footer />
     </div>
   );
 }
@@ -113,7 +113,7 @@ function ThankYouLayout() {
       <main id="main-content" tabIndex={-1}>
         <ThankYou />
       </main>
-      <WSFooter />
+      <Footer />
     </div>
   );
 }
@@ -125,7 +125,7 @@ function CaseStudyLayout() {
       <main id="main-content" tabIndex={-1}>
         <CaseStudyDetail />
       </main>
-      <WSFooter />
+      <Footer />
     </div>
   );
 }

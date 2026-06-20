@@ -2,7 +2,7 @@ import Header from '../components/layout/Header';
 import HeroSection from '../components/public/HeroSection';
 import FeaturedCaseStudies from '../components/public/FeaturedCaseStudies';
 import RecentBlogs from '../components/public/RecentBlogs';
-import WSFooter from '../components/webstudio/WSFooter';
+import Footer from '../components/layout/Footer';
 
 const VALUES = [
   { icon: '👤', title: 'User-Centered',  desc: 'Designs based on real user needs and goals.' },
@@ -33,7 +33,7 @@ export default function WebStudioLanding() {
           </div>
         </section>
       </main>
-      <WSFooter />
+      <Footer />
     </div>
   )
 }
