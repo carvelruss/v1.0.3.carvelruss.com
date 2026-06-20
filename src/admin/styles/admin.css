@@ -87,9 +87,9 @@
   align-items: center;
   gap: .75rem;
   padding: 1.125rem 1.125rem 1rem;
-  border-bottom: 1px solid var(--adm-border);
   margin-bottom: .5rem;
   text-align: left;
+  background: var(--adm-surface);
 }
 
 .admin-sidebar__brand-icon {
