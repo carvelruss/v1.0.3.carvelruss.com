@@ -1197,32 +1197,15 @@
   color: var(--adm-muted);
 }
 
-/* ── 27. SIDEBAR BRAND ───────────────────────────────────────── */
-.admin-sidebar__brand-mark {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background: #0D215A;
-  color: #fff;
-  font-size: .6875rem;
-  font-weight: 800;
-  letter-spacing: -.02em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ── 27. SIDEBAR LOGO ────────────────────────────────────────── */
+.admin-sidebar__brand-logo {
+  height: 26px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
   flex-shrink: 0;
-}
-
-.admin-sidebar__brand-name {
-  font-size: .875rem;
-  font-weight: 700;
-  color: var(--adm-text);
-  letter-spacing: -.02em;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: block;
+  border-radius: 5px;
 }
 
 .admin-sidebar__brand-admin {
