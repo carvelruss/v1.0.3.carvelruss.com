@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  FiLayers, FiCheckCircle, FiFileText, FiEdit2,
+  FiMail, FiBell, FiPlus, FiExternalLink,
+} from 'react-icons/fi';
 import { api } from '../../lib/api';
 import AdminLayout from '../components/AdminLayout';
 import type { Inquiry, Post, Project } from '../../types';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 18) return 'Good afternoon';
+  return 'Good evening';
+}
 
 function relativeTime(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -40,6 +51,8 @@ function badgeLabel(status: Inquiry['status']): string {
   return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
+type IconComponent = React.ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
@@ -68,13 +81,30 @@ export default function Dashboard() {
   const draftProjects     = projects.filter(p => p.status === 'draft').length;
   const unreadCount       = inquiries.filter(i => i.status === 'unread').length;
 
-  const stats = [
-    { label: 'TOTAL CASE STUDIES', value: projects.length,  delta: '↑ 13%', up: true  },
-    { label: 'PUBLISHED',          value: publishedProjects, delta: '↑ 8%',  up: true  },
-    { label: 'DRAFTS',             value: draftProjects,     delta: '↓ 4%',  up: false },
-    { label: 'TOTAL BLOGS',        value: posts.length,      delta: '↑ 15%', up: true  },
-    { label: 'TOTAL INQUIRIES',    value: inquiries.length,  delta: '↑ 9%',  up: true  },
-    { label: 'UNREAD INQUIRIES',   value: unreadCount,       delta: null,     up: false },
+  type Stat = {
+    label: string;
+    value: number;
+    delta: string | null;
+    up: boolean;
+    icon: IconComponent;
+    iconColor: string;
+  };
+
+  const stats: Stat[] = [
+    { label: 'Total Case Studies', value: projects.length,   delta: '↑ 13%', up: true,  icon: FiLayers,      iconColor: 'primary' },
+    { label: 'Published',          value: publishedProjects,  delta: '↑ 8%',  up: true,  icon: FiCheckCircle, iconColor: 'success' },
+    { label: 'Drafts',             value: draftProjects,      delta: '↓ 4%',  up: false, icon: FiFileText,    iconColor: 'warning' },
+    { label: 'Total Blogs',        value: posts.length,       delta: '↑ 15%', up: true,  icon: FiEdit2,       iconColor: 'info'    },
+    { label: 'Total Inquiries',    value: inquiries.length,   delta: '↑ 9%',  up: true,  icon: FiMail,        iconColor: 'primary' },
+    { label: 'Unread Inquiries',   value: unreadCount,        delta: null,     up: false, icon: FiBell,        iconColor: 'danger'  },
+  ];
+
+  // ── Quick actions ──────────────────────────────────────────────────────────
+  const quickActions = [
+    { label: 'New Case Study', icon: FiLayers,       color: 'primary', action: () => navigate('/admin/projects/new') },
+    { label: 'New Blog Post',  icon: FiEdit2,        color: 'info',    action: () => navigate('/admin/posts/new')    },
+    { label: 'View Inbox',     icon: FiMail,         color: 'success', action: () => navigate('/admin/inbox')        },
+    { label: 'View Site',      icon: FiExternalLink, color: 'muted',   action: () => window.open('/', '_blank')      },
   ];
 
   // ── Recent slices ──────────────────────────────────────────────────────────
@@ -103,39 +133,76 @@ export default function Dashboard() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <AdminLayout pageTitle="Dashboard Overview" unreadInquiries={unreadCount}>
+    <AdminLayout pageTitle="Dashboard" unreadInquiries={unreadCount}>
 
-      {/* ── Dashboard header ── */}
-      <div className="adm-dash-header">
-        <div>
-          <div className="adm-dash-title">Dashboard Overview</div>
-          <div className="adm-dash-date">{dateRange()}</div>
+      {/* ── Welcome banner ── */}
+      <div className="adm-welcome">
+        <div className="adm-welcome__text">
+          <div className="adm-welcome__greeting">{getGreeting()}, Carvel</div>
+          <div className="adm-welcome__sub">
+            Here's what's happening in your portfolio · {dateRange()}
+          </div>
         </div>
-        <button
-          className="a-btn a-btn--primary a-btn--sm"
-          onClick={() => navigate('/admin/projects/new')}
-        >
-          + New Case Study
-        </button>
+        <div className="adm-welcome__actions">
+          <button
+            className="a-btn a-btn--primary a-btn--sm"
+            onClick={() => navigate('/admin/projects/new')}
+          >
+            <FiPlus size={13} aria-hidden /> New Case Study
+          </button>
+          <button
+            className="a-btn a-btn--ghost a-btn--sm"
+            onClick={() => navigate('/admin/posts/new')}
+          >
+            <FiPlus size={13} aria-hidden /> New Blog Post
+          </button>
+        </div>
       </div>
 
       {loading ? (
         <div className="a-loading">Loading…</div>
       ) : (
         <>
-          {/* ── Stats grid (3×2) ── */}
+          {/* ── Stats grid ── */}
           <div className="adm-stats-grid">
-            {stats.map(s => (
-              <div key={s.label} className="adm-stat">
-                <span className="adm-stat__label">{s.label}</span>
-                <div className="adm-stat__value">{s.value}</div>
-                {s.delta && (
-                  <span className={`adm-stat__delta ${s.up ? 'adm-stat__delta--up' : 'adm-stat__delta--down'}`}>
-                    {s.delta}
-                  </span>
-                )}
-              </div>
-            ))}
+            {stats.map(s => {
+              const Icon = s.icon;
+              return (
+                <div key={s.label} className="adm-stat">
+                  <div className="adm-stat__header">
+                    <span className="adm-stat__label">{s.label}</span>
+                    <div className={`adm-stat__icon-wrap adm-stat__icon-wrap--${s.iconColor}`} aria-hidden="true">
+                      <Icon size={13} />
+                    </div>
+                  </div>
+                  <div className="adm-stat__value">{s.value}</div>
+                  {s.delta && (
+                    <span className={`adm-stat__delta ${s.up ? 'adm-stat__delta--up' : 'adm-stat__delta--down'}`}>
+                      {s.delta} vs last month
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* ── Quick actions ── */}
+          <div className="adm-quick-actions">
+            {quickActions.map(qa => {
+              const Icon = qa.icon;
+              return (
+                <button
+                  key={qa.label}
+                  className="adm-quick-action"
+                  onClick={qa.action}
+                >
+                  <div className={`adm-quick-action__icon adm-quick-action__icon--${qa.color}`} aria-hidden="true">
+                    <Icon size={16} />
+                  </div>
+                  <span className="adm-quick-action__label">{qa.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* ── Two-column panels ── */}
@@ -146,17 +213,17 @@ export default function Dashboard() {
               <div className="a-section-head">
                 <span className="a-section-head__title">Recent Inquiries</span>
                 <button
-                  className="a-btn a-btn--ghost a-btn--sm a-section-head__action"
+                  className="a-section-head__action"
                   onClick={() => navigate('/admin/inbox')}
                 >
-                  View All
+                  View All →
                 </button>
               </div>
 
               {recentInquiries.length === 0 ? (
                 <div className="a-empty">
-                  <div className="a-empty__icon">📭</div>
-                  No inquiries yet
+                  <FiMail size={28} className="a-empty__icon-react" aria-hidden />
+                  <p>No inquiries yet</p>
                 </div>
               ) : (
                 <ul className="a-recent-list">
@@ -170,7 +237,7 @@ export default function Dashboard() {
                       <div className="a-recent-item__avatar">
                         {inq.name.charAt(0).toUpperCase()}
                       </div>
-                      <div style={{ minWidth: 0, flex: 1 }}>
+                      <div className="a-recent-item__body">
                         <div className="a-recent-item__name">{inq.name}</div>
                         <div className="a-recent-item__sub">{inq.message}</div>
                       </div>
@@ -186,12 +253,18 @@ export default function Dashboard() {
             <div className="a-card">
               <div className="a-section-head">
                 <span className="a-section-head__title">Recent Content</span>
+                <button
+                  className="a-section-head__action"
+                  onClick={() => navigate('/admin/projects')}
+                >
+                  View All →
+                </button>
               </div>
 
               {recentContent.length === 0 ? (
                 <div className="a-empty">
-                  <div className="a-empty__icon">📄</div>
-                  No content yet
+                  <FiFileText size={28} className="a-empty__icon-react" aria-hidden />
+                  <p>No content yet</p>
                 </div>
               ) : (
                 <ul className="a-recent-list">
@@ -200,17 +273,20 @@ export default function Dashboard() {
                       key={item.id}
                       className="a-recent-item"
                       style={{ cursor: 'pointer' }}
-                      onClick={() =>
-                        navigate(item.type === 'Blog' ? '/admin/posts' : '/admin/projects')
-                      }
+                      onClick={() => navigate(item.type === 'Blog' ? '/admin/posts' : '/admin/projects')}
                     >
-                      <div className="a-recent-item__avatar"
-                        style={{ background: item.type === 'Blog' ? 'rgba(56,189,248,.15)' : 'rgba(99,102,241,.15)',
-                                 color:      item.type === 'Blog' ? '#38bdf8' : '#818cf8' }}
+                      <div
+                        className="a-recent-item__avatar"
+                        style={{
+                          background: item.type === 'Blog'
+                            ? 'rgba(56,189,248,.15)'
+                            : 'rgba(99,102,241,.15)',
+                          color: item.type === 'Blog' ? '#38bdf8' : '#818cf8',
+                        }}
                       >
                         {item.type === 'Blog' ? 'B' : 'C'}
                       </div>
-                      <div style={{ minWidth: 0, flex: 1 }}>
+                      <div className="a-recent-item__body">
                         <div className="a-recent-item__name">{item.title}</div>
                         <div className="a-recent-item__sub">{item.type}</div>
                       </div>

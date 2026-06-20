@@ -6,10 +6,10 @@ import { useAuth } from '../context/AuthContext';
 export default function Login() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [password, setPassword] = useState('');
+  const [password,     setPassword]     = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [loading,      setLoading]      = useState(false);
+  const [error,        setError]        = useState('');
 
   if (isAuthenticated) {
     navigate('/admin/dashboard', { replace: true });
@@ -33,22 +33,30 @@ export default function Login() {
 
   return (
     <div className="al-root">
-      {/* Left: photo panel */}
+
+      {/* ── Left: branding panel ── */}
       <div className="al-photo" aria-hidden="true">
-        {/* Replace with your own image: add /admin-bg.jpg to public/ and uncomment below */}
-        {/* <img src="/admin-bg.jpg" alt="" className="al-photo__img" /> */}
         <div className="al-photo__overlay" />
         <div className="al-photo__brand">
-          <span className="al-photo__brand-name">devfolio</span>
-          <span className="al-photo__brand-dot">.</span>
+          <img
+            src="/logos/carvelruss-logo.png"
+            alt="Carvel Russ"
+            className="al-photo__brand-logo"
+          />
+          <p className="al-photo__brand-tagline">Portfolio Admin Panel</p>
         </div>
       </div>
 
-      {/* Right: form panel */}
+      {/* ── Right: form panel ── */}
       <div className="al-panel">
         <div className="al-panel__inner">
+
           <div className="al-panel__logo">
-            dev<span>folio</span><span className="al-panel__logo-dot">.</span>
+            <img
+              src="/logos/carvelruss-logo.png"
+              alt="Carvel Russ"
+              className="al-panel__logo-img"
+            />
           </div>
 
           <h1 className="al-panel__title">Welcome back</h1>
@@ -95,11 +103,13 @@ export default function Login() {
 
           <div className="al-footer-links">
             <span>Secured with JWT</span>
-            <span>·</span>
+            <span aria-hidden="true">·</span>
             <span>24-hour session</span>
           </div>
+
         </div>
       </div>
+
     </div>
   );
 }
