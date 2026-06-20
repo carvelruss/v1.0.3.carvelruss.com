@@ -895,11 +895,11 @@
   .hs__btn-primary,
   .hs__btn-secondary { font-size: 15px; padding: 15px 24px; }
 
-  .hs__visual-wrap { height: 300px; }
+  .hs__visual-wrap { height: 380px; }
 
   /* Only show dashboard on mobile; hide smaller floating cards */
   .hs__dash-card     { left: 0; right: 0; }
-  .hs__dash-body     { height: 164px; }
+  .hs__dash-body     { height: 240px; }
   .hs__schedule-card { display: none; }
   .hs__phone-card    { display: none; }
   .hs__type-card     { display: none; }
@@ -937,7 +937,7 @@
   .hs__feature-title { margin-bottom: 2px; }
   .hs__feature-desc  { font-size: 12px; }
 
-  .hs__visual-wrap { height: 258px; }
+  .hs__visual-wrap { height: 340px; }
 
   .hs__marquee-item { padding: 0 20px; }
   .hs__marquee-name { font-size: 13px; }
@@ -945,7 +945,7 @@
 
 /* Very small (< 400px) */
 @media (max-width: 399px) {
-  .hs__visual-wrap { height: 224px; }
+  .hs__visual-wrap { height: 300px; }
   .hs__badge       { font-size: 11px; }
 }
 
