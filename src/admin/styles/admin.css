@@ -87,9 +87,10 @@
   align-items: center;
   gap: .75rem;
   padding: 1.125rem 1.125rem 1rem;
-  border-bottom: 1px solid var(--adm-border);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   margin-bottom: .5rem;
   text-align: left;
+  background: #091842;
 }
 
 .admin-sidebar__brand-icon {
@@ -1205,7 +1206,6 @@
   object-fit: contain;
   flex-shrink: 0;
   display: block;
-  border-radius: 5px;
 }
 
 .admin-sidebar__brand-admin {
@@ -1215,7 +1215,7 @@
   text-transform: uppercase;
   background: var(--adm-primary-soft);
   color: var(--adm-primary-text);
-  border: 1px solid rgba(30,78,216,.18);
+  border: 1px solid rgba(99,102,241,.25);
   padding: .2rem .5rem;
   border-radius: var(--adm-r-full);
   white-space: nowrap;
