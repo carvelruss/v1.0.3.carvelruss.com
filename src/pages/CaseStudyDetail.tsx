@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   FiGlobe, FiGithub, FiChevronRight, FiArrowLeft,
-  FiUser, FiLayers, FiClock, FiBriefcase, FiTool,
+  FiUser, FiLayers, FiClock, FiBriefcase,
 } from 'react-icons/fi';
 import '../styles/case-study-detail.css';
 import { api } from '../lib/api';
@@ -54,7 +54,6 @@ export default function CaseStudyDetail() {
     project.role         && { icon: FiUser,      label: 'Role',         value: project.role          },
     project.client_name  && { icon: FiBriefcase, label: 'Client',       value: project.client_name   },
     project.timeline     && { icon: FiClock,     label: 'Timeline',     value: project.timeline      },
-    project.tools        && { icon: FiTool,      label: 'Tools',        value: project.tools         },
   ].filter(Boolean) as { icon: React.ComponentType<{ size?: number }>, label: string; value: string }[];
 
   return (

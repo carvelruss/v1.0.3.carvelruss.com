@@ -538,18 +538,7 @@ export default function AdminCaseStudyFormPage() {
                 <span className="a-field__hint">Comma-separated — e.g. React, TypeScript, Node.js</span>
               </div>
 
-              <div className="a-field">
-                <label className="a-field__label" htmlFor="cs-tools">Tools</label>
-                <input
-                  id="cs-tools"
-                  className="a-input"
-                  value={form.tools}
-                  onChange={e => set('tools', e.target.value)}
-                  placeholder="Figma, Photoshop, Notion"
-                />
-              </div>
-
-              <div className="a-field">
+<div className="a-field">
                 <label className="a-field__label" htmlFor="cs-timeline">Timeline</label>
                 <input
                   id="cs-timeline"
