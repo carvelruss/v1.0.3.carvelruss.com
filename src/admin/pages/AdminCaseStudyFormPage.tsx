@@ -1,6 +1,7 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
+import { api } from '../../lib/api';
 
 interface FormData {
   title: string;
@@ -60,13 +61,11 @@ export default function AdminCaseStudyFormPage() {
   const [success, setSuccess] = useState('');
   const [slugTouched, setSlugTouched] = useState(false);
 
-  const token = localStorage.getItem('admin_token');
-
   useEffect(() => {
     if (isNew) return;
     setLoading(true);
     fetch(`/api/projects/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${api.getToken()}` },
     })
       .then(async res => {
         if (!res.ok) throw new Error(`Failed to load project (${res.status})`);
@@ -95,7 +94,7 @@ export default function AdminCaseStudyFormPage() {
       })
       .catch(err => setError(err instanceof Error ? err.message : 'Failed to load'))
       .finally(() => setLoading(false));
-  }, [id, isNew, token]);
+  }, [id, isNew]);
 
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -143,12 +142,11 @@ export default function AdminCaseStudyFormPage() {
       const url    = isNew ? '/api/projects' : `/api/projects/${id}`;
       const method = isNew ? 'POST' : 'PUT';
 
-      const currentToken = localStorage.getItem('admin_token');
       const res = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${currentToken}`,
+          Authorization: `Bearer ${api.getToken()}`,
         },
         body: JSON.stringify(payload),
       });
