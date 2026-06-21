@@ -75,59 +75,45 @@ export default function CaseStudyDetail() {
 
           <div className="cs-hero__inner">
 
-            {/* Left: text */}
-            <div className="cs-hero__text">
-
-              {/* Badges */}
-              <div className="cs-badges">
-                <span className="cs-badge">Case Study</span>
-                {project.project_type && (
-                  <span className="cs-badge cs-badge--blue">{project.project_type}</span>
-                )}
-              </div>
-
-              {/* Logo */}
-              {project.logo_url && (
-                <img
-                  src={project.logo_url}
-                  alt={`${project.title} logo`}
-                  className="cs-hero__logo"
-                />
+            {/* Badges */}
+            <div className="cs-badges">
+              <span className="cs-badge">Case Study</span>
+              {project.project_type && (
+                <span className="cs-badge cs-badge--blue">{project.project_type}</span>
               )}
-
-              {/* Title */}
-              <h1 className="cs-hero__title">{project.title}</h1>
-
-              {/* Description */}
-              <p className="cs-hero__desc">
-                {project.excerpt || project.description}
-              </p>
-
-              {/* CTAs */}
-              <div className="cs-hero__ctas">
-                {project.live_url && (
-                  <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="cs-cta-primary">
-                    <FiGlobe size={15} /> View Live Site
-                  </a>
-                )}
-                {project.github_url && (
-                  <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="cs-cta-outline">
-                    <FiGithub size={15} /> GitHub
-                  </a>
-                )}
-              </div>
             </div>
 
-            {/* Right: cover image */}
-            {project.cover_url && (
-              <div className="cs-hero__cover-wrap">
-                <img
-                  src={project.cover_url}
-                  alt={`${project.title} preview`}
-                  className="cs-hero__cover"
-                />
-              </div>
+            {/* Logo */}
+            {project.logo_url && (
+              <img
+                src={project.logo_url}
+                alt={`${project.title} logo`}
+                className="cs-hero__logo"
+              />
             )}
+
+            {/* Title */}
+            <h1 className="cs-hero__title">{project.title}</h1>
+
+            {/* Description */}
+            <p className="cs-hero__desc">
+              {project.excerpt || project.description}
+            </p>
+
+            {/* CTAs */}
+            <div className="cs-hero__ctas">
+              {project.live_url && (
+                <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="cs-cta-primary">
+                  <FiGlobe size={15} /> View Live Site
+                </a>
+              )}
+              {project.github_url && (
+                <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="cs-cta-outline">
+                  <FiGithub size={15} /> GitHub
+                </a>
+              )}
+            </div>
+
           </div>
 
         </div>
@@ -140,6 +126,15 @@ export default function CaseStudyDetail() {
 
             {/* Content */}
             <main className="col-lg-8">
+              {project.cover_url && (
+                <div className="cs-cover">
+                  <img
+                    src={project.cover_url}
+                    alt={`${project.title} preview`}
+                    className="cs-cover__img"
+                  />
+                </div>
+              )}
               {project.content ? (
                 <div
                   className="pf-prose"

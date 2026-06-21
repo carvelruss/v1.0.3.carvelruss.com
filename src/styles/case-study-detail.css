@@ -54,22 +54,9 @@
 }
 .cs-breadcrumb__btn:hover { color: var(--pf-primary); }
 
-/* ── Hero inner: two-column ──────────────────────────────────── */
+/* ── Hero inner: single column ───────────────────────────────── */
 .cs-hero__inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: flex-end;
-}
-
-/* Hero has no right column if no cover → full width */
-.cs-hero__inner:has(.cs-hero__text:only-child) {
-  grid-template-columns: 1fr;
-  max-width: 720px;
-}
-
-/* ── Hero text ───────────────────────────────────────────────── */
-.cs-hero__text {
+  max-width: 760px;
   padding-bottom: 3.5rem;
 }
 
@@ -182,28 +169,26 @@
   transform: translateY(-1px);
 }
 
-/* ── Cover image ─────────────────────────────────────────────── */
-.cs-hero__cover-wrap {
-  align-self: flex-end;
-  border-radius: 12px 12px 0 0;
+/* ── Body ────────────────────────────────────────────────────── */
+.cs-body {
+  padding-top: 3rem;
+  padding-bottom: 5rem;
+}
+
+/* ── Cover image (top of content column) ────────────────────── */
+.cs-cover {
+  margin-bottom: 2rem;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, .1);
   border: 1px solid var(--pf-border);
-  border-bottom: none;
   line-height: 0;
 }
 
-.cs-hero__cover {
+.cs-cover__img {
   width: 100%;
   display: block;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
-}
-
-/* ── Body ────────────────────────────────────────────────────── */
-.cs-body {
-  padding-top: 3.5rem;
-  padding-bottom: 5rem;
 }
 
 /* ── Sidebar ─────────────────────────────────────────────────── */
@@ -313,29 +298,10 @@
 .cs-sidebar__back:hover { color: var(--pf-primary); }
 
 /* ── Responsive ──────────────────────────────────────────────── */
-@media (max-width: 1023.98px) {
-  .cs-hero__inner {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .cs-hero__text {
-    padding-bottom: 0;
-  }
-
-  .cs-hero__cover-wrap {
-    border-radius: 12px 12px 0 0;
-  }
-
-  .cs-hero__cover {
-    aspect-ratio: 16 / 9;
-  }
-
-  .cs-hero__desc { max-width: 100%; }
-}
-
 @media (max-width: 767.98px) {
   .cs-hero { padding-top: 2.5rem; }
+  .cs-hero__inner { padding-bottom: 2.5rem; }
   .cs-hero__title { font-size: clamp(1.75rem, 6vw, 2.25rem); }
-  .cs-body { padding-top: 2.5rem; padding-bottom: 3rem; }
+  .cs-hero__desc { max-width: 100%; }
+  .cs-body { padding-top: 2rem; padding-bottom: 3rem; }
 }
