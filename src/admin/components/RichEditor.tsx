@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -26,6 +27,8 @@ type ToolSep = { type: 'sep' };
 type Tool = ToolBtn | ToolSep;
 
 export default function RichEditor({ value, onChange }: Props) {
+  const mounted = useRef(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -37,6 +40,15 @@ export default function RichEditor({ value, onChange }: Props) {
     content: value,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
+
+  // Sync when value changes externally (e.g. after API load)
+  useEffect(() => {
+    if (!editor) return;
+    if (!mounted.current) { mounted.current = true; return; }
+    if (editor.getHTML() !== value) {
+      editor.commands.setContent(value || '');
+    }
+  }, [editor, value]);
 
   if (!editor) return null;
 

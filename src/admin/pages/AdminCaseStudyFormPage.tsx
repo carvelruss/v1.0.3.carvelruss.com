@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
+import RichEditor from '../components/RichEditor';
 import { api } from '../../lib/api';
 
 interface FormData {
@@ -373,16 +374,11 @@ export default function AdminCaseStudyFormPage() {
               </div>
 
               <div className="a-field">
-                <label className="a-field__label" htmlFor="cs-content">Content</label>
-                <textarea
-                  id="cs-content"
-                  className="a-textarea"
-                  rows={14}
+                <label className="a-field__label">Content</label>
+                <RichEditor
                   value={form.content}
-                  onChange={e => set('content', e.target.value)}
-                  placeholder="Write your full case study here…"
+                  onChange={html => set('content', html)}
                 />
-                <span className="a-field__hint">Rich editor coming soon</span>
               </div>
             </div>
 
