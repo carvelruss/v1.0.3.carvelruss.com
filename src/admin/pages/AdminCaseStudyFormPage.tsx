@@ -245,72 +245,69 @@ export default function AdminCaseStudyFormPage() {
             }}
           />
 
-          <div className="a-field">
-            <label className="a-field__label" htmlFor="cs-cover-url">Image URL</label>
-            <div style={{ display: 'flex', gap: '.5rem' }}>
-              <input
-                id="cs-cover-url"
-                className="a-input"
-                type="url"
-                value={form.cover_url}
-                onChange={e => set('cover_url', e.target.value)}
-                placeholder="https://example.com/cover.jpg"
-                style={{ flex: 1 }}
-              />
-              <button
-                type="button"
-                className="a-btn a-btn--secondary a-btn--sm"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
-              >
-                {uploading ? 'Uploading…' : 'Upload Image'}
-              </button>
-            </div>
-            <span className="a-field__hint">Upload an image or paste a direct URL. Max 5 MB — JPEG, PNG, WebP, GIF, SVG.</span>
-          </div>
-
           {form.cover_url ? (
-            <div style={{ position: 'relative' }}>
-              <img
-                className="a-cover-preview"
-                src={form.cover_url}
-                alt="Cover preview"
-              />
-              <button
-                type="button"
-                className="a-btn a-btn--ghost a-btn--sm"
-                onClick={() => set('cover_url', '')}
-                style={{ position: 'absolute', top: 8, right: 8 }}
-                aria-label="Remove cover image"
-              >
-                Remove
-              </button>
+            /* ── Preview mode ── */
+            <div className="a-cover-preview-wrap">
+              <img className="a-cover-preview" src={form.cover_url} alt="Cover preview" />
+              <div className="a-cover-preview-actions">
+                <button
+                  type="button"
+                  className="a-btn a-btn--secondary a-btn--sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? 'Uploading…' : 'Replace'}
+                </button>
+                <button
+                  type="button"
+                  className="a-btn a-btn--ghost a-btn--sm"
+                  onClick={() => set('cover_url', '')}
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           ) : (
-            <button
-              type="button"
-              className="a-upload-zone"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
+            /* ── Upload zone ── */
+            <div
+              className={`a-upload-zone${uploading ? ' is-uploading' : ''}`}
+              onClick={() => !uploading && fileInputRef.current?.click()}
+              role="button"
+              tabIndex={0}
+              onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && fileInputRef.current?.click()}
               aria-label="Click to upload cover image"
-              style={{ width: '100%', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+              style={{ cursor: uploading ? 'default' : 'pointer' }}
             >
               <div className="a-upload-zone__icon" aria-hidden="true">
                 {uploading ? (
-                  <div className="a-loading" style={{ width: 32, height: 32 }} />
+                  <div className="a-loading" />
                 ) : (
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                     <polyline points="17 8 12 3 7 8" />
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
                 )}
               </div>
-              <p className="a-upload-zone__text">{uploading ? 'Uploading…' : 'Click to upload'}</p>
+              <p className="a-upload-zone__text">
+                {uploading ? 'Uploading…' : <><strong>Click to upload</strong> or drag and drop</>}
+              </p>
               <p className="a-upload-zone__hint">JPEG, PNG, WebP, GIF, SVG — max 5 MB</p>
-            </button>
+            </div>
           )}
+
+          {/* URL fallback */}
+          <div className="a-field" style={{ marginTop: '1rem' }}>
+            <label className="a-field__label" htmlFor="cs-cover-url">Or paste image URL</label>
+            <input
+              id="cs-cover-url"
+              className="a-input"
+              type="url"
+              value={form.cover_url}
+              onChange={e => set('cover_url', e.target.value)}
+              placeholder="https://example.com/cover.jpg"
+            />
+          </div>
         </div>
 
         {/* ── Two-column form ── */}

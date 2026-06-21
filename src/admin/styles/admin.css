@@ -906,6 +906,12 @@
 }
 
 /* Cover image preview */
+.a-cover-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
 .a-cover-preview {
   width: 100%;
   border-radius: var(--adm-r);
@@ -914,6 +920,11 @@
   border: 1px solid var(--adm-border);
   background: var(--adm-surface-3);
   display: block;
+}
+
+.a-cover-preview-actions {
+  display: flex;
+  gap: .5rem;
 }
 
 /* Form two-column layout */
