@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
 import { api } from '../../lib/api';
@@ -57,9 +57,35 @@ export default function AdminCaseStudyFormPage() {
   const [form, setForm] = useState<FormData>(EMPTY_FORM);
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [slugTouched, setSlugTouched] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleFileUpload(file: File) {
+    setUploading(true);
+    setError('');
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${api.getToken()}` },
+        body: fd,
+      });
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(json.error ?? `Upload failed (${res.status})`);
+      }
+      const { url } = await res.json() as { url: string };
+      set('cover_url', url);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  }
 
   useEffect(() => {
     if (isNew) return;
@@ -205,37 +231,85 @@ export default function AdminCaseStudyFormPage() {
         {/* ── Cover image ── */}
         <div className="a-card">
           <div className="a-section-label">Cover Image</div>
+
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+            style={{ display: 'none' }}
+            onChange={e => {
+              const file = e.target.files?.[0];
+              if (file) handleFileUpload(file);
+              e.target.value = '';
+            }}
+          />
+
           <div className="a-field">
             <label className="a-field__label" htmlFor="cs-cover-url">Image URL</label>
-            <input
-              id="cs-cover-url"
-              className="a-input"
-              type="url"
-              value={form.cover_url}
-              onChange={e => set('cover_url', e.target.value)}
-              placeholder="https://example.com/cover.jpg"
-            />
-            <span className="a-field__hint">Paste a direct image URL, or use the Media library to upload.</span>
+            <div style={{ display: 'flex', gap: '.5rem' }}>
+              <input
+                id="cs-cover-url"
+                className="a-input"
+                type="url"
+                value={form.cover_url}
+                onChange={e => set('cover_url', e.target.value)}
+                placeholder="https://example.com/cover.jpg"
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                className="a-btn a-btn--secondary a-btn--sm"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+              >
+                {uploading ? 'Uploading…' : 'Upload Image'}
+              </button>
+            </div>
+            <span className="a-field__hint">Upload an image or paste a direct URL. Max 5 MB — JPEG, PNG, WebP, GIF, SVG.</span>
           </div>
 
           {form.cover_url ? (
-            <img
-              className="a-cover-preview"
-              src={form.cover_url}
-              alt="Cover preview"
-            />
-          ) : (
-            <div className="a-upload-zone" aria-label="Cover image preview area">
-              <div className="a-upload-zone__icon" aria-hidden="true">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <path d="M21 15l-5-5L5 21" />
-                </svg>
-              </div>
-              <p className="a-upload-zone__text">No cover image set</p>
-              <p className="a-upload-zone__hint">Paste an image URL above to preview</p>
+            <div style={{ position: 'relative' }}>
+              <img
+                className="a-cover-preview"
+                src={form.cover_url}
+                alt="Cover preview"
+              />
+              <button
+                type="button"
+                className="a-btn a-btn--ghost a-btn--sm"
+                onClick={() => set('cover_url', '')}
+                style={{ position: 'absolute', top: 8, right: 8 }}
+                aria-label="Remove cover image"
+              >
+                Remove
+              </button>
             </div>
+          ) : (
+            <button
+              type="button"
+              className="a-upload-zone"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              aria-label="Click to upload cover image"
+              style={{ width: '100%', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+            >
+              <div className="a-upload-zone__icon" aria-hidden="true">
+                {uploading ? (
+                  <div className="a-loading" style={{ width: 32, height: 32 }} />
+                ) : (
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                )}
+              </div>
+              <p className="a-upload-zone__text">{uploading ? 'Uploading…' : 'Click to upload'}</p>
+              <p className="a-upload-zone__hint">JPEG, PNG, WebP, GIF, SVG — max 5 MB</p>
+            </button>
           )}
         </div>
 
