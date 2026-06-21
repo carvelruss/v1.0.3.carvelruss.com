@@ -931,6 +931,26 @@
   gap: .5rem;
 }
 
+/* Logo preview */
+.a-logo-preview-wrap { text-align: center; }
+
+.a-logo-preview {
+  max-height: 80px;
+  max-width: 180px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-r);
+  padding: .5rem 1rem;
+  background: var(--adm-surface-2);
+}
+
+/* Small upload zone variant */
+.a-upload-zone--sm {
+  padding: 1.25rem 1rem;
+}
+
 /* Form two-column layout */
 .a-form-two-col {
   display: grid;

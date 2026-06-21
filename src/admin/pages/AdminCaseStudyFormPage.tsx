@@ -8,6 +8,7 @@ interface FormData {
   slug: string;
   excerpt: string;
   content: string;
+  logo_url: string;
   cover_url: string;
   project_type: string;
   role: string;
@@ -27,6 +28,7 @@ const EMPTY_FORM: FormData = {
   slug: '',
   excerpt: '',
   content: '',
+  logo_url: '',
   cover_url: '',
   project_type: '',
   role: '',
@@ -58,13 +60,19 @@ export default function AdminCaseStudyFormPage() {
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [slugTouched, setSlugTouched] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
-  async function handleFileUpload(file: File) {
-    setUploading(true);
+  async function uploadFile(
+    file: File,
+    field: 'cover_url' | 'logo_url',
+    setBusy: (v: boolean) => void,
+  ) {
+    setBusy(true);
     setError('');
     try {
       const fd = new FormData();
@@ -79,11 +87,11 @@ export default function AdminCaseStudyFormPage() {
         throw new Error(json.error ?? `Upload failed (${res.status})`);
       }
       const { url } = await res.json() as { url: string };
-      set('cover_url', url);
+      set(field, url);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
-      setUploading(false);
+      setBusy(false);
     }
   }
 
@@ -103,6 +111,7 @@ export default function AdminCaseStudyFormPage() {
           slug:            String(data.slug            ?? ''),
           excerpt:         String(data.excerpt         ?? ''),
           content:         String(data.content         ?? ''),
+          logo_url:        String(data.logo_url        ?? ''),
           cover_url:       String(data.cover_url       ?? ''),
           project_type:    String(data.project_type    ?? ''),
           role:            String(data.role            ?? ''),
@@ -153,6 +162,7 @@ export default function AdminCaseStudyFormPage() {
         slug:            form.slug || toSlug(form.title),
         title:           form.title.trim(),
         excerpt:         form.excerpt.trim()         || null,
+        logo_url:        form.logo_url.trim()         || null,
         cover_url:       form.cover_url.trim()       || null,
         project_type:    form.project_type           || null,
         role:            form.role.trim()            || null,
@@ -232,7 +242,7 @@ export default function AdminCaseStudyFormPage() {
         <div className="a-card">
           <div className="a-section-label">Cover Image</div>
 
-          {/* Hidden file input */}
+          {/* Hidden file inputs */}
           <input
             ref={fileInputRef}
             type="file"
@@ -240,7 +250,7 @@ export default function AdminCaseStudyFormPage() {
             style={{ display: 'none' }}
             onChange={e => {
               const file = e.target.files?.[0];
-              if (file) handleFileUpload(file);
+              if (file) uploadFile(file, 'cover_url', setUploading);
               e.target.value = '';
             }}
           />
@@ -404,6 +414,83 @@ export default function AdminCaseStudyFormPage() {
 
           {/* ── RIGHT: Sidebar ── */}
           <div className="a-form-col">
+
+            {/* ── Brand Logo ── */}
+            <div className="a-card">
+              <div className="a-section-label">Brand Logo</div>
+
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                style={{ display: 'none' }}
+                onChange={e => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadFile(file, 'logo_url', setUploadingLogo);
+                  e.target.value = '';
+                }}
+              />
+
+              {form.logo_url ? (
+                <div className="a-logo-preview-wrap">
+                  <img src={form.logo_url} alt="Brand logo preview" className="a-logo-preview" />
+                  <div style={{ display: 'flex', gap: '.5rem', marginTop: '.75rem' }}>
+                    <button
+                      type="button"
+                      className="a-btn a-btn--secondary a-btn--sm"
+                      onClick={() => logoInputRef.current?.click()}
+                      disabled={uploadingLogo}
+                    >
+                      {uploadingLogo ? 'Uploading…' : 'Replace'}
+                    </button>
+                    <button
+                      type="button"
+                      className="a-btn a-btn--ghost a-btn--sm"
+                      onClick={() => set('logo_url', '')}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className={`a-upload-zone a-upload-zone--sm${uploadingLogo ? ' is-uploading' : ''}`}
+                  onClick={() => !uploadingLogo && logoInputRef.current?.click()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && logoInputRef.current?.click()}
+                  style={{ cursor: uploadingLogo ? 'default' : 'pointer' }}
+                >
+                  <div className="a-upload-zone__icon" aria-hidden="true">
+                    {uploadingLogo ? (
+                      <div className="a-loading" />
+                    ) : (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                      </svg>
+                    )}
+                  </div>
+                  <p className="a-upload-zone__text">
+                    {uploadingLogo ? 'Uploading…' : <><strong>Upload logo</strong></>}
+                  </p>
+                  <p className="a-upload-zone__hint">PNG or SVG recommended</p>
+                </div>
+              )}
+
+              <div className="a-field" style={{ marginTop: '1rem' }}>
+                <label className="a-field__label" htmlFor="cs-logo-url">Or paste logo URL</label>
+                <input
+                  id="cs-logo-url"
+                  className="a-input"
+                  type="url"
+                  value={form.logo_url}
+                  onChange={e => set('logo_url', e.target.value)}
+                  placeholder="https://example.com/logo.png"
+                />
+              </div>
+            </div>
 
             <div className="a-card">
               <div className="a-section-label">Project Details</div>
