@@ -14,6 +14,7 @@ const AdminMediaPage           = lazy(() => import('./pages/AdminMediaPage'));
 const AdminSettingsPage        = lazy(() => import('./pages/AdminSettingsPage'));
 const AdminCaseStudyFormPage   = lazy(() => import('./pages/AdminCaseStudyFormPage'));
 const AdminInquiryDetailPage   = lazy(() => import('./pages/AdminInquiryDetailPage'));
+const AdminAnalyticsPage       = lazy(() => import('./pages/AdminAnalyticsPage'));
 
 class AdminErrorBoundary extends Component<{ children: ReactNode }, { error: string | null }> {
   state = { error: null };
@@ -86,6 +87,9 @@ export default function AdminApp() {
 
           {/* Settings */}
           <Route path="settings"            element={<GS><AdminSettingsPage /></GS>} />
+
+          {/* Analytics */}
+          <Route path="analytics"           element={<GS><AdminAnalyticsPage /></GS>} />
         </Routes>
       </AuthProvider>
     </AdminErrorBoundary>

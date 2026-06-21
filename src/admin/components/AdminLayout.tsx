@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   FiGrid, FiLayers, FiEdit2, FiMail, FiImage, FiSettings,
-  FiExternalLink, FiLogOut,
+  FiExternalLink, FiLogOut, FiBarChart2,
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 
@@ -37,9 +37,10 @@ export default function AdminLayout({
     { icon: FiGrid,     label: 'Dashboard',    path: '/admin/dashboard' },
     { icon: FiLayers,   label: 'Case Studies', path: '/admin/projects'  },
     { icon: FiEdit2,    label: 'Blogs',        path: '/admin/posts'     },
-    { icon: FiMail,     label: 'Inquiries',    path: '/admin/inbox',    badgeCount: unreadInquiries },
-    { icon: FiImage,    label: 'Media',        path: '/admin/media'     },
-    { icon: FiSettings, label: 'Settings',     path: '/admin/settings'  },
+    { icon: FiMail,      label: 'Inquiries',  path: '/admin/inbox',     badgeCount: unreadInquiries },
+    { icon: FiBarChart2, label: 'Analytics',  path: '/admin/analytics'  },
+    { icon: FiImage,     label: 'Media',      path: '/admin/media'      },
+    { icon: FiSettings,  label: 'Settings',   path: '/admin/settings'   },
   ];
 
   const handleNav = (path: string) => {

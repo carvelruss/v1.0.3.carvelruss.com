@@ -1,5 +1,18 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+
+function PageTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname.startsWith('/admin')) return;
+    fetch('/api/analytics/pageview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: location.pathname }),
+    }).catch(() => {});
+  }, [location.pathname]);
+  return null;
+}
 
 // Global scroll-reveal — watches [data-reveal] elements and adds .is-revealed on entry
 function RevealObserver() {
@@ -134,6 +147,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <RevealObserver />
+      <PageTracker />
       <Routes>
         <Route path="/"                      element={<WebStudioLanding />} />
         <Route path="/case-studies"          element={<ProjectsLayout />} />
