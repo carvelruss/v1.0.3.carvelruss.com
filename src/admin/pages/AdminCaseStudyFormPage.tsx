@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
 import RichEditor from '../components/RichEditor';
 import { api } from '../../lib/api';
+import '../styles/blog-editor.css';
 
 interface FormData {
   title: string;

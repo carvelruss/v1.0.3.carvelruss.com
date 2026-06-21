@@ -13,44 +13,45 @@ import {
 interface Props {
   value: string;
   onChange: (html: string) => void;
+  placeholder?: string;
+  minHeight?: number;
 }
 
-type ToolBtn = {
-  type: 'btn';
-  icon: React.ReactNode;
-  title: string;
-  active?: boolean;
-  disabled?: boolean;
-  onClick: () => void;
-};
-type ToolSep = { type: 'sep' };
-type Tool = ToolBtn | ToolSep;
+function wordCount(html: string) {
+  const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  return text ? text.split(' ').length : 0;
+}
 
-export default function RichEditor({ value, onChange }: Props) {
+export default function RichEditor({ value, onChange, placeholder, minHeight = 340 }: Props) {
   const mounted = useRef(false);
 
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Placeholder.configure({ placeholder: 'Write your post here…' }),
+      Placeholder.configure({ placeholder: placeholder ?? 'Start writing here…' }),
       Link.configure({ openOnClick: false }),
       Image.configure({ inline: false }),
       Underline,
     ],
     content: value,
-    onUpdate: ({ editor }) => onChange(editor.getHTML()),
+    onUpdate: ({ editor: ed }) => onChange(ed.getHTML()),
   });
 
   // Sync when value changes externally (e.g. after API load)
   useEffect(() => {
     if (!editor) return;
     if (!mounted.current) { mounted.current = true; return; }
-    if (editor.getHTML() !== value) {
-      editor.commands.setContent(value || '');
+    if (editor.isEmpty && value) {
+      editor.commands.setContent(value);
     }
   }, [editor, value]);
 
   if (!editor) return null;
+
+  const headingLevel = editor.isActive('heading', { level: 1 }) ? '1'
+    : editor.isActive('heading', { level: 2 }) ? '2'
+    : editor.isActive('heading', { level: 3 }) ? '3'
+    : '0';
 
   const addLink = () => {
     const prev = editor.getAttributes('link').href ?? '';
@@ -65,37 +66,12 @@ export default function RichEditor({ value, onChange }: Props) {
     if (url?.trim()) editor.chain().focus().setImage({ src: url.trim() }).run();
   };
 
-  const headingLevel = editor.isActive('heading', { level: 1 }) ? '1'
-    : editor.isActive('heading', { level: 2 }) ? '2'
-    : editor.isActive('heading', { level: 3 }) ? '3'
-    : '0';
-
-  const tools: Tool[] = [
-    { type: 'btn', icon: <FiBold size={14} />, title: 'Bold (Ctrl+B)', active: editor.isActive('bold'), onClick: () => editor.chain().focus().toggleBold().run() },
-    { type: 'btn', icon: <FiItalic size={14} />, title: 'Italic (Ctrl+I)', active: editor.isActive('italic'), onClick: () => editor.chain().focus().toggleItalic().run() },
-    { type: 'btn', icon: <span style={{ fontWeight: 800, textDecoration: 'underline', fontSize: 13, lineHeight: 1 }}>U</span>, title: 'Underline (Ctrl+U)', active: editor.isActive('underline'), onClick: () => editor.chain().focus().toggleUnderline().run() },
-    { type: 'btn', icon: <span style={{ textDecoration: 'line-through', fontSize: 13, fontWeight: 600, lineHeight: 1 }}>S</span>, title: 'Strikethrough', active: editor.isActive('strike'), onClick: () => editor.chain().focus().toggleStrike().run() },
-    { type: 'sep' },
-    { type: 'btn', icon: <FiList size={14} />, title: 'Bullet list', active: editor.isActive('bulletList'), onClick: () => editor.chain().focus().toggleBulletList().run() },
-    { type: 'btn', icon: <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1 }}>1.</span>, title: 'Numbered list', active: editor.isActive('orderedList'), onClick: () => editor.chain().focus().toggleOrderedList().run() },
-    { type: 'btn', icon: <span style={{ fontSize: 17, fontWeight: 700, lineHeight: 1 }}>"</span>, title: 'Blockquote', active: editor.isActive('blockquote'), onClick: () => editor.chain().focus().toggleBlockquote().run() },
-    { type: 'btn', icon: <FiCode size={14} />, title: 'Inline code', active: editor.isActive('code'), onClick: () => editor.chain().focus().toggleCode().run() },
-    { type: 'btn', icon: <span style={{ fontSize: 11, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }}>{`</>`}</span>, title: 'Code block', active: editor.isActive('codeBlock'), onClick: () => editor.chain().focus().toggleCodeBlock().run() },
-    { type: 'sep' },
-    { type: 'btn', icon: <FiLink2 size={14} />, title: 'Insert / edit link', active: editor.isActive('link'), onClick: addLink },
-    { type: 'btn', icon: <FiImage size={14} />, title: 'Insert image', active: false, onClick: addImage },
-    { type: 'btn', icon: <FiMinus size={14} />, title: 'Horizontal rule', active: false, onClick: () => editor.chain().focus().setHorizontalRule().run() },
-    { type: 'sep' },
-    { type: 'btn', icon: <FiRotateCcw size={13} />, title: 'Undo (Ctrl+Z)', active: false, disabled: !editor.can().undo(), onClick: () => editor.chain().focus().undo().run() },
-    { type: 'btn', icon: <FiRotateCw size={13} />, title: 'Redo (Ctrl+Y)', active: false, disabled: !editor.can().redo(), onClick: () => editor.chain().focus().redo().run() },
-  ];
-
   return (
-    <div className="a-rich-editor">
-      <div className="a-rich-toolbar">
-        {/* Heading select */}
+    <div className="ep-card" style={{ marginBottom: 0 }}>
+      {/* Toolbar */}
+      <div className="ep-editor-toolbar">
         <select
-          className="a-rich-select"
+          className="ep-tool-select"
           value={headingLevel}
           onChange={e => {
             const l = Number(e.target.value);
@@ -110,29 +86,84 @@ export default function RichEditor({ value, onChange }: Props) {
           <option value="3">Heading 3</option>
         </select>
 
-        <div className="a-rich-sep" />
+        <div className="ep-tool-sep" />
 
-        {tools.map((tool, i) =>
-          tool.type === 'sep' ? (
-            <div key={`sep-${i}`} className="a-rich-sep" />
-          ) : (
-            <button
-              key={`btn-${i}`}
-              type="button"
-              className={`a-rich-btn${tool.active ? ' is-active' : ''}`}
-              onClick={tool.onClick}
-              disabled={tool.disabled}
-              title={tool.title}
-              aria-label={tool.title}
-            >
-              {tool.icon}
-            </button>
-          )
-        )}
+        <button type="button" className={`ep-tool-btn${editor.isActive('bold') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleBold().run()} title="Bold (Ctrl+B)">
+          <FiBold size={14} />
+        </button>
+        <button type="button" className={`ep-tool-btn${editor.isActive('italic') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleItalic().run()} title="Italic">
+          <FiItalic size={14} />
+        </button>
+        <button type="button" className={`ep-tool-btn${editor.isActive('underline') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleUnderline().run()} title="Underline">
+          <span style={{ fontWeight: 800, textDecoration: 'underline', fontSize: 13, lineHeight: 1 }}>U</span>
+        </button>
+        <button type="button" className={`ep-tool-btn${editor.isActive('strike') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleStrike().run()} title="Strikethrough">
+          <span style={{ textDecoration: 'line-through', fontSize: 13, fontWeight: 600, lineHeight: 1 }}>S</span>
+        </button>
+
+        <div className="ep-tool-sep" />
+
+        <button type="button" className={`ep-tool-btn${editor.isActive('bulletList') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleBulletList().run()} title="Bullet list">
+          <FiList size={14} />
+        </button>
+        <button type="button" className={`ep-tool-btn${editor.isActive('orderedList') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleOrderedList().run()} title="Numbered list">
+          <span style={{ fontSize: 11, fontWeight: 700, lineHeight: 1 }}>1.</span>
+        </button>
+        <button type="button" className={`ep-tool-btn${editor.isActive('blockquote') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleBlockquote().run()} title="Blockquote">
+          <span style={{ fontSize: 17, fontWeight: 700, lineHeight: 1 }}>"</span>
+        </button>
+        <button type="button" className={`ep-tool-btn${editor.isActive('code') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleCode().run()} title="Inline code">
+          <FiCode size={14} />
+        </button>
+        <button type="button" className={`ep-tool-btn${editor.isActive('codeBlock') ? ' is-active' : ''}`}
+          onClick={() => editor.chain().focus().toggleCodeBlock().run()} title="Code block">
+          <span style={{ fontSize: 11, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }}>{`</>`}</span>
+        </button>
+
+        <div className="ep-tool-sep" />
+
+        <button type="button" className={`ep-tool-btn${editor.isActive('link') ? ' is-active' : ''}`}
+          onClick={addLink} title="Insert link">
+          <FiLink2 size={14} />
+        </button>
+        <button type="button" className="ep-tool-btn" onClick={addImage} title="Insert image">
+          <FiImage size={14} />
+        </button>
+        <button type="button" className="ep-tool-btn"
+          onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal rule">
+          <FiMinus size={14} />
+        </button>
+
+        <div className="ep-tool-sep" />
+
+        <button type="button" className="ep-tool-btn"
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().undo()} title="Undo">
+          <FiRotateCcw size={13} />
+        </button>
+        <button type="button" className="ep-tool-btn"
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().redo()} title="Redo">
+          <FiRotateCw size={13} />
+        </button>
       </div>
 
-      <div className="a-rich-content">
+      {/* Editor body */}
+      <div className="ep-editor-body" style={{ minHeight }}>
         <EditorContent editor={editor} />
+      </div>
+
+      {/* Footer */}
+      <div className="ep-editor-footer">
+        <span className="ep-editor-footer__word-count">{wordCount(value)} words</span>
       </div>
     </div>
   );
