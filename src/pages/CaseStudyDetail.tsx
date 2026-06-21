@@ -212,10 +212,6 @@ export default function CaseStudyDetail() {
                   </div>
                 )}
 
-                {/* Back */}
-                <button className="cs-sidebar__back" onClick={() => navigate('/case-studies')}>
-                  <FiArrowLeft size={13} /> All Case Studies
-                </button>
 
               </div>
             </aside>
