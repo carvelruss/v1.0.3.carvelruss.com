@@ -10,6 +10,7 @@ interface FormData {
   content: string;
   logo_url: string;
   cover_url: string;
+  tech: string;
   project_type: string;
   role: string;
   tools: string;
@@ -30,6 +31,7 @@ const EMPTY_FORM: FormData = {
   content: '',
   logo_url: '',
   cover_url: '',
+  tech: '',
   project_type: '',
   role: '',
   tools: '',
@@ -113,6 +115,7 @@ export default function AdminCaseStudyFormPage() {
           content:         String(data.content         ?? ''),
           logo_url:        String(data.logo_url        ?? ''),
           cover_url:       String(data.cover_url       ?? ''),
+          tech:            Array.isArray(data.tech) ? (data.tech as string[]).join(', ') : '',
           project_type:    String(data.project_type    ?? ''),
           role:            String(data.role            ?? ''),
           tools:           String(data.tools           ?? ''),
@@ -164,6 +167,7 @@ export default function AdminCaseStudyFormPage() {
         excerpt:         form.excerpt.trim()         || null,
         logo_url:        form.logo_url.trim()         || null,
         cover_url:       form.cover_url.trim()       || null,
+        tech:            form.tech.split(',').map(t => t.trim()).filter(Boolean),
         project_type:    form.project_type           || null,
         role:            form.role.trim()            || null,
         tools:           form.tools.trim()           || null,
@@ -523,6 +527,18 @@ export default function AdminCaseStudyFormPage() {
                   onChange={e => set('role', e.target.value)}
                   placeholder="e.g. Lead UI/UX Designer"
                 />
+              </div>
+
+              <div className="a-field">
+                <label className="a-field__label" htmlFor="cs-tech">Tech Stack</label>
+                <input
+                  id="cs-tech"
+                  className="a-input"
+                  value={form.tech}
+                  onChange={e => set('tech', e.target.value)}
+                  placeholder="React, TypeScript, Node.js"
+                />
+                <span className="a-field__hint">Comma-separated — e.g. React, TypeScript, Node.js</span>
               </div>
 
               <div className="a-field">
