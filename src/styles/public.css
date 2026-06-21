@@ -53,8 +53,8 @@
   --pf-shadow-lg: 0 16px 48px rgba(0,0,0,.12);
 
   /* Layout */
-  --pf-nav-h:     68px;
-  --pf-max-w:     1200px;
+  --pf-nav-h:     80px;
+  --pf-max-w:     1400px;
   --pf-content-w: 760px;
 
   /* Typography */
@@ -107,8 +107,8 @@ a:hover { color: var(--pf-primary-dark); }
 }
 
 @media (min-width: 576px)  { .container { padding-inline: 1.5rem; } }
-@media (min-width: 992px)  { .container { padding-inline: 2rem; } }
-@media (min-width: 1280px) { .container { padding-inline: 2.5rem; } }
+@media (min-width: 992px)  { .container { padding-inline: 1.75rem; } }
+@media (min-width: 1200px) { .container { padding-inline: 3rem; } }
 
 /* ── 3. TYPOGRAPHY ────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
