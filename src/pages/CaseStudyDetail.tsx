@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiUser, FiCode, FiGlobe, FiGithub, FiChevronRight, FiExternalLink } from 'react-icons/fi';
+import '../styles/case-study-detail.css';
+import {
+  FiGlobe, FiGithub, FiChevronRight, FiArrowLeft,
+  FiUser, FiLayers, FiClock, FiBriefcase, FiTool,
+} from 'react-icons/fi';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/markdown';
 import type { Project } from '../types';
@@ -15,99 +19,156 @@ export default function CaseStudyDetail() {
   useEffect(() => {
     if (!slug) return;
     api.getProjectBySlug(slug)
-      .then(setProject)
+      .then(p => { setProject(p); document.title = `${p.title} | Carvel Russ`; })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
   }, [slug]);
 
   if (loading) {
-    return <div className="ws-loading-state" style={{ paddingTop: '6rem' }}>Loading…</div>;
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: '1rem' }}>
+        <div className="pf-spinner" />
+      </div>
+    );
   }
 
   if (notFound || !project) {
     return (
-      <div className="ws-pg-hero" style={{ minHeight: '50vh', display: 'flex', alignItems: 'center' }}>
+      <div className="pf-page-hero" style={{ minHeight: '50vh', display: 'flex', alignItems: 'center' }}>
         <div className="container">
-          <h1 className="section-title">Case study not found</h1>
-          <button className="ws-btn-primary" onClick={() => navigate('/case-studies')}>
-            ← Back to Case Studies
+          <p className="pf-eyebrow">404</p>
+          <h1 className="pf-page-hero__title">Case study not found</h1>
+          <p className="pf-page-hero__sub">The project you're looking for doesn't exist or may have been moved.</p>
+          <button className="ws-btn-primary" onClick={() => navigate('/case-studies')} style={{ marginTop: '1.5rem' }}>
+            <FiArrowLeft size={15} /> Back to Case Studies
           </button>
         </div>
       </div>
     );
   }
 
+  const metaItems = [
+    project.project_type && { icon: FiLayers,   label: 'Project Type', value: project.project_type  },
+    project.role         && { icon: FiUser,      label: 'Role',         value: project.role           },
+    project.client_name  && { icon: FiBriefcase, label: 'Client',       value: project.client_name   },
+    project.timeline     && { icon: FiClock,     label: 'Timeline',     value: project.timeline       },
+    project.tools        && { icon: FiTool,      label: 'Tools',        value: project.tools          },
+  ].filter(Boolean) as { icon: React.ComponentType<{size?: number}>, label: string; value: string }[];
+
   return (
     <article>
 
-      {/* Hero */}
-      <div className="ws-cs-hero">
+      {/* ── Hero ──────────────────────────────────────────────────── */}
+      <div className="pf-cs-detail__hero">
         <div className="container">
 
           {/* Breadcrumb */}
-          <nav className="ws-cs-breadcrumb" aria-label="Breadcrumb">
-            <button className="ws-cs-breadcrumb__item" onClick={() => navigate('/')}>Home</button>
-            <FiChevronRight className="ws-cs-breadcrumb__sep" size={13} />
-            <button className="ws-cs-breadcrumb__item" onClick={() => navigate('/case-studies')}>Case Studies</button>
-            <FiChevronRight className="ws-cs-breadcrumb__sep" size={13} />
-            <span className="ws-cs-breadcrumb__item ws-cs-breadcrumb__item--current">{project.title}</span>
+          <nav className="cs-breadcrumb" aria-label="Breadcrumb">
+            <button className="cs-breadcrumb__item" onClick={() => navigate('/')}>Home</button>
+            <FiChevronRight size={12} className="cs-breadcrumb__sep" />
+            <button className="cs-breadcrumb__item" onClick={() => navigate('/case-studies')}>Case Studies</button>
+            <FiChevronRight size={12} className="cs-breadcrumb__sep" />
+            <span className="cs-breadcrumb__item cs-breadcrumb__item--active">{project.title}</span>
           </nav>
 
-          <p className="ws-eyebrow">Case Study</p>
+          {/* Eyebrow badges */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', marginBottom: '1.5rem' }}>
+            <span className="cs-hero-badge">Case Study</span>
+            {project.project_type && (
+              <span className="cs-hero-badge cs-hero-badge--accent">{project.project_type}</span>
+            )}
+          </div>
 
+          {/* Logo */}
           {project.logo_url && (
-            <div className="ws-cs-hero-logo-wrap">
+            <div style={{ marginBottom: '1.25rem' }}>
               <img
                 src={project.logo_url}
                 alt={`${project.title} logo`}
-                className="ws-cs-hero-logo"
+                style={{ height: 44, maxWidth: 180, objectFit: 'contain' }}
               />
             </div>
           )}
 
-          <h1 className="ws-cs-title">{project.title}</h1>
-          <p className="ws-cs-desc">{project.description}</p>
+          {/* Title */}
+          <h1 className="cs-hero-title">{project.title}</h1>
 
-          {/* Meta strip */}
-          <div className="ws-cs-meta-strip">
-            {project.role && (
-              <div className="ws-cs-meta-item">
-                <FiUser size={14} className="ws-cs-meta-icon" />
-                <span>{project.role}</span>
-              </div>
-            )}
-            {project.tech.length > 0 && (
-              <div className="ws-cs-meta-item">
-                <FiCode size={14} className="ws-cs-meta-icon" />
-                <span>{project.tech.length} {project.tech.length === 1 ? 'Technology' : 'Technologies'}</span>
-              </div>
-            )}
+          {/* Description */}
+          <p className="cs-hero-desc">
+            {project.excerpt || project.description}
+          </p>
+
+          {/* CTAs */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', alignItems: 'center' }}>
             {project.live_url && (
-              <div className="ws-cs-meta-item">
-                <FiGlobe size={14} className="ws-cs-meta-icon" />
-                <span>Live Project</span>
-              </div>
+              <a
+                href={project.live_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cs-btn-primary"
+              >
+                <FiGlobe size={15} /> View Live Site
+              </a>
             )}
+            {project.github_url && (
+              <a
+                href={project.github_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cs-btn-ghost"
+              >
+                <FiGithub size={15} /> GitHub
+              </a>
+            )}
+            <button className="cs-back-link" onClick={() => navigate('/case-studies')}>
+              <FiArrowLeft size={14} /> All Case Studies
+            </button>
           </div>
 
         </div>
       </div>
 
-      {/* Cover image */}
+      {/* ── Cover image ─────────────────────────────────────────── */}
       {project.cover_url && (
-        <div className="ws-cs-cover">
-          <img src={project.cover_url} alt={`${project.title} cover`} className="ws-cs-cover__img" />
+        <div className="cs-cover-wrap">
+          <div className="container">
+            <img
+              src={project.cover_url}
+              alt={`${project.title} cover`}
+              className="cs-cover-img"
+            />
+          </div>
         </div>
       )}
 
-      {/* Body */}
-      <div className="container" style={{ paddingTop: project.cover_url ? '2.5rem' : '3.5rem', paddingBottom: '4rem' }}>
+      {/* ── Meta grid ───────────────────────────────────────────── */}
+      {metaItems.length > 0 && (
+        <div className="cs-meta-band">
+          <div className="container">
+            <div className="cs-meta-grid">
+              {metaItems.map(({ icon: Icon, label, value }) => (
+                <div key={label} className="cs-meta-item">
+                  <Icon size={14} />
+                  <div>
+                    <div className="cs-meta-item__label">{label}</div>
+                    <div className="cs-meta-item__value">{value}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Content + Sidebar ───────────────────────────────────── */}
+      <div className="container cs-body">
         <div className="row g-5 align-items-start">
 
+          {/* Content */}
           <main className="col-lg-8">
             {project.content ? (
               <div
-                className="ws-article-body"
+                className="pf-prose"
                 dangerouslySetInnerHTML={{ __html: renderMarkdown(project.content) }}
               />
             ) : (
@@ -115,53 +176,34 @@ export default function CaseStudyDetail() {
             )}
           </main>
 
+          {/* Sidebar */}
           <aside className="col-lg-4">
-            <div className="ws-cs-sidebar-card">
+            <div className="cs-sidebar">
 
-              {project.logo_url && (
-                <div className="ws-cs-sidebar-logo-wrap">
-                  <img
-                    src={project.logo_url}
-                    alt={`${project.title} logo`}
-                    className="ws-cs-sidebar-logo"
-                  />
+              {/* Tech Stack */}
+              {project.tech.length > 0 && (
+                <div className="cs-sidebar__section">
+                  <div className="cs-sidebar__label">Tech Stack</div>
+                  <div className="cs-sidebar__tags">
+                    {project.tech.map(t => (
+                      <span key={t} className="ws-tech-pill">{t}</span>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              <div className="ws-cs-sidebar-body">
-                <h3 className="ws-cs-sidebar-heading">Project at a Glance</h3>
-
-                <ul className="ws-cs-includes">
-                  {project.role && (
-                    <li className="ws-cs-includes-item">
-                      <FiUser size={15} className="ws-cs-includes-icon" />
-                      <div>
-                        <span className="ws-cs-sidebar-label">Role</span>
-                        <span className="ws-cs-sidebar-value">{project.role}</span>
-                      </div>
-                    </li>
-                  )}
-                  {project.tech.length > 0 && (
-                    <li className="ws-cs-includes-item">
-                      <FiCode size={15} className="ws-cs-includes-icon" />
-                      <div>
-                        <span className="ws-cs-sidebar-label">Tech Stack</span>
-                        <span className="ws-cs-sidebar-value">{project.tech.join(', ')}</span>
-                      </div>
-                    </li>
-                  )}
-                </ul>
-
-                <div className="ws-cs-sidebar-ctas">
+              {/* Links */}
+              {(project.live_url || project.github_url) && (
+                <div className="cs-sidebar__section cs-sidebar__links">
                   {project.live_url && (
                     <a
                       href={project.live_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ws-btn-primary ws-cs-sidebar-btn"
+                      className="ws-btn-primary"
+                      style={{ justifyContent: 'center', width: '100%' }}
                     >
-                      <FiExternalLink size={15} />
-                      View Live Site
+                      <FiGlobe size={15} /> View Live Site
                     </a>
                   )}
                   {project.github_url && (
@@ -169,20 +211,26 @@ export default function CaseStudyDetail() {
                       href={project.github_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ws-btn-outline ws-cs-sidebar-btn"
+                      className="ws-btn-secondary"
+                      style={{ justifyContent: 'center', width: '100%' }}
                     >
-                      <FiGithub size={15} />
-                      View on GitHub
+                      <FiGithub size={15} /> View on GitHub
                     </a>
                   )}
                 </div>
-              </div>
+              )}
+
+              {/* Back */}
+              <button className="cs-sidebar__back" onClick={() => navigate('/case-studies')}>
+                <FiArrowLeft size={14} /> All Case Studies
+              </button>
 
             </div>
           </aside>
 
         </div>
       </div>
+
     </article>
   );
 }

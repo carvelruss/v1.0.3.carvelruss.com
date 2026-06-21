@@ -1,0 +1,263 @@
+/* ──────────────────────────────────────────────────────────
+   Case Study Detail Page
+   ────────────────────────────────────────────────────────── */
+
+/* ── Breadcrumb ──────────────────────────────────────────── */
+.cs-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: .375rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.cs-breadcrumb__item {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: .8125rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, .45);
+  cursor: pointer;
+  transition: color .2s var(--pf-ease);
+  font-family: inherit;
+}
+.cs-breadcrumb__item:hover { color: rgba(255, 255, 255, .85); }
+
+.cs-breadcrumb__item--active {
+  color: rgba(255, 255, 255, .85);
+  cursor: default;
+}
+.cs-breadcrumb__item--active:hover { color: rgba(255, 255, 255, .85); }
+
+.cs-breadcrumb__sep {
+  color: rgba(255, 255, 255, .2);
+  flex-shrink: 0;
+}
+
+/* ── Hero badges ─────────────────────────────────────────── */
+.cs-hero-badge {
+  display: inline-block;
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .85);
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--pf-r-full);
+  padding: .3125rem .875rem;
+}
+
+.cs-hero-badge--accent {
+  color: #93b4e8;
+  background: rgba(58, 106, 191, .2);
+  border-color: rgba(58, 106, 191, .4);
+}
+
+/* ── Hero title / desc ───────────────────────────────────── */
+.cs-hero-title {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  margin: 0 0 1rem;
+}
+
+.cs-hero-desc {
+  font-size: 1.0625rem;
+  color: rgba(255, 255, 255, .65);
+  line-height: 1.75;
+  max-width: 620px;
+  margin: 0 0 1.75rem;
+}
+
+/* ── Hero CTAs ───────────────────────────────────────────── */
+.cs-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: .4375rem;
+  padding: .625rem 1.375rem;
+  border: none;
+  border-radius: var(--pf-r-full);
+  background: #fff;
+  color: var(--pf-text);
+  font-size: .9375rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s var(--pf-ease), transform .15s var(--pf-ease),
+              box-shadow .2s var(--pf-ease);
+  white-space: nowrap;
+}
+.cs-btn-primary:hover {
+  background: #f1f5f9;
+  color: var(--pf-text);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+  text-decoration: none;
+}
+
+.cs-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: .4375rem;
+  padding: .625rem 1.375rem;
+  border: 1.5px solid rgba(255, 255, 255, .22);
+  border-radius: var(--pf-r-full);
+  background: transparent;
+  color: rgba(255, 255, 255, .85);
+  font-size: .9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color .2s var(--pf-ease), background .2s var(--pf-ease),
+              color .2s var(--pf-ease), transform .15s var(--pf-ease);
+  white-space: nowrap;
+}
+.cs-btn-ghost:hover {
+  border-color: rgba(255, 255, 255, .5);
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.cs-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, .4);
+  font-size: .875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: color .2s var(--pf-ease);
+}
+.cs-back-link:hover { color: rgba(255, 255, 255, .8); }
+
+/* ── Cover image ─────────────────────────────────────────── */
+.cs-cover-wrap {
+  background: var(--pf-bg-soft);
+  padding-block: 2.5rem;
+  border-bottom: 1px solid var(--pf-border);
+}
+
+.cs-cover-img {
+  width: 100%;
+  aspect-ratio: 16 / 6;
+  object-fit: cover;
+  border-radius: var(--pf-r-md);
+  display: block;
+  box-shadow: var(--pf-shadow-lg);
+}
+
+/* ── Meta band ───────────────────────────────────────────── */
+.cs-meta-band {
+  background: var(--pf-bg-soft);
+  border-bottom: 1px solid var(--pf-border);
+  padding-block: 1.25rem;
+}
+
+.cs-meta-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2.5rem;
+}
+
+.cs-meta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  color: var(--pf-muted);
+  flex-shrink: 0;
+}
+
+.cs-meta-item__label {
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--pf-muted-light);
+  margin-bottom: .2rem;
+}
+
+.cs-meta-item__value {
+  font-size: .9375rem;
+  font-weight: 600;
+  color: var(--pf-text);
+  line-height: 1.35;
+}
+
+/* ── Content body ────────────────────────────────────────── */
+.cs-body {
+  padding-block: 4rem;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+.cs-sidebar {
+  background: var(--pf-bg-soft);
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-r-md);
+  padding: 1.5rem;
+  position: sticky;
+  top: calc(var(--pf-nav-h) + 1.5rem);
+}
+
+.cs-sidebar__section {
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--pf-border);
+}
+.cs-sidebar__section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.cs-sidebar__label {
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--pf-muted-light);
+  margin-bottom: .75rem;
+}
+
+.cs-sidebar__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .375rem;
+}
+
+.cs-sidebar__links {
+  display: flex;
+  flex-direction: column;
+  gap: .625rem;
+}
+
+.cs-sidebar__back {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  background: none;
+  border: none;
+  color: var(--pf-muted);
+  font-size: .875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: color .2s var(--pf-ease);
+}
+.cs-sidebar__back:hover { color: var(--pf-primary); }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+  .cs-hero-desc { max-width: 100%; }
+  .cs-cover-img { aspect-ratio: 16 / 9; }
+  .cs-meta-grid { gap: 1rem 1.5rem; }
+  .cs-body { padding-block: 2.5rem; }
+}
