@@ -4,6 +4,22 @@ import { type Env, json, err, isAdmin } from '../../_helpers';
 
 type InquiryStatus = 'unread' | 'read' | 'replied' | 'archived';
 
+// GET /api/inquiries/:id — fetch single inquiry (admin)
+export const onRequestGet: PagesFunction<Env> = async ({ request, env, params }) => {
+  if (!(await isAdmin(request, env))) return err('Unauthorized', 401);
+  const id = Number(params.id);
+  if (isNaN(id)) return err('Invalid id');
+
+  try {
+    const row = await env.DB.prepare('SELECT * FROM inquiries WHERE id = ?').bind(id).first<Record<string, unknown>>();
+    if (!row) return err('Inquiry not found', 404);
+    const inquiry = { ...row, status: row.status ?? (row.is_read ? 'read' : 'unread') };
+    return json(inquiry);
+  } catch {
+    return err('Failed to fetch inquiry', 500);
+  }
+};
+
 // PATCH /api/inquiries/:id — update status (admin)
 export const onRequestPatch: PagesFunction<Env> = async ({ request, env, params }) => {
   if (!(await isAdmin(request, env))) return err('Unauthorized', 401);
