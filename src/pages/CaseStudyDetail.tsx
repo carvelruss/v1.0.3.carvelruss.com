@@ -180,36 +180,6 @@ export default function CaseStudyDetail() {
                   </div>
                 )}
 
-                {/* Links */}
-                {(project.live_url || project.github_url) && (
-                  <div className="cs-sidebar__block">
-                    <div className="cs-sidebar__heading">Links</div>
-                    <div className="cs-sidebar__links">
-                      {project.live_url && (
-                        <a
-                          href={project.live_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ws-btn-primary"
-                          style={{ justifyContent: 'center' }}
-                        >
-                          <FiGlobe size={14} /> View Live Site
-                        </a>
-                      )}
-                      {project.github_url && (
-                        <a
-                          href={project.github_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ws-btn-secondary"
-                          style={{ justifyContent: 'center' }}
-                        >
-                          <FiGithub size={14} /> View on GitHub
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                )}
 
 
               </div>
