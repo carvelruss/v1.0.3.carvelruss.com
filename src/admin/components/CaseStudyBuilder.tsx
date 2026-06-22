@@ -355,18 +355,27 @@ function ScreenshotCard({ item, index, onChange, onRemove }: {
 }) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver]   = useState(false);
+  const [uploadError, setUploadError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const doUpload = useCallback(async (file: File) => {
     setUploading(true);
+    setUploadError('');
     try {
       const fd = new FormData();
       fd.append('file', file);
       const res = await fetch('/api/upload', { method: 'POST', headers: { Authorization: `Bearer ${api.getToken()}` }, body: fd });
-      if (!res.ok) throw new Error('Upload failed');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(data.error ?? `Upload failed (${res.status})`);
+      }
       const { url } = await res.json() as { url: string };
       onChange({ ...item, url });
-    } finally { setUploading(false); }
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
   }, [item, onChange]);
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => { const f = e.target.files?.[0]; if (f) doUpload(f); e.target.value = ''; };
@@ -393,6 +402,7 @@ function ScreenshotCard({ item, index, onChange, onRemove }: {
         </div>
       )}
       <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={handleFile} />
+      {uploadError && <p className="bld-screenshot-card__error">{uploadError}</p>}
       <div className="bld-screenshot-card__fields">
         <div className="bld-screenshot-card__row">
           <span className="bld-feature-card__label">Screenshot {index + 1}</span>

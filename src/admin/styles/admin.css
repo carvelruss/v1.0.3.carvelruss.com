@@ -2063,6 +2063,16 @@
 }
 .bld-screenshot-card__clear:hover { background: rgba(220,38,38,.85); }
 
+.bld-screenshot-card__error {
+  font-size: .75rem;
+  color: var(--adm-danger);
+  background: var(--adm-danger-soft);
+  border: 1px solid rgba(239,68,68,.25);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin: 8px 14px 0;
+}
+
 .bld-screenshot-card__fields {
   padding: 12px 14px;
   display: flex;
