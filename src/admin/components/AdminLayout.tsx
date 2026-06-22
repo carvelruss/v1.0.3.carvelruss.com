@@ -20,6 +20,8 @@ interface AdminLayoutProps {
   pageTitle: string;
   pageSubtitle?: string;
   headerAction?: ReactNode;
+  backTo?: string;
+  hideViewSite?: boolean;
   unreadInquiries?: number;
 }
 
@@ -28,6 +30,8 @@ export default function AdminLayout({
   pageTitle,
   pageSubtitle,
   headerAction,
+  backTo,
+  hideViewSite = false,
   unreadInquiries = 0,
 }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -157,6 +161,13 @@ export default function AdminLayout({
                   <line x1="3" y1="18" x2="21" y2="18" />
                 </svg>
               </button>
+              {backTo && (
+                <a href={backTo} className="admin-topbar__back" aria-label="Go back">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </a>
+              )}
               <div>
                 <h1 className="admin-topbar__title">{pageTitle}</h1>
                 {pageSubtitle && <p className="admin-topbar__subtitle">{pageSubtitle}</p>}
@@ -164,14 +175,16 @@ export default function AdminLayout({
             </div>
             <div className="admin-topbar__actions">
               {headerAction}
-              <a
-                href="/"
-                className="admin-topbar__portal-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FiExternalLink size={13} aria-hidden /> View site
-              </a>
+              {!hideViewSite && (
+                <a
+                  href="/"
+                  className="admin-topbar__portal-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FiExternalLink size={13} aria-hidden /> View site
+                </a>
+              )}
             </div>
           </div>
 

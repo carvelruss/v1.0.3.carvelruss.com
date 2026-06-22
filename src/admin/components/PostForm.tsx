@@ -380,11 +380,11 @@ export default function PostForm() {
 
   const headerAction = (
     <div className="ep-topbar-actions">
+      {saveIndicator}
       <span className={`ep-status-chip ep-status-chip--${form.status}`}>
         <span className="ep-status-chip__dot" />
         {statusLabel(form.status)}
       </span>
-      {saveIndicator}
       <button
         type="button" className="ep-btn ep-btn--ghost ep-btn--sm"
         onClick={() => setPreview(true)}
@@ -404,18 +404,12 @@ export default function PostForm() {
       >
         {saving ? '…' : isPublished ? 'Update' : 'Publish →'}
       </button>
-      <button
-        type="button" className="ep-btn ep-btn--ghost ep-btn--sm"
-        onClick={() => navigate('/admin/posts')}
-      >
-        ← Posts
-      </button>
     </div>
   );
 
   if (loading) {
     return (
-      <AdminLayout pageTitle="Edit Post">
+      <AdminLayout pageTitle="Edit Post" backTo="/admin/posts" hideViewSite>
         <p style={{ color: '#64748b' }}>Loading post…</p>
       </AdminLayout>
     );
@@ -638,6 +632,8 @@ export default function PostForm() {
     <AdminLayout
       pageTitle={pageTitle}
       headerAction={headerAction}
+      backTo="/admin/posts"
+      hideViewSite
     >
       <form className="ep-page" onSubmit={handleSubmit}>
 
