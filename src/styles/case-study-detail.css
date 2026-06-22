@@ -313,21 +313,28 @@
 .cs-sections {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 1rem;
+}
+
+.cs-section {
+  background: #fff;
+  border: 1px solid var(--pf-border);
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
 }
 
 .cs-section__title {
-  font-size: 1.1875rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--pf-text);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   margin: 0 0 1.125rem;
-  padding-bottom: .625rem;
-  border-bottom: 2px solid var(--pf-border);
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--pf-border);
 }
 
 .cs-section__body p {
-  font-size: .9875rem;
+  font-size: .9375rem;
   line-height: 1.78;
   color: var(--pf-muted);
   margin: 0 0 .875rem;
