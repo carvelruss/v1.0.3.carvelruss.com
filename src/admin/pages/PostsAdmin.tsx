@@ -153,7 +153,7 @@ export default function PostsAdmin() {
       {/* ── Toolbar ── */}
       <div className="a-toolbar" style={{ marginBottom: 16 }}>
         <div className="a-search-wrap">
-          <SearchIcon />
+          <span className="a-search-icon"><SearchIcon /></span>
           <input
             className="a-search"
             type="search"
