@@ -98,8 +98,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       seo_description?: string | null;
     }>();
 
-    if (!body.title?.trim() || !body.description?.trim()) {
-      return err('Title and description are required');
+    if (!body.title?.trim()) {
+      return err('Title is required');
     }
 
     const slug = body.slug?.trim() || body.title.toLowerCase().trim()
