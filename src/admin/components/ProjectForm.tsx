@@ -24,20 +24,26 @@ interface Props {
 
 export default function ProjectForm({ project, onSaved, onCancel }: Props) {
   const isEdit = !!project;
-  const [tab, setTab]           = useState<Tab>('details');
-  const [title, setTitle]       = useState(project?.title ?? '');
-  const [description, setDesc]  = useState(project?.description ?? '');
-  const [tech, setTech]         = useState<string[]>(project?.tech ?? []);
-  const [techInput, setTI]      = useState('');
-  const [role, setRole]         = useState(project?.role ?? '');
-  const [liveUrl, setLiveUrl]   = useState(project?.live_url ?? '');
-  const [caseUrl, setCaseUrl]   = useState(project?.case_study_url ?? '');
-  const [coverUrl, setCoverUrl] = useState<string>(project?.cover_url ?? '');
-  const [content, setContent]   = useState(project?.content ?? '');
-  const [saving, setSaving]     = useState(false);
-  const [error, setError]       = useState('');
-  const [dragOver, setDragOver] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [tab, setTab]               = useState<Tab>('details');
+  const [title, setTitle]           = useState(project?.title ?? '');
+  const [description, setDesc]      = useState(project?.description ?? '');
+  const [tech, setTech]             = useState<string[]>(project?.tech ?? []);
+  const [techInput, setTI]          = useState('');
+  const [role, setRole]             = useState(project?.role ?? '');
+  const [clientName, setClientName] = useState(project?.client_name ?? '');
+  const [projectType, setProjType]  = useState(project?.project_type ?? '');
+  const [timeline, setTimeline]     = useState(project?.timeline ?? '');
+  const [logoUrl, setLogoUrl]       = useState(project?.logo_url ?? '');
+  const [status, setStatus]         = useState<'draft' | 'published'>(project?.status ?? 'draft');
+  const [featured, setFeatured]     = useState(!!project?.featured);
+  const [liveUrl, setLiveUrl]       = useState(project?.live_url ?? '');
+  const [caseUrl, setCaseUrl]       = useState(project?.case_study_url ?? '');
+  const [coverUrl, setCoverUrl]     = useState<string>(project?.cover_url ?? '');
+  const [content, setContent]       = useState(project?.content ?? '');
+  const [saving, setSaving]         = useState(false);
+  const [error, setError]           = useState('');
+  const [dragOver, setDragOver]     = useState(false);
+  const [uploading, setUploading]   = useState(false);
   const [uploadError, setUploadError] = useState('');
   const caseUrlEdited = useRef(!!project?.case_study_url);
   const fileInputRef  = useRef<HTMLInputElement>(null);
@@ -102,11 +108,17 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
         content,
         tech,
         role: role.trim(),
+        client_name: clientName.trim() || null,
+        project_type: projectType.trim() || null,
+        timeline: timeline.trim() || null,
+        logo_url: logoUrl.trim() || null,
         cover_url: coverUrl || null,
         live_url: liveUrl || null,
         case_study_url: caseUrl || null,
         github_url: null,
         sort_order: project?.sort_order ?? 0,
+        status,
+        featured: featured ? 1 : 0,
       };
       if (isEdit && project?.id) await api.updateProject(project.id, payload);
       else                       await api.createProject(payload);
@@ -262,7 +274,31 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
                   <span className="a-field__hint">{description.length} / 200 chars — shown on project cards</span>
                 </div>
 
-                {/* Role + Tech */}
+                {/* Client + Project Type */}
+                <div className="a-input-row">
+                  <div className="a-field">
+                    <label className="a-field__label" htmlFor="pf-client">Client Name</label>
+                    <input
+                      id="pf-client"
+                      className="a-input"
+                      value={clientName}
+                      onChange={e => setClientName(e.target.value)}
+                      placeholder="e.g. Smash Interactive Agency"
+                    />
+                  </div>
+                  <div className="a-field">
+                    <label className="a-field__label" htmlFor="pf-type">Project Type</label>
+                    <input
+                      id="pf-type"
+                      className="a-input"
+                      value={projectType}
+                      onChange={e => setProjType(e.target.value)}
+                      placeholder="e.g. Website Design"
+                    />
+                  </div>
+                </div>
+
+                {/* Role + Timeline */}
                 <div className="a-input-row">
                   <div className="a-field">
                     <label className="a-field__label" htmlFor="pf-role">Your Role</label>
@@ -274,25 +310,76 @@ export default function ProjectForm({ project, onSaved, onCancel }: Props) {
                       placeholder="e.g. Lead UI/UX Designer"
                     />
                   </div>
+                  <div className="a-field">
+                    <label className="a-field__label" htmlFor="pf-timeline">Timeline</label>
+                    <input
+                      id="pf-timeline"
+                      className="a-input"
+                      value={timeline}
+                      onChange={e => setTimeline(e.target.value)}
+                      placeholder="e.g. 3 months"
+                    />
+                  </div>
+                </div>
+
+                {/* Tech Stack */}
+                <div className="a-field">
+                  <label className="a-field__label">Tech Stack</label>
+                  <div className="a-chips" onClick={() => document.getElementById('pf-tech')?.focus()}>
+                    {tech.map(chip => (
+                      <span key={chip} className="a-chip">
+                        {chip}
+                        <button type="button" onClick={() => removeChip(chip)} aria-label={`Remove ${chip}`}>×</button>
+                      </span>
+                    ))}
+                    <input
+                      id="pf-tech"
+                      value={techInput}
+                      onChange={e => setTI(e.target.value)}
+                      onKeyDown={handleTechKey}
+                      onBlur={addChip}
+                      placeholder={tech.length ? '' : 'React, Figma… Enter to add'}
+                      aria-label="Add technology"
+                    />
+                  </div>
+                </div>
+
+                {/* Logo URL + Status */}
+                <div className="a-input-row">
                   <div className="a-field" style={{ flex: '1.4' }}>
-                    <label className="a-field__label">Tech Stack</label>
-                    <div className="a-chips" onClick={() => document.getElementById('pf-tech')?.focus()}>
-                      {tech.map(chip => (
-                        <span key={chip} className="a-chip">
-                          {chip}
-                          <button type="button" onClick={() => removeChip(chip)} aria-label={`Remove ${chip}`}>×</button>
-                        </span>
-                      ))}
+                    <label className="a-field__label" htmlFor="pf-logo">Client Logo URL</label>
+                    <input
+                      id="pf-logo"
+                      className="a-input"
+                      type="url"
+                      value={logoUrl}
+                      onChange={e => setLogoUrl(e.target.value)}
+                      placeholder="https://…"
+                    />
+                  </div>
+                  <div className="a-field">
+                    <label className="a-field__label" htmlFor="pf-status">Status</label>
+                    <select
+                      id="pf-status"
+                      className="a-input"
+                      value={status}
+                      onChange={e => setStatus(e.target.value as 'draft' | 'published')}
+                    >
+                      <option value="draft">Draft</option>
+                      <option value="published">Published</option>
+                    </select>
+                  </div>
+                  <div className="a-field" style={{ flex: '0 0 auto', justifyContent: 'flex-end', display: 'flex', flexDirection: 'column' }}>
+                    <label className="a-field__label" style={{ visibility: 'hidden' }}>Featured</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#374151', cursor: 'pointer', height: 38 }}>
                       <input
-                        id="pf-tech"
-                        value={techInput}
-                        onChange={e => setTI(e.target.value)}
-                        onKeyDown={handleTechKey}
-                        onBlur={addChip}
-                        placeholder={tech.length ? '' : 'React, Figma… Enter to add'}
-                        aria-label="Add technology"
+                        type="checkbox"
+                        checked={featured}
+                        onChange={e => setFeatured(e.target.checked)}
+                        style={{ width: 16, height: 16, accentColor: '#6366f1' }}
                       />
-                    </div>
+                      Featured
+                    </label>
                   </div>
                 </div>
 
