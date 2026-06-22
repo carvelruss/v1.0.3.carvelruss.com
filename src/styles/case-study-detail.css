@@ -32,7 +32,7 @@
   background-image:
     linear-gradient(rgba(30,78,216,.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(30,78,216,.06) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-size: 64px 64px;
   pointer-events: none;
 }
 
