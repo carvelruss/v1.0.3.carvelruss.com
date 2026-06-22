@@ -187,6 +187,13 @@
   padding-bottom: 5rem;
 }
 
+.cs-body-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 3rem;
+  align-items: start;
+}
+
 /* ── Cover image (top of content column) ────────────────────── */
 .cs-cover {
   margin-bottom: 2rem;
@@ -524,6 +531,15 @@
 }
 
 /* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 991.98px) {
+  .cs-body-grid {
+    grid-template-columns: 1fr;
+  }
+  .cs-body-grid aside {
+    order: -1;
+  }
+}
+
 @media (max-width: 767.98px) {
   .cs-hero { padding-top: 1rem; }
   .cs-hero__inner { padding-bottom: 2.5rem; }

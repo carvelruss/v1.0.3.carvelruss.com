@@ -361,10 +361,10 @@ export default function CaseStudyDetail() {
       {/* ── Body ────────────────────────────────────────────────── */}
       <div className="cs-body">
         <div className="container">
-          <div className="row g-5">
+          <div className="cs-body-grid">
 
             {/* Content */}
-            <main className="col-lg-8">
+            <main>
               {project.cover_url && (
                 <div className="cs-cover">
                   <img
@@ -381,7 +381,7 @@ export default function CaseStudyDetail() {
             </main>
 
             {/* Sidebar */}
-            <aside className="col-lg-4">
+            <aside>
               <div className="cs-sidebar">
 
                 {/* Project details */}
