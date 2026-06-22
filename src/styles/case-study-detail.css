@@ -324,10 +324,10 @@
 }
 
 .cs-section__title {
-  font-size: 1rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: var(--pf-text);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   margin: 0 0 1.125rem;
   padding-bottom: .75rem;
   border-bottom: 1px solid var(--pf-border);
