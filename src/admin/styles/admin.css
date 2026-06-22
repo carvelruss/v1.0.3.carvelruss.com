@@ -274,6 +274,9 @@
   display: flex;
   align-items: center;
   gap: .875rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .admin-topbar__mobile-btn {
@@ -292,12 +295,20 @@
 .admin-topbar__mobile-btn svg { width: 16px; height: 16px; display: block; }
 .admin-topbar__mobile-btn:hover { background: var(--adm-surface-2); color: var(--adm-text); }
 
+.admin-topbar__title-wrap {
+  min-width: 0;
+  overflow: hidden;
+}
+
 .admin-topbar__title {
   font-size: 1rem;
   font-weight: 700;
   color: var(--adm-text);
   margin: 0;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .admin-topbar__subtitle {
@@ -327,6 +338,7 @@
   display: flex;
   align-items: center;
   gap: .75rem;
+  flex-shrink: 0;
 }
 
 .admin-topbar__portal-link {

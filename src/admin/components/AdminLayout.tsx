@@ -168,7 +168,7 @@ export default function AdminLayout({
                   </svg>
                 </a>
               )}
-              <div>
+              <div className="admin-topbar__title-wrap">
                 <h1 className="admin-topbar__title">{pageTitle}</h1>
                 {pageSubtitle && <p className="admin-topbar__subtitle">{pageSubtitle}</p>}
               </div>

@@ -66,6 +66,8 @@
   font-size: 12.5px;
   color: var(--ep-muted);
   padding: 0 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .ep-save-indicator--saved  { color: #16a34a; }
 .ep-save-indicator--unsaved { color: var(--ep-warning); }
