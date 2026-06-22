@@ -300,6 +300,13 @@
   letter-spacing: -0.01em;
 }
 
+.admin-topbar__subtitle {
+  font-size: .75rem;
+  color: var(--adm-muted);
+  margin: 1px 0 0;
+  font-weight: 400;
+}
+
 .admin-topbar__actions {
   display: flex;
   align-items: center;
@@ -721,6 +728,57 @@
 }
 .a-filter-select:focus { border-color: var(--adm-primary); }
 
+/* Select wrapper with custom chevron */
+.a-filter-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.a-filter-select-wrap .a-filter-select {
+  padding-right: 2.25rem;
+  background-image: none;
+}
+.a-filter-select-wrap > svg {
+  position: absolute;
+  right: .625rem;
+  pointer-events: none;
+  color: var(--adm-muted);
+}
+
+/* Filter icon button */
+.a-filter-icon-btn {
+  height: 36px;
+  width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-r-sm);
+  background: var(--adm-surface-2);
+  color: var(--adm-muted);
+  cursor: pointer;
+  transition: border-color .18s, color .18s;
+  flex-shrink: 0;
+}
+.a-filter-icon-btn:hover { border-color: var(--adm-primary); color: var(--adm-primary); }
+
+/* Slug pill */
+.a-slug-pill {
+  display: inline-block;
+  font-size: 11.5px;
+  font-family: var(--adm-font-mono, 'Fira Mono', monospace);
+  color: #6366f1;
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
 /* ── 16. PAGINATION ─────────────────────────────────────────── */
 .a-pagination {
   display: flex;
@@ -760,7 +818,10 @@
 }
 .a-pager:hover { background: var(--adm-surface-2); color: var(--adm-text); border-color: var(--adm-border-2); }
 .a-pager.active { background: var(--adm-primary); border-color: var(--adm-primary); color: #fff; font-weight: 700; }
-.a-pager:disabled { opacity: .4; cursor: not-allowed; }
+.a-pager:disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+.a-pager--arrow { font-size: 1.1rem; padding: 0 .625rem; }
+.a-pager--ellipsis { border: none; background: none; cursor: default; color: var(--adm-muted); }
+.a-pager--ellipsis:hover { background: none; color: var(--adm-muted); }
 
 /* ── 17. FORMS ──────────────────────────────────────────────── */
 .a-form {

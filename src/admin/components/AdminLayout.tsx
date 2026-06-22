@@ -18,6 +18,7 @@ interface NavItem {
 interface AdminLayoutProps {
   children: ReactNode;
   pageTitle: string;
+  pageSubtitle?: string;
   headerAction?: ReactNode;
   unreadInquiries?: number;
 }
@@ -25,6 +26,7 @@ interface AdminLayoutProps {
 export default function AdminLayout({
   children,
   pageTitle,
+  pageSubtitle,
   headerAction,
   unreadInquiries = 0,
 }: AdminLayoutProps) {
@@ -155,7 +157,10 @@ export default function AdminLayout({
                   <line x1="3" y1="18" x2="21" y2="18" />
                 </svg>
               </button>
-              <h1 className="admin-topbar__title">{pageTitle}</h1>
+              <div>
+                <h1 className="admin-topbar__title">{pageTitle}</h1>
+                {pageSubtitle && <p className="admin-topbar__subtitle">{pageSubtitle}</p>}
+              </div>
             </div>
             <div className="admin-topbar__actions">
               {headerAction}
