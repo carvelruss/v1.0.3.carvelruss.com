@@ -464,6 +464,58 @@
   border-top: 1px solid var(--pf-border);
 }
 
+/* ── Section sub-heading ─────────────────────────────────────── */
+.cs-section__subhead {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pf-text);
+  margin: 1.5rem 0 .5rem;
+}
+
+/* ── Development process tech rows ──────────────────────────── */
+.cs-dev-tech {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  margin-bottom: 1.25rem;
+}
+
+.cs-dev-row {
+  display: flex;
+  align-items: center;
+  gap: .875rem;
+  flex-wrap: wrap;
+}
+
+.cs-dev-label {
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--pf-muted-light);
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.cs-dev-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .375rem;
+}
+
+/* ── Client quote ────────────────────────────────────────────── */
+.cs-quote {
+  margin: 1rem 0 0;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--pf-primary);
+  background: var(--pf-primary-soft);
+  border-radius: 0 8px 8px 0;
+  font-size: .9875rem;
+  font-style: italic;
+  color: var(--pf-text);
+  line-height: 1.7;
+}
+
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
   .cs-hero { padding-top: 1rem; }

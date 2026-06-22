@@ -7,7 +7,7 @@ import {
 import '../styles/case-study-detail.css';
 import { api } from '../lib/api';
 import type { Project } from '../types';
-import { type CsContent, parseCs } from '../admin/components/ProjectForm';
+import { parseBuilderData, type BuilderData } from '../admin/components/CaseStudyBuilder';
 
 // ── Structured content renderer ────────────────────────────────
 
@@ -21,121 +21,239 @@ function renderText(text: string) {
   ));
 }
 
-const SECTION_LABELS: Partial<Record<keyof CsContent, string>> = {
-  overview:            'Overview',
-  background:          'Background',
-  challenge:           'The Challenge',
-  objectives:          'Objectives',
-  approach:            'Approach',
-  solution:            'Solution',
-  key_features:        'Key Features',
-  development_process: 'Development Process',
-  challenges_solutions:'Challenges & Solutions',
-  results:             'Results',
-  screenshots:         'Screenshots',
-  takeaways:           'Key Takeaways',
-};
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="cs-section">
+      <h2 className="cs-section__title">{title}</h2>
+      <div className="cs-section__body">{children}</div>
+    </section>
+  );
+}
+
+function TextBlock({ text }: { text: string }) {
+  if (!text?.trim()) return null;
+  return <>{renderText(text)}</>;
+}
+
+function SubHeading({ label }: { label: string }) {
+  return <h3 className="cs-section__subhead">{label}</h3>;
+}
+
+function TechTags({ items, label }: { items: string[]; label: string }) {
+  if (!items.length) return null;
+  return (
+    <div className="cs-dev-row">
+      <span className="cs-dev-label">{label}</span>
+      <div className="cs-dev-tags">
+        {items.map(t => <span key={t} className="ws-tech-pill">{t}</span>)}
+      </div>
+    </div>
+  );
+}
 
 function CaseStudySections({ content }: { content: string }) {
-  const cs = parseCs(content);
+  const d: BuilderData = parseBuilderData(content);
+  const sections: React.ReactElement[] = [];
 
-  const textKeys: (keyof CsContent)[] = [
-    'overview', 'background', 'challenge', 'approach',
-    'solution', 'development_process', 'results', 'takeaways',
-  ];
-
-  const sections: JSX.Element[] = [];
-
-  for (const key of textKeys) {
-    const val = cs[key] as string;
-    if (!val?.trim()) continue;
+  // 1. Overview
+  if (d.overview.trim()) {
     sections.push(
-      <section key={key} className="cs-section">
-        <h2 className="cs-section__title">{SECTION_LABELS[key]}</h2>
-        <div className="cs-section__body">{renderText(val)}</div>
-      </section>
+      <Section key="overview" title="Overview">
+        <TextBlock text={d.overview} />
+      </Section>
     );
   }
 
-  if (cs.objectives.length > 0) {
+  // 2. Background
+  if (d.about_client || d.target_audience || d.business_context || d.existing_situation) {
     sections.push(
-      <section key="objectives" className="cs-section">
-        <h2 className="cs-section__title">{SECTION_LABELS.objectives}</h2>
+      <Section key="background" title="Background">
+        <TextBlock text={d.about_client} />
+        {d.target_audience && <><SubHeading label="Target Audience" /><TextBlock text={d.target_audience} /></>}
+        {d.business_context && <><SubHeading label="Business Context" /><TextBlock text={d.business_context} /></>}
+        {d.existing_situation && <><SubHeading label="Existing Situation" /><TextBlock text={d.existing_situation} /></>}
+      </Section>
+    );
+  }
+
+  // 3. The Challenge
+  if (d.main_challenge || d.pain_points.length || d.business_impact || d.why_new_solution) {
+    sections.push(
+      <Section key="challenge" title="The Challenge">
+        <TextBlock text={d.main_challenge} />
+        {d.pain_points.filter(p => p.trim()).length > 0 && (
+          <ul className="cs-objectives">
+            {d.pain_points.filter(p => p.trim()).map((p, i) => (
+              <li key={i} className="cs-objectives__item">{p}</li>
+            ))}
+          </ul>
+        )}
+        {d.business_impact && <><SubHeading label="Business Impact" /><TextBlock text={d.business_impact} /></>}
+        {d.why_new_solution && <><SubHeading label="Why a New Solution" /><TextBlock text={d.why_new_solution} /></>}
+      </Section>
+    );
+  }
+
+  // 4. Objectives
+  if (d.objectives.filter(o => o.trim()).length > 0) {
+    sections.push(
+      <Section key="objectives" title="Objectives">
         <ul className="cs-objectives">
-          {cs.objectives.filter(o => o.trim()).map((o, i) => (
+          {d.objectives.filter(o => o.trim()).map((o, i) => (
             <li key={i} className="cs-objectives__item">{o}</li>
           ))}
         </ul>
-      </section>
+      </Section>
     );
   }
 
-  if (cs.key_features.length > 0) {
+  // 5. Approach
+  if (d.discovery || d.research || d.competitor_analysis || d.planning || d.strategy || d.technical_considerations) {
     sections.push(
-      <section key="key_features" className="cs-section">
-        <h2 className="cs-section__title">{SECTION_LABELS.key_features}</h2>
+      <Section key="approach" title="Approach">
+        {d.discovery && <><SubHeading label="Discovery" /><TextBlock text={d.discovery} /></>}
+        {d.research && <><SubHeading label="Research" /><TextBlock text={d.research} /></>}
+        {d.competitor_analysis && <><SubHeading label="Competitor Analysis" /><TextBlock text={d.competitor_analysis} /></>}
+        {d.planning && <><SubHeading label="Planning" /><TextBlock text={d.planning} /></>}
+        {d.strategy && <><SubHeading label="Strategy" /><TextBlock text={d.strategy} /></>}
+        {d.technical_considerations && <><SubHeading label="Technical Considerations" /><TextBlock text={d.technical_considerations} /></>}
+      </Section>
+    );
+  }
+
+  // 6. Solution
+  if (d.solution_summary || d.how_solved || d.ux_improvements || d.technical_improvements || d.business_improvements) {
+    sections.push(
+      <Section key="solution" title="Solution">
+        <TextBlock text={d.solution_summary} />
+        {d.how_solved && <><SubHeading label="How We Solved It" /><TextBlock text={d.how_solved} /></>}
+        {d.ux_improvements && <><SubHeading label="UX Improvements" /><TextBlock text={d.ux_improvements} /></>}
+        {d.technical_improvements && <><SubHeading label="Technical Improvements" /><TextBlock text={d.technical_improvements} /></>}
+        {d.business_improvements && <><SubHeading label="Business Improvements" /><TextBlock text={d.business_improvements} /></>}
+      </Section>
+    );
+  }
+
+  // 7. Key Features
+  if (d.key_features.filter(f => f.title || f.description).length > 0) {
+    sections.push(
+      <Section key="key_features" title="Key Features">
         <div className="cs-features">
-          {cs.key_features.filter(f => f.title || f.description).map((f, i) => (
+          {d.key_features.filter(f => f.title || f.description).map((f, i) => (
             <div key={i} className="cs-feature-card">
               {f.title && <h3 className="cs-feature-card__title">{f.title}</h3>}
               {f.description && <p className="cs-feature-card__desc">{f.description}</p>}
             </div>
           ))}
         </div>
-      </section>
+      </Section>
     );
   }
 
-  if (cs.challenges_solutions.length > 0) {
+  // 8. Development Process
+  const hasDev = d.frontend_tech.length || d.backend_tech.length || d.database_tech.length ||
+    d.apis_integrations || d.architecture || d.security || d.performance || d.scalability || d.deployment;
+  if (hasDev) {
     sections.push(
-      <section key="challenges_solutions" className="cs-section">
-        <h2 className="cs-section__title">{SECTION_LABELS.challenges_solutions}</h2>
+      <Section key="dev_process" title="Development Process">
+        <div className="cs-dev-tech">
+          <TechTags items={d.frontend_tech} label="Frontend" />
+          <TechTags items={d.backend_tech}  label="Backend"  />
+          <TechTags items={d.database_tech} label="Database" />
+        </div>
+        {d.apis_integrations && <><SubHeading label="APIs & Integrations" /><TextBlock text={d.apis_integrations} /></>}
+        {d.architecture      && <><SubHeading label="Architecture"        /><TextBlock text={d.architecture}      /></>}
+        {d.security          && <><SubHeading label="Security"            /><TextBlock text={d.security}          /></>}
+        {d.performance       && <><SubHeading label="Performance"         /><TextBlock text={d.performance}       /></>}
+        {d.scalability       && <><SubHeading label="Scalability"         /><TextBlock text={d.scalability}       /></>}
+        {d.deployment        && <><SubHeading label="Deployment"          /><TextBlock text={d.deployment}        /></>}
+      </Section>
+    );
+  }
+
+  // 9. Challenges & Solutions
+  if (d.challenges_solutions.filter(c => c.challenge || c.solution || c.result).length > 0) {
+    sections.push(
+      <Section key="challenges" title="Challenges & Solutions">
         <div className="cs-challenges">
-          {cs.challenges_solutions.map((entry, i) => (
+          {d.challenges_solutions.filter(c => c.challenge || c.solution || c.result).map((c, i) => (
             <div key={i} className="cs-challenge-block">
-              {entry.challenge && (
+              {c.challenge && (
                 <div className="cs-challenge-block__row cs-challenge-block__row--challenge">
                   <span className="cs-challenge-block__label">Challenge</span>
-                  <p>{entry.challenge}</p>
+                  <p>{c.challenge}</p>
                 </div>
               )}
-              {entry.solution && (
+              {c.solution && (
                 <div className="cs-challenge-block__row cs-challenge-block__row--solution">
                   <span className="cs-challenge-block__label">Solution</span>
-                  <p>{entry.solution}</p>
+                  <p>{c.solution}</p>
                 </div>
               )}
-              {entry.result && (
+              {c.result && (
                 <div className="cs-challenge-block__row cs-challenge-block__row--result">
                   <span className="cs-challenge-block__label">Result</span>
-                  <p>{entry.result}</p>
+                  <p>{c.result}</p>
                 </div>
               )}
             </div>
           ))}
         </div>
-      </section>
+      </Section>
     );
   }
 
-  if (cs.screenshots.length > 0) {
+  // 10. Results
+  if (d.project_outcomes || d.performance_improvements || d.business_benefits || d.client_feedback || d.achievements.filter(a => a.trim()).length) {
     sections.push(
-      <section key="screenshots" className="cs-section">
-        <h2 className="cs-section__title">{SECTION_LABELS.screenshots}</h2>
+      <Section key="results" title="Results & Outcomes">
+        <TextBlock text={d.project_outcomes} />
+        {d.performance_improvements && <><SubHeading label="Performance" /><TextBlock text={d.performance_improvements} /></>}
+        {d.business_benefits        && <><SubHeading label="Business Benefits" /><TextBlock text={d.business_benefits} /></>}
+        {d.achievements.filter(a => a.trim()).length > 0 && (
+          <ul className="cs-objectives">
+            {d.achievements.filter(a => a.trim()).map((a, i) => (
+              <li key={i} className="cs-objectives__item">{a}</li>
+            ))}
+          </ul>
+        )}
+        {d.client_feedback && (
+          <blockquote className="cs-quote">{d.client_feedback}</blockquote>
+        )}
+      </Section>
+    );
+  }
+
+  // 11. Screenshots
+  if (d.screenshots.filter(s => s.url).length > 0) {
+    sections.push(
+      <Section key="screenshots" title="Screenshots">
         <div className="cs-screenshots">
-          {cs.screenshots.filter(s => s.url).map((s, i) => (
+          {d.screenshots.filter(s => s.url).map((s, i) => (
             <figure key={i} className="cs-screenshot">
               <img src={s.url} alt={s.caption || `Screenshot ${i + 1}`} className="cs-screenshot__img" />
               {s.caption && <figcaption className="cs-screenshot__caption">{s.caption}</figcaption>}
             </figure>
           ))}
         </div>
-      </section>
+      </Section>
+    );
+  }
+
+  // 12. Key Takeaways
+  if (d.lessons_learned || d.technical_insights || d.ux_insights || d.business_insights || d.future_improvements) {
+    sections.push(
+      <Section key="takeaways" title="Key Takeaways">
+        <TextBlock text={d.lessons_learned} />
+        {d.technical_insights  && <><SubHeading label="Technical Insights"  /><TextBlock text={d.technical_insights}  /></>}
+        {d.ux_insights         && <><SubHeading label="UX Insights"         /><TextBlock text={d.ux_insights}         /></>}
+        {d.business_insights   && <><SubHeading label="Business Insights"   /><TextBlock text={d.business_insights}   /></>}
+        {d.future_improvements && <><SubHeading label="Future Improvements" /><TextBlock text={d.future_improvements} /></>}
+      </Section>
     );
   }
 
   if (sections.length === 0) return <p className="ws-empty-state">No case study content yet.</p>;
-
   return <div className="cs-sections">{sections}</div>;
 }
 
