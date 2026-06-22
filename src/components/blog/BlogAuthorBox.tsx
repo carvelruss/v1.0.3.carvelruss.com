@@ -14,18 +14,20 @@ export default function BlogAuthorBox({ author, avatar, bio }: Props) {
 
   return (
     <div className="bs-container">
-      <div className="bs-author">
-        {avatar ? (
-          <img src={avatar} alt={author} className="bs-author__avatar" />
-        ) : (
-          <div className="bs-author__avatar-fallback" aria-hidden="true">
-            {initials}
+      <div className="bs-reader">
+        <div className="bs-author">
+          {avatar ? (
+            <img src={avatar} alt={author} className="bs-author__avatar" />
+          ) : (
+            <div className="bs-author__avatar-fallback" aria-hidden="true">
+              {initials}
+            </div>
+          )}
+          <div className="bs-author__meta">
+            <p className="bs-author__label">Written by</p>
+            <p className="bs-author__name">{author}</p>
+            {bio && <p className="bs-author__bio">{bio}</p>}
           </div>
-        )}
-        <div className="bs-author__meta">
-          <p className="bs-author__label">Written by</p>
-          <p className="bs-author__name">{author}</p>
-          {bio && <p className="bs-author__bio">{bio}</p>}
         </div>
       </div>
     </div>

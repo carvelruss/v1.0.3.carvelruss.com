@@ -629,6 +629,16 @@
 }
 .ep-avatar-btn:hover { border-color: var(--ep-accent); color: var(--ep-accent); }
 
+.ep-avatar--upload {
+  cursor: pointer;
+  border: 2px dashed var(--ep-border);
+  background: var(--ep-accent-light);
+  transition: border-color .14s, opacity .14s;
+  padding: 0;
+}
+.ep-avatar--upload:hover { border-color: var(--ep-accent); }
+.ep-avatar--upload:disabled { opacity: .6; cursor: not-allowed; }
+
 /* ── Tag pills ───────────────────────────────────────────────────────────────── */
 .ep-tag-input-wrap {
   display: flex;

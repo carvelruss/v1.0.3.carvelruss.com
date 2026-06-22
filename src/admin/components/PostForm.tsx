@@ -171,6 +171,9 @@ export default function PostForm() {
   const [featuredUploadErr, setFeaturedUploadErr] = useState('');
   const [featuredDragOver, setFeaturedDragOver] = useState(false);
   const featuredInputRef = useRef<HTMLInputElement>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarUploadErr, setAvatarUploadErr] = useState('');
+  const avatarInputRef = useRef<HTMLInputElement>(null);
   const toastRef = useRef(0);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -312,6 +315,20 @@ export default function PostForm() {
       setFeaturedUploadErr(e instanceof Error ? e.message : 'Upload failed');
     } finally {
       setFeaturedUploading(false);
+    }
+  };
+
+  /* ── avatar upload ── */
+  const uploadAvatar = async (file: File) => {
+    setAvatarUploadErr('');
+    setAvatarUploading(true);
+    try {
+      const { url } = await api.uploadImage(file);
+      set('author_avatar', url);
+    } catch (e: unknown) {
+      setAvatarUploadErr(e instanceof Error ? e.message : 'Upload failed');
+    } finally {
+      setAvatarUploading(false);
     }
   };
 
@@ -569,32 +586,82 @@ export default function PostForm() {
       {/* Author */}
       <div className="ep-panel__section">
         <span className="ep-panel__section-title">Author</span>
+
+        {/* hidden avatar file input */}
+        <input
+          ref={avatarInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={e => {
+            const file = e.target.files?.[0];
+            if (file) uploadAvatar(file);
+            e.target.value = '';
+          }}
+        />
+
         <div className="ep-author-row">
-          <div className="ep-avatar">
-            {form.author_avatar
-              ? <img src={form.author_avatar} alt="avatar"
-                  onError={e => (e.currentTarget.style.display = 'none')} />
-              : (form.author || 'A').slice(0, 2).toUpperCase()
-            }
-          </div>
-          <button type="button" className="ep-avatar-btn"
-            onClick={() => document.getElementById('ps-avatar-url')?.focus()}>
-            Change Avatar
+          <button
+            type="button"
+            className="ep-avatar ep-avatar--upload"
+            onClick={() => avatarInputRef.current?.click()}
+            title="Click to upload avatar"
+            disabled={avatarUploading}
+          >
+            {avatarUploading ? (
+              <span style={{ fontSize: 11, color: 'var(--ep-muted)' }}>…</span>
+            ) : form.author_avatar ? (
+              <img src={form.author_avatar} alt="avatar"
+                onError={e => (e.currentTarget.style.display = 'none')} />
+            ) : (
+              (form.author || 'A').slice(0, 2).toUpperCase()
+            )}
           </button>
+          <div style={{ flex: 1 }}>
+            {form.author_avatar ? (
+              <button
+                type="button"
+                className="ep-avatar-btn"
+                style={{ display: 'block', marginBottom: 4 }}
+                onClick={() => avatarInputRef.current?.click()}
+              >
+                Change Avatar
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="ep-avatar-btn"
+                style={{ display: 'block', marginBottom: 4 }}
+                onClick={() => avatarInputRef.current?.click()}
+              >
+                Upload Avatar
+              </button>
+            )}
+            {form.author_avatar && (
+              <button
+                type="button"
+                className="ep-avatar-btn"
+                style={{ color: 'var(--ep-danger)', borderColor: 'var(--ep-danger)' }}
+                onClick={() => set('author_avatar', '')}
+              >
+                Remove
+              </button>
+            )}
+          </div>
         </div>
+
+        {avatarUploadErr && (
+          <p className="ep-hint" style={{ color: 'var(--ep-danger)', marginBottom: 8 }}>
+            {avatarUploadErr}
+          </p>
+        )}
+
         <div className="ep-gap">
           <div className="ep-field">
             <label className="ep-label" htmlFor="ps-author">Name</label>
             <input id="ps-author" className="ep-input ep-input--sm"
               value={form.author} onChange={e => set('author', e.target.value)}
               placeholder="Carvel Russ" />
-          </div>
-          <div className="ep-field">
-            <label className="ep-label" htmlFor="ps-avatar-url">Avatar URL</label>
-            <input id="ps-avatar-url" className="ep-input ep-input--sm"
-              type="url" value={form.author_avatar ?? ''}
-              onChange={e => set('author_avatar', e.target.value)}
-              placeholder="https://…" />
           </div>
           <div className="ep-field">
             <label className="ep-label" htmlFor="ps-bio">
@@ -928,20 +995,11 @@ export default function PostForm() {
               sub="Information about the post author."
             >
               <div style={{ paddingTop: 14 }} className="ep-gap">
-                <div className="ep-row-2">
-                  <div className="ep-field">
-                    <label className="ep-label" htmlFor="col-author">Name</label>
-                    <input id="col-author" className="ep-input ep-input--sm"
-                      value={form.author} onChange={e => set('author', e.target.value)}
-                      placeholder="Carvel Russ" />
-                  </div>
-                  <div className="ep-field">
-                    <label className="ep-label" htmlFor="col-avatar">Avatar URL</label>
-                    <input id="col-avatar" className="ep-input ep-input--sm"
-                      type="url" value={form.author_avatar ?? ''}
-                      onChange={e => set('author_avatar', e.target.value)}
-                      placeholder="https://…" />
-                  </div>
+                <div className="ep-field">
+                  <label className="ep-label" htmlFor="col-author">Name</label>
+                  <input id="col-author" className="ep-input ep-input--sm"
+                    value={form.author} onChange={e => set('author', e.target.value)}
+                    placeholder="Carvel Russ" />
                 </div>
                 <div className="ep-field">
                   <label className="ep-label" htmlFor="col-bio">Bio</label>

@@ -6,6 +6,7 @@ import type { Post } from '../types';
 import '../styles/blog-single.css';
 import BlogHero from '../components/blog/BlogHero';
 import BlogContent from '../components/blog/BlogContent';
+import BlogAuthorBox from '../components/blog/BlogAuthorBox';
 import BlogShare from '../components/blog/BlogShare';
 import RelatedArticles from '../components/blog/RelatedArticles';
 import NewsletterBlock from '../components/blog/NewsletterBlock';
@@ -118,6 +119,7 @@ export default function BlogSingle() {
     <article>
       <BlogHero post={post} />
       <BlogContent html={html} post={post} />
+      <BlogAuthorBox author={post.author} avatar={post.author_avatar} bio={post.author_bio} />
       <BlogShare title={post.title} url={window.location.href} />
       <RelatedArticles posts={related} />
       <NewsletterBlock />
