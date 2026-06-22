@@ -488,7 +488,7 @@
 .bs-author-card__avatar {
   width: 52px;
   height: 52px;
-  border-radius: 8px;
+  border-radius: 50%;
   object-fit: cover;
   display: block;
   margin-bottom: 1rem;
@@ -498,7 +498,7 @@
 .bs-author-card__initials {
   width: 52px;
   height: 52px;
-  border-radius: 8px;
+  border-radius: 50%;
   background: rgba(13, 33, 90, 0.07);
   border: 1.5px solid var(--bs-border);
   color: var(--bs-accent);
