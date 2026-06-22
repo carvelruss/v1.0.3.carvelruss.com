@@ -7,7 +7,6 @@ import '../styles/blog-single.css';
 import BlogAuthorBox from '../components/blog/BlogAuthorBox';
 import BlogShare from '../components/blog/BlogShare';
 import RelatedArticles from '../components/blog/RelatedArticles';
-import BlogComments from '../components/blog/BlogComments';
 
 function formatDate(d?: string | null) {
   return d
@@ -197,8 +196,6 @@ export default function BlogSingle() {
             )}
 
             <BlogShare title={post.title} url={window.location.href} />
-
-            <BlogComments />
 
           </main>
 
