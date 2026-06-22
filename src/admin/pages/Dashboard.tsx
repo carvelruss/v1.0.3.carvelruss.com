@@ -92,7 +92,7 @@ export default function Dashboard() {
 
   const stats: Stat[] = [
     { label: 'Total Case Studies', value: projects.length,   delta: '↑ 13%', up: true,  icon: FiLayers,      iconColor: 'primary' },
-    { label: 'Published',          value: publishedProjects,  delta: '↑ 8%',  up: true,  icon: FiCheckCircle, iconColor: 'success' },
+    { label: 'Published',          value: publishedProjects,  delta: null,    up: true,  icon: FiCheckCircle, iconColor: 'success' },
     { label: 'Drafts',             value: draftProjects,      delta: '↓ 4%',  up: false, icon: FiFileText,    iconColor: 'warning' },
     { label: 'Total Blogs',        value: posts.length,       delta: '↑ 15%', up: true,  icon: FiEdit2,       iconColor: 'info'    },
     { label: 'Total Inquiries',    value: inquiries.length,   delta: '↑ 9%',  up: true,  icon: FiMail,        iconColor: 'primary' },
