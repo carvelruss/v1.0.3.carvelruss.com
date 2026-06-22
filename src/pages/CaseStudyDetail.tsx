@@ -361,7 +361,7 @@ export default function CaseStudyDetail() {
       {/* ── Body ────────────────────────────────────────────────── */}
       <div className="cs-body">
         <div className="container">
-          <div className="row g-5 align-items-start">
+          <div className="row g-5">
 
             {/* Content */}
             <main className="col-lg-8">
