@@ -373,23 +373,20 @@ export default function AdminCaseStudyFormPage() {
                   placeholder="A short summary shown on project cards…"
                 />
               </div>
-
-              <div className="a-field">
-                <label className="a-field__label">Case Study Content</label>
-                <CaseStudyBuilder
-                  value={form.content}
-                  onChange={json => set('content', json)}
-                  projectMeta={{
-                    title:        form.title,
-                    role:         form.role,
-                    tech:         form.tech.split(',').map(t => t.trim()).filter(Boolean),
-                    timeline:     form.timeline,
-                    client_name:  form.client_name,
-                    project_type: form.project_type,
-                  }}
-                />
-              </div>
             </div>
+
+            <CaseStudyBuilder
+              value={form.content}
+              onChange={json => set('content', json)}
+              projectMeta={{
+                title:        form.title,
+                role:         form.role,
+                tech:         form.tech.split(',').map(t => t.trim()).filter(Boolean),
+                timeline:     form.timeline,
+                client_name:  form.client_name,
+                project_type: form.project_type,
+              }}
+            />
 
             <div className="a-card">
               <div className="a-section-label">Links</div>
