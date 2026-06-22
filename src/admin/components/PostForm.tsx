@@ -167,6 +167,10 @@ export default function PostForm() {
   const [panelTab, setPanelTab] = useState<PanelTab>('post');
   const [preview, setPreview] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [featuredUploading, setFeaturedUploading] = useState(false);
+  const [featuredUploadErr, setFeaturedUploadErr] = useState('');
+  const [featuredDragOver, setFeaturedDragOver] = useState(false);
+  const featuredInputRef = useRef<HTMLInputElement>(null);
   const toastRef = useRef(0);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -295,6 +299,20 @@ export default function PostForm() {
       if (!text) errs.push('Post content is required');
     }
     return errs;
+  };
+
+  /* ── featured image upload ── */
+  const uploadFeaturedImage = async (file: File) => {
+    setFeaturedUploadErr('');
+    setFeaturedUploading(true);
+    try {
+      const { url } = await api.uploadImage(file);
+      set('og_image', url);
+    } catch (e: unknown) {
+      setFeaturedUploadErr(e instanceof Error ? e.message : 'Upload failed');
+    } finally {
+      setFeaturedUploading(false);
+    }
   };
 
   /* ── save ── */
@@ -472,32 +490,79 @@ export default function PostForm() {
       {/* Featured Image */}
       <div className="ep-panel__section">
         <span className="ep-panel__section-title">Featured Image</span>
-        {form.og_image
-          ? <img src={form.og_image} alt="Featured preview" className="ep-img-preview"
-              onError={e => (e.currentTarget.style.display = 'none')} />
-          : (
-            <div className="ep-img-dropzone" onClick={() => document.getElementById('ps-og-url')?.focus()}>
-              <div className="ep-img-dropzone__icon">🖼</div>
-              <span className="ep-img-dropzone__label">Paste image URL below</span>
-              <span className="ep-img-dropzone__hint">Recommended: 1200×630px</span>
-            </div>
-          )
-        }
-        <div className="ep-gap">
-          <div className="ep-field">
-            <label className="ep-label" htmlFor="ps-og-url">Image URL</label>
-            <input id="ps-og-url" className="ep-input ep-input--sm"
-              type="url" value={form.og_image ?? ''}
-              onChange={e => set('og_image', e.target.value)}
-              placeholder="https://…" />
+
+        {/* hidden file input */}
+        <input
+          ref={featuredInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={e => {
+            const file = e.target.files?.[0];
+            if (file) uploadFeaturedImage(file);
+            e.target.value = '';
+          }}
+        />
+
+        {form.og_image ? (
+          <div className="ep-img-preview-wrap">
+            <img
+              src={form.og_image}
+              alt="Featured preview"
+              className="ep-img-preview"
+              onError={e => (e.currentTarget.style.display = 'none')}
+            />
+            <button
+              type="button"
+              className="ep-img-preview-remove"
+              onClick={() => set('og_image', '')}
+              title="Remove image"
+            >
+              <FiX size={13} />
+            </button>
           </div>
-          <div className="ep-field">
-            <label className="ep-label" htmlFor="ps-caption">Caption</label>
-            <input id="ps-caption" className="ep-input ep-input--sm"
-              value={form.featured_image_caption ?? ''}
-              onChange={e => set('featured_image_caption', e.target.value)}
-              placeholder="Optional caption…" />
+        ) : (
+          <div
+            className={`ep-img-dropzone${featuredDragOver ? ' ep-img-dropzone--drag' : ''}${featuredUploading ? ' ep-img-dropzone--loading' : ''}`}
+            onClick={() => featuredInputRef.current?.click()}
+            onDragOver={e => { e.preventDefault(); setFeaturedDragOver(true); }}
+            onDragLeave={() => setFeaturedDragOver(false)}
+            onDrop={e => {
+              e.preventDefault();
+              setFeaturedDragOver(false);
+              const file = e.dataTransfer.files[0];
+              if (file) uploadFeaturedImage(file);
+            }}
+          >
+            {featuredUploading ? (
+              <>
+                <div className="ep-img-dropzone__icon">⏳</div>
+                <span className="ep-img-dropzone__label">Uploading…</span>
+              </>
+            ) : (
+              <>
+                <div className="ep-img-dropzone__icon">
+                  <FiImage size={26} />
+                </div>
+                <span className="ep-img-dropzone__label">Click to upload</span>
+                <span className="ep-img-dropzone__hint">or drag &amp; drop · 1200×630px</span>
+              </>
+            )}
           </div>
+        )}
+
+        {featuredUploadErr && (
+          <p className="ep-hint" style={{ color: 'var(--ep-danger)', marginTop: 6 }}>
+            {featuredUploadErr}
+          </p>
+        )}
+
+        <div className="ep-field" style={{ marginTop: 10 }}>
+          <label className="ep-label" htmlFor="ps-caption">Caption</label>
+          <input id="ps-caption" className="ep-input ep-input--sm"
+            value={form.featured_image_caption ?? ''}
+            onChange={e => set('featured_image_caption', e.target.value)}
+            placeholder="Optional caption…" />
         </div>
       </div>
 
