@@ -50,14 +50,6 @@ export default function Login() {
       <div className="al-panel">
         <div className="al-panel__inner">
 
-          <div className="al-panel__logo">
-            <img
-              src="/logos/carvelruss-logo.png"
-              alt="Carvel Russ"
-              className="al-panel__logo-img"
-            />
-          </div>
-
           <h1 className="al-panel__title">Welcome back</h1>
           <p className="al-panel__sub">Sign in to your admin dashboard</p>
 
