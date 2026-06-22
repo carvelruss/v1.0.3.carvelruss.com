@@ -6,8 +6,138 @@ import {
 } from 'react-icons/fi';
 import '../styles/case-study-detail.css';
 import { api } from '../lib/api';
-import { renderMarkdown } from '../lib/markdown';
 import type { Project } from '../types';
+import { type CsContent, parseCs } from '../admin/components/ProjectForm';
+
+// ── Structured content renderer ────────────────────────────────
+
+function renderText(text: string) {
+  return text.split(/\n\n+/).filter(s => s.trim()).map((para, i) => (
+    <p key={i}>
+      {para.split('\n').map((line, j) =>
+        j === 0 ? line : [<br key={j} />, line]
+      )}
+    </p>
+  ));
+}
+
+const SECTION_LABELS: Partial<Record<keyof CsContent, string>> = {
+  overview:            'Overview',
+  background:          'Background',
+  challenge:           'The Challenge',
+  objectives:          'Objectives',
+  approach:            'Approach',
+  solution:            'Solution',
+  key_features:        'Key Features',
+  development_process: 'Development Process',
+  challenges_solutions:'Challenges & Solutions',
+  results:             'Results',
+  screenshots:         'Screenshots',
+  takeaways:           'Key Takeaways',
+};
+
+function CaseStudySections({ content }: { content: string }) {
+  const cs = parseCs(content);
+
+  const textKeys: (keyof CsContent)[] = [
+    'overview', 'background', 'challenge', 'approach',
+    'solution', 'development_process', 'results', 'takeaways',
+  ];
+
+  const sections: JSX.Element[] = [];
+
+  for (const key of textKeys) {
+    const val = cs[key] as string;
+    if (!val?.trim()) continue;
+    sections.push(
+      <section key={key} className="cs-section">
+        <h2 className="cs-section__title">{SECTION_LABELS[key]}</h2>
+        <div className="cs-section__body">{renderText(val)}</div>
+      </section>
+    );
+  }
+
+  if (cs.objectives.length > 0) {
+    sections.push(
+      <section key="objectives" className="cs-section">
+        <h2 className="cs-section__title">{SECTION_LABELS.objectives}</h2>
+        <ul className="cs-objectives">
+          {cs.objectives.filter(o => o.trim()).map((o, i) => (
+            <li key={i} className="cs-objectives__item">{o}</li>
+          ))}
+        </ul>
+      </section>
+    );
+  }
+
+  if (cs.key_features.length > 0) {
+    sections.push(
+      <section key="key_features" className="cs-section">
+        <h2 className="cs-section__title">{SECTION_LABELS.key_features}</h2>
+        <div className="cs-features">
+          {cs.key_features.filter(f => f.title || f.description).map((f, i) => (
+            <div key={i} className="cs-feature-card">
+              {f.title && <h3 className="cs-feature-card__title">{f.title}</h3>}
+              {f.description && <p className="cs-feature-card__desc">{f.description}</p>}
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (cs.challenges_solutions.length > 0) {
+    sections.push(
+      <section key="challenges_solutions" className="cs-section">
+        <h2 className="cs-section__title">{SECTION_LABELS.challenges_solutions}</h2>
+        <div className="cs-challenges">
+          {cs.challenges_solutions.map((entry, i) => (
+            <div key={i} className="cs-challenge-block">
+              {entry.challenge && (
+                <div className="cs-challenge-block__row cs-challenge-block__row--challenge">
+                  <span className="cs-challenge-block__label">Challenge</span>
+                  <p>{entry.challenge}</p>
+                </div>
+              )}
+              {entry.solution && (
+                <div className="cs-challenge-block__row cs-challenge-block__row--solution">
+                  <span className="cs-challenge-block__label">Solution</span>
+                  <p>{entry.solution}</p>
+                </div>
+              )}
+              {entry.result && (
+                <div className="cs-challenge-block__row cs-challenge-block__row--result">
+                  <span className="cs-challenge-block__label">Result</span>
+                  <p>{entry.result}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (cs.screenshots.length > 0) {
+    sections.push(
+      <section key="screenshots" className="cs-section">
+        <h2 className="cs-section__title">{SECTION_LABELS.screenshots}</h2>
+        <div className="cs-screenshots">
+          {cs.screenshots.filter(s => s.url).map((s, i) => (
+            <figure key={i} className="cs-screenshot">
+              <img src={s.url} alt={s.caption || `Screenshot ${i + 1}`} className="cs-screenshot__img" />
+              {s.caption && <figcaption className="cs-screenshot__caption">{s.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (sections.length === 0) return <p className="ws-empty-state">No case study content yet.</p>;
+
+  return <div className="cs-sections">{sections}</div>;
+}
 
 export default function CaseStudyDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -126,14 +256,10 @@ export default function CaseStudyDetail() {
                   />
                 </div>
               )}
-              {project.content ? (
-                <div
-                  className="pf-prose"
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(project.content) }}
-                />
-              ) : (
-                <p className="ws-empty-state">No case study content yet.</p>
-              )}
+              {project.content
+                ? <CaseStudySections content={project.content} />
+                : <p className="ws-empty-state">No case study content yet.</p>
+              }
             </main>
 
             {/* Sidebar */}
