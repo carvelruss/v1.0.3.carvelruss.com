@@ -1819,147 +1819,53 @@
 
 /* ── Case Study Builder ──────────────────────────────────────── */
 
-/* Progress bar */
-.bld__progress {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 4px 0 16px;
-}
-.bld__progress-bar {
-  flex: 1;
-  height: 5px;
-  background: var(--adm-border);
-  border-radius: 99px;
-  overflow: hidden;
-}
-.bld__progress-fill {
-  height: 100%;
-  background: var(--adm-primary);
-  border-radius: 99px;
-  transition: width .4s ease;
-}
-.bld__progress-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--adm-muted);
-  white-space: nowrap;
-}
-
-/* Section groups */
-.bld-section { margin-bottom: 8px; }
-.bld-section:last-of-type { margin-bottom: 0; }
-
-/* Section header (non-collapsible label) */
-.bld-section-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 4px 6px;
-}
-.bld-section-header__num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--adm-primary-soft);
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--adm-primary-text);
-  flex-shrink: 0;
-}
-.bld-section-header__title {
-  font-size: 10.5px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  color: var(--adm-muted);
-}
-
-/* Field card container (per section) */
-.bld-section__cards {
+/* Builder container */
+.bld {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--adm-border);
-  border-radius: var(--adm-r);
-  overflow: hidden;
+  gap: 16px;
 }
 
-/* Individual field card */
-.bld-fcard { border-bottom: 1px solid var(--adm-border); }
-.bld-fcard:last-child { border-bottom: none; }
+/* Section card — one per section, always open */
+.bld-scard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 24px 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.06);
+}
 
-.bld-fcard__header {
+.bld-scard__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--adm-text);
+  margin: 0 0 20px;
+  padding: 0;
+}
+
+.bld-scard__body {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 11px 14px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  font-family: var(--adm-font);
-  transition: background .12s;
+  flex-direction: column;
+  gap: 16px;
 }
-.bld-fcard__header:hover { background: var(--adm-surface-2); }
 
-.bld-fcard__indicator {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 1.5px solid var(--adm-border-2);
-  flex-shrink: 0;
+/* Field inside a section card */
+.bld-field {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  transition: background .2s, border-color .2s;
+  flex-direction: column;
+  gap: 6px;
 }
-.bld-fcard__indicator--done { background: var(--adm-success); border-color: var(--adm-success); }
 
-.bld-fcard__label {
-  flex: 1;
-  font-size: 13px;
+.bld-field__label {
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--adm-text);
-  min-width: 0;
 }
 
-.bld-fcard__hint-pill {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: var(--adm-muted-2);
-  background: var(--adm-surface-3);
-  border-radius: 99px;
-  padding: 2px 8px;
-  white-space: nowrap;
-}
-
-.bld-fcard__chevron { color: var(--adm-muted); flex-shrink: 0; }
-
-.bld-fcard__body {
-  padding: 14px 14px 16px;
-  border-top: 1px solid var(--adm-border);
-  background: var(--adm-surface);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.bld-fcard__char-count {
+.bld-field__hint {
   font-size: 11px;
   color: var(--adm-muted-2);
-  text-align: right;
-  display: block;
   margin-top: 2px;
 }
-
-.bld-fcard__field-hint { font-size: 12px; color: var(--adm-muted); margin: 0; }
 
 /* Tag input */
 .bld-tags {
