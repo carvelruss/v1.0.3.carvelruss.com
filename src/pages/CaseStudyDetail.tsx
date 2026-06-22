@@ -74,14 +74,6 @@ export default function CaseStudyDetail() {
 
           <div className="cs-hero__inner">
 
-            {/* Badges */}
-            <div className="cs-badges">
-              <span className="cs-badge">Case Study</span>
-              {project.project_type && (
-                <span className="cs-badge cs-badge--blue">{project.project_type}</span>
-              )}
-            </div>
-
             {/* Logo */}
             {project.logo_url && (
               <img
