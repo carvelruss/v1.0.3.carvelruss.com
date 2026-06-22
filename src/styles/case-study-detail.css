@@ -17,11 +17,22 @@
 
 /* ── Hero ────────────────────────────────────────────────────── */
 .cs-hero {
-  background: #ffffff;
-  border-bottom: 1px solid var(--pf-border);
+  background: linear-gradient(135deg, #0D215A 0%, #091842 100%);
+  border-bottom: none;
   padding-top: 1.5rem;
   padding-bottom: 0;
   overflow: hidden;
+  position: relative;
+}
+
+/* Subtle dot-grid texture */
+.cs-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
 }
 
 /* ── Breadcrumb ──────────────────────────────────────────────── */
@@ -32,13 +43,14 @@
   margin-bottom: 2rem;
   flex-wrap: wrap;
   font-size: .8125rem;
-  color: var(--pf-muted-light);
+  color: rgba(255,255,255,.45);
+  position: relative;
 }
 
 .cs-breadcrumb svg { flex-shrink: 0; }
 
 .cs-breadcrumb span {
-  color: var(--pf-text);
+  color: rgba(255,255,255,.9);
   font-weight: 500;
 }
 
@@ -48,16 +60,17 @@
   padding: 0;
   font-size: inherit;
   font-family: inherit;
-  color: var(--pf-muted);
+  color: rgba(255,255,255,.55);
   cursor: pointer;
   transition: color .2s;
 }
-.cs-breadcrumb__btn:hover { color: var(--pf-primary); }
+.cs-breadcrumb__btn:hover { color: #fff; }
 
 /* ── Hero inner: single column ───────────────────────────────── */
 .cs-hero__inner {
   max-width: 760px;
   padding-bottom: 3.5rem;
+  position: relative;
 }
 
 /* ── Badges ──────────────────────────────────────────────────── */
@@ -74,17 +87,17 @@
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--pf-muted);
-  background: var(--pf-bg-soft);
-  border: 1px solid var(--pf-border);
+  color: rgba(255,255,255,.7);
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
   border-radius: 9999px;
   padding: .3rem .875rem;
 }
 
 .cs-badge--blue {
-  color: var(--pf-primary);
-  background: var(--pf-primary-soft);
-  border-color: var(--pf-primary-border);
+  color: #93c5fd;
+  background: rgba(59,130,246,.2);
+  border-color: rgba(59,130,246,.35);
 }
 
 /* ── Logo ────────────────────────────────────────────────────── */
@@ -94,13 +107,15 @@
   max-width: 160px;
   object-fit: contain;
   margin-bottom: 1.375rem;
+  filter: brightness(0) invert(1);
+  opacity: .9;
 }
 
 /* ── Title ───────────────────────────────────────────────────── */
 .cs-hero__title {
   font-size: clamp(2rem, 3.5vw, 2.75rem);
   font-weight: 800;
-  color: var(--pf-text);
+  color: #fff;
   letter-spacing: -0.03em;
   line-height: 1.1;
   margin: 0 0 1rem;
@@ -109,7 +124,7 @@
 /* ── Description ─────────────────────────────────────────────── */
 .cs-hero__desc {
   font-size: 1.0625rem;
-  color: var(--pf-muted);
+  color: rgba(255,255,255,.65);
   line-height: 1.75;
   margin: 0 0 1.875rem;
   max-width: 520px;
@@ -128,8 +143,8 @@
   align-items: center;
   gap: .4375rem;
   padding: .625rem 1.375rem;
-  background: var(--pf-primary);
-  color: #fff !important;
+  background: #fff;
+  color: #0D215A !important;
   border: none;
   border-radius: 9999px;
   font-size: .9375rem;
@@ -141,9 +156,9 @@
   transition: background .2s, transform .15s, box-shadow .2s;
 }
 .cs-cta-primary:hover {
-  background: var(--pf-primary-dark);
+  background: #e8eeff;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(13, 33, 90, .22);
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
 }
 
 .cs-cta-outline {
@@ -151,9 +166,9 @@
   align-items: center;
   gap: .4375rem;
   padding: .625rem 1.25rem;
-  background: transparent;
-  color: var(--pf-text) !important;
-  border: 1.5px solid var(--pf-border);
+  background: rgba(255,255,255,.1);
+  color: #fff !important;
+  border: 1.5px solid rgba(255,255,255,.3);
   border-radius: 9999px;
   font-size: .9375rem;
   font-weight: 600;
@@ -164,8 +179,8 @@
   transition: border-color .2s, background .2s, color .2s, transform .15s;
 }
 .cs-cta-outline:hover {
-  border-color: var(--pf-primary);
-  color: var(--pf-primary) !important;
+  background: rgba(255,255,255,.18);
+  border-color: rgba(255,255,255,.5);
   transform: translateY(-1px);
 }
 
