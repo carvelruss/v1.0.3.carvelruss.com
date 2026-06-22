@@ -1401,6 +1401,18 @@
 
 /* ── 33. LOGIN PAGE (al-* namespace) ───────────────────────── */
 .al-root {
+  /* Mirror design tokens here — .admin-root vars don't cascade into .al-root */
+  --adm-primary:      #1E4ED8;
+  --adm-primary-dark: #1638B8;
+  --adm-bg:           #F3F6FC;
+  --adm-surface:      #FFFFFF;
+  --adm-border:       #E2E8F0;
+  --adm-text:         #0F172A;
+  --adm-muted:        #64748B;
+  --adm-font:         'Inter', system-ui, -apple-system, sans-serif;
+  --adm-r-sm:         8px;
+  --adm-ease:         cubic-bezier(.4,0,.2,1);
+
   min-height: 100vh;
   display: flex;
   background: var(--adm-bg);
