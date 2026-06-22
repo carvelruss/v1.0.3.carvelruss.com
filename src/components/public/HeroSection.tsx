@@ -51,7 +51,7 @@ const TOOLS: ToolItem[] = [
   { name: 'Vanilla JS',    icon: '/tools-logo/js.png'         },
   { name: 'HTML',          icon: '/tools-logo/html.png'       },
   { name: 'CSS',           icon: '/tools-logo/css.png'        },
-  { name: 'WordPress CMS', icon: '/tools-logo/wordpress.png'  },
+  { name: 'WordPress',     icon: '/tools-logo/wordpress.png'  },
   { name: 'GitHub',        icon: '/tools-logo/github.png'     },
 ];
 
