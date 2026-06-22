@@ -1836,9 +1836,9 @@
   gap: 12px;
 }
 
-/* Section card — nested inside the parent a-card */
+/* Section card */
 .bld-scard {
-  background: var(--adm-surface-2);
+  background: var(--adm-surface);
   border: 1px solid var(--adm-border);
   border-radius: 10px;
   padding: 18px 20px 22px;
