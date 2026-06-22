@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS posts (
   og_image         TEXT,
   keywords         TEXT,
   author           TEXT    NOT NULL DEFAULT 'Your Name',
+  author_avatar    TEXT,
+  author_bio       TEXT,
   status           TEXT    NOT NULL DEFAULT 'draft' CHECK(status IN ('draft','published')),
   published_at     DATETIME,
   created_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
