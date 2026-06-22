@@ -3,19 +3,26 @@
    All classes prefixed with  bs-  to avoid clashing with ws-*
    ───────────────────────────────────────────────────────────── */
 
-/* ── Shared content wrapper ──────────────────────────────────── */
+/* ── Shared content wrapper — matches site header ────────────── */
 .bs-container {
-  max-width: 860px;
+  max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+/* ── Reading column — prose stays readable ───────────────────── */
+.bs-reader {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── Hero / header ───────────────────────────────────────────── */
 .bs-hero {
-  padding: 3rem 0 2.5rem;
-  background: var(--ws-card-bg);
+  padding: 3.5rem 0 2.75rem;
+  background: linear-gradient(180deg, #fafbff 0%, #f5f7ff 100%);
   border-bottom: 1px solid var(--ws-border);
 }
 
@@ -105,14 +112,15 @@
 
 /* ── Featured image ──────────────────────────────────────────── */
 .bs-featured-img {
-  margin: 0 0 2.5rem;
+  margin: 0 0 3rem;
 }
 .bs-featured-img img {
   width: 100%;
   border-radius: var(--ws-radius-xl);
   display: block;
-  max-height: 520px;
+  max-height: 560px;
   object-fit: cover;
+  box-shadow: 0 4px 32px rgba(15,23,42,.10);
 }
 
 .bs-img-caption {
@@ -675,7 +683,12 @@
 }
 
 /* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 1199.98px) {
+  .bs-container { padding-left: 2rem; padding-right: 2rem; }
+}
+
 @media (max-width: 767.98px) {
+  .bs-container { padding-left: 1.25rem; padding-right: 1.25rem; }
   .bs-hero { padding: 2rem 0 1.75rem; }
   .bs-body { padding: 2rem 0 1.5rem; }
 

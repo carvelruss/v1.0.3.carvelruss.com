@@ -21,7 +21,7 @@ export default function RelatedArticles({ posts }: Props) {
 
   return (
     <section className="bs-related" aria-label="Related articles">
-      <div className="container">
+      <div className="bs-container">
         <h2 className="bs-related__heading">Related Articles</h2>
         <div className="row g-4">
           {posts.slice(0, 4).map((post, i) => (

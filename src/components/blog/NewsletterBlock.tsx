@@ -20,7 +20,7 @@ export default function NewsletterBlock() {
 
   return (
     <section className="bs-newsletter" aria-label="Newsletter signup">
-      <div className="container">
+      <div className="bs-container">
         <div className="bs-newsletter__card">
           {submitted ? (
             <>

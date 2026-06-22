@@ -121,7 +121,7 @@ export default function BlogSingle() {
       <BlogShare title={post.title} url={window.location.href} />
       <RelatedArticles posts={related} />
       <NewsletterBlock />
-      <div className="container" style={{ paddingBottom: '4rem', marginTop: '2.5rem' }}>
+      <div className="bs-container" style={{ paddingBottom: '4rem', marginTop: '2.5rem' }}>
         <CTABanner
           heading="Enjoyed this post?"
           subtext="If you'd like to work together or just say hi, I'd love to hear from you."
