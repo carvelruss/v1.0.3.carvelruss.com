@@ -1635,15 +1635,19 @@
 .a-card .a-field + .a-field   { margin-top: 1rem; }
 .a-card .a-toggle-wrap        { margin-top: 1rem; }
 
-/* Bottom action bar */
+/* Bottom action bar — sticky to viewport bottom */
 .a-form-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: .75rem;
-  padding-top: 1.25rem;
+  padding: .875rem 1.5rem;
+  background: var(--adm-surface);
   border-top: 1px solid var(--adm-border);
-  margin-top: .25rem;
+  margin-top: 1.5rem;
 }
 
 /* ── Case Study Section Editor ──────────────────────────────── */
