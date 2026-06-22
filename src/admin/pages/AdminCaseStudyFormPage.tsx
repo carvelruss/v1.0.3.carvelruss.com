@@ -195,7 +195,8 @@ export default function AdminCaseStudyFormPage() {
 
       if (!res.ok) {
         if (res.status === 401) {
-          navigate('/admin/login');
+          api.clearToken();
+          window.location.href = '/admin/login';
           return;
         }
         let message = `Save failed (${res.status})`;
