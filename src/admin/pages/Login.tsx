@@ -38,7 +38,7 @@ export default function Login() {
         <div className="al-photo__overlay" />
         <div className="al-photo__brand">
           <img
-            src="/logos/carvelruss-logo.png"
+            src="/logos/white-logo.png"
             alt="Carvel Russ"
             className="al-photo__brand-logo"
           />
