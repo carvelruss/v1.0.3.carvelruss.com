@@ -5,17 +5,18 @@
 
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────────── */
 .bph {
-  --accent:        #7c3aed;
-  --accent-hover:  #5b21b6;
+  --accent:        #0D215A;
+  --accent-mid:    #1a4a9e;
+  --accent-dark:   #071440;
   --bg:            #fafafa;
-  --text:          #111827;
-  --text-soft:     #4b5563;
-  --muted:         #9ca3af;
+  --text:          #0f172a;
+  --text-soft:     #334155;
+  --muted:         #64748b;
   --white:         #ffffff;
-  --border:        #e5e7eb;
+  --border:        #e2e8f0;
   --radius-card:   18px;
   --radius-pill:   50px;
-  --shadow-card:   0 8px 16px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(0, 0, 0, 0.06);
+  --shadow-card:   0 8px 16px rgba(13, 33, 90, 0.08), 0 16px 32px rgba(13, 33, 90, 0.06);
   --font:          -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
 }
 
@@ -97,8 +98,8 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
-  background: rgba(124, 58, 237, 0.08);
-  border: 1px solid rgba(124, 58, 237, 0.20);
+  background: rgba(13, 33, 90, 0.07);
+  border: 1px solid rgba(13, 33, 90, 0.18);
   padding: 6px 14px;
   border-radius: var(--radius-pill);
   margin-bottom: 20px;
@@ -167,11 +168,11 @@
 }
 
 .bph__search-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+  border-color: rgba(13, 33, 90, 0.35);
+  box-shadow: 0 0 0 3px rgba(13, 33, 90, 0.06);
 }
 
-/* CTA button */
+/* CTA button — matches header "Work With Me" gradient */
 .bph__btn-primary {
   display: inline-flex;
   align-items: center;
@@ -179,22 +180,22 @@
   font-size: 14px;
   font-weight: 700;
   color: #fff;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 50%, var(--accent-dark) 100%);
   padding: 12px 22px;
   border-radius: var(--radius-pill);
   text-decoration: none;
   flex-shrink: 0;
-  transition: background 0.2s, transform 0.2s;
+  transition: box-shadow 0.22s ease, transform 0.18s ease;
 }
 
 .bph__btn-primary:hover {
-  background: var(--accent-hover);
   color: #fff;
+  box-shadow: 0 12px 36px rgba(13, 33, 90, 0.42);
   transform: translateY(-1px);
 }
 
 .bph__btn-primary:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid rgba(13, 33, 90, 0.5);
   outline-offset: 3px;
 }
 
@@ -326,22 +327,22 @@
   font-weight: 500;
 }
 
-/* Orange arrow circle */
+/* Arrow circle */
 .bph__feat-arrow {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 50%, var(--accent-dark) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   flex-shrink: 0;
-  transition: background 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .bph__featured:hover .bph__feat-arrow {
-  background: var(--accent-hover);
+  box-shadow: 0 6px 16px rgba(13, 33, 90, 0.35);
 }
 
 /* Skeleton lines */

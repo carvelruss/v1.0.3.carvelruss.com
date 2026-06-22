@@ -5,14 +5,15 @@
 
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────────── */
 .bpl {
-  --accent:        #7c3aed;
-  --accent-hover:  #5b21b6;
+  --accent:        #0D215A;
+  --accent-mid:    #1a4a9e;
+  --accent-dark:   #071440;
   --bg:            #fafafa;
-  --text:          #111827;
-  --text-soft:     #4b5563;
-  --muted:         #9ca3af;
+  --text:          #0f172a;
+  --text-soft:     #334155;
+  --muted:         #64748b;
   --white:         #ffffff;
-  --border:        #e5e7eb;
+  --border:        #e2e8f0;
   --radius-card:   16px;
   --radius-pill:   50px;
   --font:          -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
@@ -70,21 +71,22 @@
 }
 
 .bpl__pill--active {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 50%, var(--accent-dark) 100%);
   border-color: transparent;
   color: #fff;
 }
 
 .bpl__pill--active:hover {
-  background: var(--accent-hover);
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 50%, var(--accent-dark) 100%);
   border-color: transparent;
   color: #fff;
+  box-shadow: 0 4px 14px rgba(13, 33, 90, 0.28);
 }
 
 .bpl__pill:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 0 0 4px rgba(13, 33, 90, 0.10);
 }
 
 /* ── 5. SECTION HEADER ────────────────────────────────────────── */
@@ -166,7 +168,7 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #fff;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 100%);
   padding: 4px 10px;
   border-radius: var(--radius-pill);
 }
@@ -252,17 +254,17 @@
   font-size: 13.5px;
   font-weight: 700;
   color: #fff;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 50%, var(--accent-dark) 100%);
   border: none;
   padding: 10px 22px;
   border-radius: var(--radius-pill);
   cursor: pointer;
   font-family: var(--font);
-  transition: background 0.2s, transform 0.2s;
+  transition: box-shadow 0.22s ease, transform 0.18s ease;
 }
 
 .bpl__empty-reset:hover {
-  background: var(--accent-hover);
+  box-shadow: 0 8px 20px rgba(13, 33, 90, 0.32);
   transform: translateY(-1px);
 }
 
@@ -297,20 +299,22 @@
 }
 
 .bpl__page-btn--active {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 50%, var(--accent-dark) 100%);
   border-color: transparent;
   color: #fff;
 }
 
 .bpl__page-btn--active:hover {
-  background: var(--accent-hover);
+  background: linear-gradient(135deg, var(--accent-mid) 0%, var(--accent) 50%, var(--accent-dark) 100%);
   border-color: transparent;
   color: #fff;
+  box-shadow: 0 4px 14px rgba(13, 33, 90, 0.28);
 }
 
 .bpl__page-btn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(13, 33, 90, 0.10);
 }
 
 /* ── 11. RESPONSIVE ───────────────────────────────────────────── */
