@@ -251,7 +251,7 @@ export default function PostsAdmin() {
                     <td style={{ maxWidth: 300 }}>
                       <div className="a-table__title">{post.title}</div>
                       {post.excerpt && (
-                        <div className="a-table__sub">{post.excerpt}</div>
+                        <div className="a-table__sub" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{post.excerpt}</div>
                       )}
                     </td>
                     <td>
