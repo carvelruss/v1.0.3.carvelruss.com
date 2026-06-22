@@ -1,22 +1,29 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/markdown';
 import type { Post } from '../types';
 import '../styles/blog-single.css';
-import BlogHero from '../components/blog/BlogHero';
-import BlogContent from '../components/blog/BlogContent';
 import BlogAuthorBox from '../components/blog/BlogAuthorBox';
 import BlogShare from '../components/blog/BlogShare';
 import RelatedArticles from '../components/blog/RelatedArticles';
-import NewsletterBlock from '../components/blog/NewsletterBlock';
-import CTABanner from '../components/CTABanner';
+import BlogComments from '../components/blog/BlogComments';
+
+function formatDate(d?: string | null) {
+  return d
+    ? new Date(d).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : '';
+}
 
 export default function BlogSingle() {
-  const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
-  const [post, setPost] = useState<Post | null>(null);
-  const [html, setHtml] = useState('');
+  const { slug }     = useParams<{ slug: string }>();
+  const navigate     = useNavigate();
+  const [post, setPost]       = useState<Post | null>(null);
+  const [html, setHtml]       = useState('');
   const [related, setRelated] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -70,22 +77,21 @@ export default function BlogSingle() {
         ld.text = JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'BlogPosting',
-          headline: p.title,
-          description: p.meta_description,
-          author: { '@type': 'Person', name: p.author },
+          headline:      p.title,
+          description:   p.meta_description,
+          author:        { '@type': 'Person', name: p.author },
           datePublished: p.published_at,
-          dateModified: p.updated_at,
-          image: p.og_image,
-          url: window.location.href,
+          dateModified:  p.updated_at,
+          image:         p.og_image,
+          url:           window.location.href,
         });
         document.head.appendChild(ld);
 
-        // Load related posts (silently ignore failures)
         try {
-          const allPosts = await api.getPosts(false);
-          setRelated(allPosts.filter(other => other.slug !== slug));
+          const all = await api.getPosts(false);
+          setRelated(all.filter(o => o.slug !== slug).slice(0, 3));
         } catch {
-          // related posts are optional
+          /* related posts are optional */
         }
       })
       .catch(() => setNotFound(true))
@@ -94,44 +100,119 @@ export default function BlogSingle() {
     return () => { document.getElementById('blog-ld')?.remove(); };
   }, [slug]);
 
+  /* ── Loading ── */
   if (loading) {
     return (
-      <div className="ws-loading-state" style={{ paddingTop: '8rem' }}>Loading…</div>
-    );
-  }
-
-  if (notFound || !post) {
-    return (
-      <div className="ws-pg-hero" style={{ minHeight: '50vh', display: 'flex', alignItems: 'center' }}>
-        <div className="container" style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: '3rem', margin: '0 0 1rem' }}>404</p>
-          <h1 className="section-title">Post not found</h1>
-          <p style={{ color: 'var(--ws-body)', marginBottom: '1.5rem' }}>
-            This post doesn't exist or has been removed.
-          </p>
-          <button className="ws-btn-primary" onClick={() => navigate('/blog')}>← Back to Blog</button>
-        </div>
+      <div className="bs-loading" aria-live="polite">
+        <span className="bs-loading__spinner" aria-hidden="true" />
       </div>
     );
   }
 
+  /* ── 404 ── */
+  if (notFound || !post) {
+    return (
+      <div className="bs-not-found">
+        <p className="bs-not-found__code">404</p>
+        <h1 className="bs-not-found__title">Post not found</h1>
+        <p className="bs-not-found__body">This post doesn't exist or has been removed.</p>
+        <button className="bs-not-found__btn" onClick={() => navigate('/blog')}>
+          ← Back to Blog
+        </button>
+      </div>
+    );
+  }
+
+  const tags = post.keywords
+    ? post.keywords.split(',').map(t => t.trim()).filter(Boolean)
+    : [];
+
   return (
-    <article>
-      <BlogHero post={post} />
-      <BlogContent html={html} post={post} />
-      <BlogAuthorBox author={post.author} avatar={post.author_avatar} bio={post.author_bio} />
-      <BlogShare title={post.title} url={window.location.href} />
-      <RelatedArticles posts={related} />
-      <NewsletterBlock />
-      <div className="bs-container" style={{ paddingBottom: '4rem', marginTop: '2.5rem' }}>
-        <CTABanner
-          heading="Enjoyed this post?"
-          subtext="If you'd like to work together or just say hi, I'd love to hear from you."
-          primaryLabel="Get in Touch"
-          primaryHref="/contact"
-          secondaryLabel="View Case Studies"
-          secondaryHref="/case-studies"
-        />
+    <article className="bs-page">
+      <div className="bs-container">
+
+        {/* ── Breadcrumb ── */}
+        <nav className="bs-breadcrumb" aria-label="Breadcrumb">
+          <Link to="/"     className="bs-bc-link">Home</Link>
+          <span className="bs-bc-sep" aria-hidden="true">›</span>
+          <Link to="/blog" className="bs-bc-link">Blog</Link>
+          <span className="bs-bc-sep" aria-hidden="true">›</span>
+          <span className="bs-bc-current" aria-current="page">{post.title}</span>
+        </nav>
+
+        {/* ── Two-column layout ── */}
+        <div className="bs-layout">
+
+          {/* ────────── Main content ────────── */}
+          <main className="bs-main">
+
+            {post.category && (
+              <span className="bs-cat">{post.category}</span>
+            )}
+
+            <h1 className="bs-title">{post.title}</h1>
+
+            <div className="bs-meta">
+              <span className="bs-meta__author">{post.author}</span>
+              {post.published_at && (
+                <>
+                  <span className="bs-meta__dot" aria-hidden="true">·</span>
+                  <time className="bs-meta__date" dateTime={post.published_at}>
+                    {formatDate(post.published_at)}
+                  </time>
+                </>
+              )}
+              {post.reading_time && (
+                <>
+                  <span className="bs-meta__dot" aria-hidden="true">·</span>
+                  <span className="bs-meta__read">{post.reading_time}</span>
+                </>
+              )}
+            </div>
+
+            {post.og_image && (
+              <figure className="bs-feat-img">
+                <img src={post.og_image} alt={post.title} loading="lazy" />
+                {post.featured_image_caption && (
+                  <figcaption className="bs-img-caption">
+                    {post.featured_image_caption}
+                  </figcaption>
+                )}
+              </figure>
+            )}
+
+            <div
+              className="bs-prose"
+              dangerouslySetInnerHTML={{ __html: html }}
+              aria-label="Post content"
+            />
+
+            {tags.length > 0 && (
+              <div className="bs-tags" aria-label="Post tags">
+                <span className="bs-tags__label">Tags:</span>
+                {tags.map(tag => (
+                  <span key={tag} className="bs-tag">{tag}</span>
+                ))}
+              </div>
+            )}
+
+            <BlogShare title={post.title} url={window.location.href} />
+
+            <BlogComments />
+
+          </main>
+
+          {/* ────────── Sidebar ────────── */}
+          <aside className="bs-sidebar" aria-label="Sidebar">
+            <BlogAuthorBox
+              author={post.author}
+              avatar={post.author_avatar}
+              bio={post.author_bio}
+            />
+            <RelatedArticles posts={related} />
+          </aside>
+
+        </div>
       </div>
     </article>
   );

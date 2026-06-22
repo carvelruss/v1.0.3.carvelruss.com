@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface Props {
   author: string;
   avatar?: string | null;
@@ -13,23 +15,26 @@ export default function BlogAuthorBox({ author, avatar, bio }: Props) {
     .toUpperCase();
 
   return (
-    <div className="bs-container">
-      <div className="bs-reader">
-        <div className="bs-author">
-          {avatar ? (
-            <img src={avatar} alt={author} className="bs-author__avatar" />
-          ) : (
-            <div className="bs-author__avatar-fallback" aria-hidden="true">
-              {initials}
-            </div>
-          )}
-          <div className="bs-author__meta">
-            <p className="bs-author__label">Written by</p>
-            <p className="bs-author__name">{author}</p>
-            {bio && <p className="bs-author__bio">{bio}</p>}
+    <div className="bs-author-card">
+      <div className="bs-author-card__header">
+        {avatar ? (
+          <img src={avatar} alt={author} className="bs-author-card__avatar" />
+        ) : (
+          <div className="bs-author-card__initials" aria-hidden="true">
+            {initials}
           </div>
+        )}
+        <div>
+          <p className="bs-author-card__label">Written by</p>
+          <p className="bs-author-card__name">{author}</p>
         </div>
       </div>
+
+      {bio && <p className="bs-author-card__bio">{bio}</p>}
+
+      <Link to="/contact" className="bs-author-card__btn">
+        Work With Me
+      </Link>
     </div>
   );
 }
