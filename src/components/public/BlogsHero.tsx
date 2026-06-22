@@ -1,173 +1,233 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/blogs-hero.css';
 
-/* ── Data ─────────────────────────────────────────────────────── */
+type FeaturedPost = {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  category?: string;
+  created_at: string;
+  cover_image_url?: string;
+  reading_time?: string;
+  content?: string;
+};
 
-type HeroStat = { value: string; label: string };
-
-const STATS: HeroStat[] = [
-  { value: '24+',    label: 'Articles Published' },
-  { value: '6+',     label: 'Topics Covered'     },
-  { value: '5 min',  label: 'Avg. Read Time'     },
-];
-
-const TOPICS = ['UI/UX Design', 'Design Systems', 'Visual Design', 'Web Development'];
-
-/* ── Article preview mockup ───────────────────────────────────── */
-
-function ArticleMockup() {
-  return (
-    <div className="bph__main-card">
-
-      {/* Browser chrome */}
-      <div className="bph__browser">
-        <div className="bph__browser-dots">
-          <span className="bph__dot bph__dot--r" />
-          <span className="bph__dot bph__dot--y" />
-          <span className="bph__dot bph__dot--g" />
-        </div>
-        <div className="bph__browser-bar" />
-      </div>
-
-      {/* Article layout */}
-      <div className="bph__article">
-
-        {/* Category + heading */}
-        <div className="bph__article-header">
-          <div className="bph__article-cat-pill" />
-          <div className="bph__article-h1 bph__article-h1--xl" />
-          <div className="bph__article-h1 bph__article-h1--lg" />
-          <div className="bph__article-h1 bph__article-h1--md" />
-        </div>
-
-        {/* Author row */}
-        <div className="bph__article-author-row">
-          <div className="bph__article-avatar" />
-          <div className="bph__article-author-meta">
-            <div className="bph__article-author-name" />
-            <div className="bph__article-author-date" />
-          </div>
-        </div>
-
-        {/* Hero image block */}
-        <div className="bph__article-cover" />
-
-        {/* Body paragraphs */}
-        <div className="bph__article-body">
-          {[100, 88, 95, 70].map((w, i) => (
-            <div key={i} className="bph__article-line" style={{ width: `${w}%` }} />
-          ))}
-
-          {/* Pull quote */}
-          <div className="bph__article-quote">
-            <div className="bph__article-quote-accent" />
-            <div className="bph__article-quote-lines">
-              <div className="bph__article-quote-line" style={{ width: '90%' }} />
-              <div className="bph__article-quote-line" style={{ width: '75%' }} />
-            </div>
-          </div>
-
-          {[88, 62].map((w, i) => (
-            <div key={i} className="bph__article-line" style={{ width: `${w}%` }} />
-          ))}
-        </div>
-
-      </div>
-    </div>
-  );
+function formatDateTime(dateStr: string): string {
+  try {
+    return new Date(dateStr).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  } catch {
+    return dateStr;
+  }
 }
 
-/* ── Component ────────────────────────────────────────────────── */
+function getReadTime(content?: string, readingTime?: string): string {
+  if (readingTime) return `${readingTime} read`;
+  const words = (content ?? '').split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.ceil(words / 200))} min read`;
+}
 
-export default function BlogsHero() {
+export default function BlogsHero({ onSearch }: { onSearch?: (q: string) => void }) {
+  const [featured, setFeatured] = useState<FeaturedPost | null>(null);
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    Promise.any(
+      ['/api/posts', '/api/blogs'].map(url =>
+        fetch(url).then(r => {
+          if (!r.ok) throw new Error('not ok');
+          return r.json() as Promise<unknown>;
+        })
+      )
+    )
+      .then((data: unknown) => {
+        const arr = Array.isArray(data)
+          ? data
+          : ((data as { data?: unknown[] }).data ?? []);
+        if (arr.length > 0) {
+          const p = arr[0] as Record<string, unknown>;
+          setFeatured({
+            title: (p.title as string) ?? '',
+            slug: (p.slug as string) ?? '',
+            excerpt: p.excerpt as string | undefined,
+            category: p.category as string | undefined,
+            created_at: (p.created_at as string) ?? new Date().toISOString(),
+            cover_image_url:
+              (p.cover_image_url as string | undefined) ??
+              (p.og_image as string | undefined),
+            reading_time: p.reading_time as string | undefined,
+            content: p.content as string | undefined,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  function handleSearch(val: string) {
+    setSearch(val);
+    onSearch?.(val);
+  }
+
   return (
     <section className="bph" aria-label="Blog introduction">
+
+      {/* Breadcrumb */}
+      <div className="container bph__breadcrumb-wrap">
+        <nav aria-label="breadcrumb" className="bph__breadcrumb">
+          <Link to="/" className="bph__bc-link">Home</Link>
+          <span className="bph__bc-sep" aria-hidden="true">›</span>
+          <span className="bph__bc-current">Blog</span>
+        </nav>
+      </div>
+
+      {/* Main grid */}
       <div className="container bph__container">
         <div className="bph__grid">
 
           {/* ── Left: Content ── */}
           <div className="bph__content">
 
-            <span className="bph__eyebrow">Blogs</span>
+            <span className="bph__eyebrow">
+              <svg className="bph__eyebrow-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="7" y1="17" x2="17" y2="7" />
+                <polyline points="7 7 17 7 17 17" />
+              </svg>
+              Fresh Property Intelligence
+            </span>
 
             <h1 className="bph__title">
-              Insights on UI/UX, Design &amp; Web Development
+              Insights for smarter property moves.
             </h1>
 
             <p className="bph__description">
-              Thoughts, tips and in-depth insights about UI/UX design, design systems,
-              visual design, and building clean digital experiences that work beautifully
-              across every device.
+              Market updates, buyer guides, broker tips, and neighborhood stories
+              written by people who live and breathe Philippine real estate.
             </p>
 
-            <div className="bph__actions">
+            <div className="bph__search-row">
+              <div className="bph__search-wrap">
+                <svg className="bph__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  type="search"
+                  className="bph__search-input"
+                  placeholder="Search articles, locations, or topics"
+                  value={search}
+                  onChange={e => handleSearch(e.target.value)}
+                  aria-label="Search articles"
+                />
+              </div>
               <a href="#blogs-list" className="bph__btn-primary">
-                Start Reading →
+                Explore articles →
               </a>
-              <Link to="/contact" className="bph__btn-secondary">
-                Work Together
-              </Link>
             </div>
 
-            {/* Topic pills */}
-            <div className="bph__topics-row">
-              <span className="bph__topics-label">Topics:</span>
-              {TOPICS.map(topic => (
-                <span key={topic} className="bph__topic-pill">{topic}</span>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <div className="bph__stats">
-              {STATS.map(({ value, label }) => (
-                <div key={value} className="bph__stat">
-                  <span className="bph__stat-value">{value}</span>
-                  <span className="bph__stat-label">{label}</span>
-                </div>
-              ))}
+            <div className="bph__social">
+              <span className="bph__social-label">FOLLOW US</span>
+              <a
+                href="#"
+                className="bph__social-icon-link"
+                aria-label="Follow on Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              </a>
             </div>
 
           </div>
 
-          {/* ── Right: Visual ── */}
-          <div className="bph__visual" aria-hidden="true">
-
-            <div className="bph__glow" />
-
-            <div className="bph__visual-frame">
-
-              <ArticleMockup />
-
-              {/* Floating reading time card — top-right */}
-              <div className="bph__reading-card">
-                <div className="bph__reading-icon">
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
+          {/* ── Right: Featured post card ── */}
+          <div className="bph__visual">
+            {featured ? (
+              <Link
+                to={`/blogs/${featured.slug}`}
+                className="bph__featured"
+                aria-label={`Read featured: ${featured.title}`}
+              >
+                {/* Image */}
+                <div
+                  className="bph__feat-img"
+                  style={
+                    featured.cover_image_url
+                      ? { backgroundImage: `url(${featured.cover_image_url})` }
+                      : undefined
+                  }
+                  aria-hidden="true"
+                >
+                  <div className="bph__feat-overlay" />
+                  <span className="bph__feat-badge">FEATURED</span>
+                  <div className="bph__feat-img-bottom">
+                    {featured.category && (
+                      <div className="bph__feat-cat">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        {featured.category}
+                      </div>
+                    )}
+                    <h2 className="bph__feat-title">{featured.title}</h2>
+                  </div>
                 </div>
-                <div className="bph__reading-info">
-                  <span className="bph__reading-value">5 min</span>
-                  <span className="bph__reading-label">Average read</span>
+
+                {/* Body */}
+                <div className="bph__feat-body">
+                  {featured.excerpt && (
+                    <p className="bph__feat-excerpt">{featured.excerpt}</p>
+                  )}
+                  <div className="bph__feat-meta">
+                    <div className="bph__feat-meta-left">
+                      <span className="bph__meta-item">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                          <line x1="16" y1="2" x2="16" y2="6" />
+                          <line x1="8" y1="2" x2="8" y2="6" />
+                          <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        {formatDateTime(featured.created_at)}
+                      </span>
+                      <span className="bph__meta-item">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                          <circle cx="12" cy="12" r="10" />
+                          <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        {getReadTime(featured.content, featured.reading_time)}
+                      </span>
+                    </div>
+                    <div className="bph__feat-arrow" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              /* Skeleton while loading */
+              <div className="bph__featured bph__featured--skel" aria-hidden="true">
+                <div className="bph__feat-img">
+                  <div className="bph__feat-overlay" />
+                  <span className="bph__feat-badge">FEATURED</span>
+                </div>
+                <div className="bph__feat-body">
+                  <div className="bph__skel-line bph__skel-line--xl" />
+                  <div className="bph__skel-line bph__skel-line--lg" />
+                  <div className="bph__skel-line bph__skel-line--md" />
                 </div>
               </div>
-
-              {/* Floating category card — bottom-left */}
-              <div className="bph__latest-card">
-                <span className="bph__latest-label">Latest topic</span>
-                <span className="bph__latest-value">UI/UX Design</span>
-              </div>
-
-            </div>
+            )}
           </div>
 
         </div>
