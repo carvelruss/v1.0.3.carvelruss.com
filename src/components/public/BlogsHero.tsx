@@ -94,21 +94,16 @@ export default function BlogsHero({ onSearch }: { onSearch?: (q: string) => void
           {/* ── Left: Content ── */}
           <div className="bph__content">
 
-            <span className="bph__eyebrow">
-              <svg className="bph__eyebrow-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="7" y1="17" x2="17" y2="7" />
-                <polyline points="7 7 17 7 17 17" />
-              </svg>
-              Fresh Property Intelligence
-            </span>
+            <span className="bph__eyebrow">Blogs</span>
 
             <h1 className="bph__title">
-              Insights for smarter property moves.
+              Insights on UI/UX, Design &amp; Web Development
             </h1>
 
             <p className="bph__description">
-              Market updates, buyer guides, broker tips, and neighborhood stories
-              written by people who live and breathe Philippine real estate.
+              Thoughts, tips and in-depth insights about UI/UX design, design systems,
+              visual design, and building clean digital experiences that work beautifully
+              across every device.
             </p>
 
             <div className="bph__search-row">
@@ -120,29 +115,14 @@ export default function BlogsHero({ onSearch }: { onSearch?: (q: string) => void
                 <input
                   type="search"
                   className="bph__search-input"
-                  placeholder="Search articles, locations, or topics"
+                  placeholder="Search articles, topics, or keywords"
                   value={search}
                   onChange={e => handleSearch(e.target.value)}
                   aria-label="Search articles"
                 />
               </div>
               <a href="#blogs-list" className="bph__btn-primary">
-                Explore articles →
-              </a>
-            </div>
-
-            <div className="bph__social">
-              <span className="bph__social-label">FOLLOW US</span>
-              <a
-                href="#"
-                className="bph__social-icon-link"
-                aria-label="Follow on Facebook"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                </svg>
+                Start Reading →
               </a>
             </div>
 

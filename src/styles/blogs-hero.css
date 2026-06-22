@@ -5,18 +5,18 @@
 
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────────── */
 .bph {
-  --accent:        #FF4721;
-  --accent-hover:  #E03D19;
-  --bg:            #F2F1EC;
-  --text:          #1A1A1A;
-  --text-soft:     #4B4B4B;
-  --muted:         #8A8A82;
-  --white:         #FFFFFF;
-  --border:        rgba(26, 26, 26, 0.12);
+  --accent:        #7c3aed;
+  --accent-hover:  #5b21b6;
+  --bg:            #fafafa;
+  --text:          #111827;
+  --text-soft:     #4b5563;
+  --muted:         #9ca3af;
+  --white:         #ffffff;
+  --border:        #e5e7eb;
   --radius-card:   18px;
   --radius-pill:   50px;
-  --shadow-card:   0 8px 40px rgba(0, 0, 0, 0.10);
-  --font:          'Inter', system-ui, -apple-system, sans-serif;
+  --shadow-card:   0 8px 16px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(0, 0, 0, 0.06);
+  --font:          -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
 }
 
 /* ── 2. SECTION ───────────────────────────────────────────────── */
@@ -91,22 +91,17 @@
 .bph__eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   align-self: flex-start;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text);
-  background: var(--white);
-  border: 1px solid var(--border);
-  padding: 7px 14px;
+  color: var(--accent);
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.20);
+  padding: 6px 14px;
   border-radius: var(--radius-pill);
   margin-bottom: 20px;
-}
-
-.bph__eyebrow-icon {
-  flex-shrink: 0;
 }
 
 /* Title */
@@ -134,7 +129,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
 }
 
 .bph__search-wrap {
@@ -173,7 +167,8 @@
 }
 
 .bph__search-input:focus {
-  border-color: rgba(26, 26, 26, 0.30);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
 }
 
 /* CTA button */
@@ -201,38 +196,6 @@
 .bph__btn-primary:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-}
-
-/* ── 8. SOCIAL ────────────────────────────────────────────────── */
-.bph__social {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.bph__social-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.bph__social-icon-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(26, 26, 26, 0.08);
-  color: var(--text);
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.bph__social-icon-link:hover {
-  background: rgba(26, 26, 26, 0.16);
 }
 
 /* ── 9. VISUAL COLUMN ─────────────────────────────────────────── */

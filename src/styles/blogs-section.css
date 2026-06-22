@@ -5,17 +5,17 @@
 
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────────── */
 .bpl {
-  --accent:        #FF4721;
-  --accent-hover:  #E03D19;
-  --bg:            #F2F1EC;
-  --text:          #1A1A1A;
-  --text-soft:     #4B4B4B;
-  --muted:         #8A8A82;
-  --white:         #FFFFFF;
-  --border:        rgba(26, 26, 26, 0.12);
+  --accent:        #7c3aed;
+  --accent-hover:  #5b21b6;
+  --bg:            #fafafa;
+  --text:          #111827;
+  --text-soft:     #4b5563;
+  --muted:         #9ca3af;
+  --white:         #ffffff;
+  --border:        #e5e7eb;
   --radius-card:   16px;
   --radius-pill:   50px;
-  --font:          'Inter', system-ui, -apple-system, sans-serif;
+  --font:          -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
 }
 
 /* ── 2. SECTION ───────────────────────────────────────────────── */
@@ -84,6 +84,7 @@
 .bpl__pill:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
 }
 
 /* ── 5. SECTION HEADER ────────────────────────────────────────── */
@@ -210,8 +211,8 @@
   display: block;
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(26, 26, 26, 0.15);
-  border-top-color: var(--text);
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: bplSpin 0.75s linear infinite;
 }
