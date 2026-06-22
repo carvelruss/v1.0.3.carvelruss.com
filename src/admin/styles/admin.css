@@ -1846,8 +1846,40 @@
   white-space: nowrap;
 }
 
-/* Cards container */
-.bld__cards {
+/* Section groups */
+.bld-section { margin-bottom: 8px; }
+.bld-section:last-of-type { margin-bottom: 0; }
+
+/* Section header (non-collapsible label) */
+.bld-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px 6px;
+}
+.bld-section-header__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--adm-primary-soft);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--adm-primary-text);
+  flex-shrink: 0;
+}
+.bld-section-header__title {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--adm-muted);
+}
+
+/* Field card container (per section) */
+.bld-section__cards {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--adm-border);
@@ -1855,16 +1887,16 @@
   overflow: hidden;
 }
 
-/* Individual card */
-.bld-card { border-bottom: 1px solid var(--adm-border); }
-.bld-card:last-child { border-bottom: none; }
+/* Individual field card */
+.bld-fcard { border-bottom: 1px solid var(--adm-border); }
+.bld-fcard:last-child { border-bottom: none; }
 
-.bld-card__header {
+.bld-fcard__header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  padding: 13px 18px;
+  padding: 11px 14px;
   background: none;
   border: none;
   cursor: pointer;
@@ -1872,63 +1904,62 @@
   font-family: var(--adm-font);
   transition: background .12s;
 }
-.bld-card__header:hover        { background: var(--adm-surface-2); }
-.bld-card--open .bld-card__header { background: var(--adm-surface-2); }
+.bld-fcard__header:hover { background: var(--adm-surface-2); }
 
-.bld-card__num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
+.bld-fcard__indicator {
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: var(--adm-surface-3);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--adm-muted);
+  border: 1.5px solid var(--adm-border-2);
   flex-shrink: 0;
-  transition: background .2s, color .2s;
-}
-.bld-card__num--done { background: var(--adm-success); color: #fff; }
-
-.bld-card__meta {
-  flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  color: #fff;
+  transition: background .2s, border-color .2s;
+}
+.bld-fcard__indicator--done { background: var(--adm-success); border-color: var(--adm-success); }
+
+.bld-fcard__label {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--adm-text);
   min-width: 0;
 }
-.bld-card__title { font-size: 14px; font-weight: 600; color: var(--adm-text); }
-.bld-card__pill {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--adm-success);
-  background: var(--adm-success-soft);
-  border-radius: 99px;
-  padding: 2px 9px;
-}
-.bld-card__chevron { color: var(--adm-muted); flex-shrink: 0; }
 
-.bld-card__body {
-  padding: 0 20px 20px;
+.bld-fcard__hint-pill {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--adm-muted-2);
+  background: var(--adm-surface-3);
+  border-radius: 99px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.bld-fcard__chevron { color: var(--adm-muted); flex-shrink: 0; }
+
+.bld-fcard__body {
+  padding: 14px 14px 16px;
   border-top: 1px solid var(--adm-border);
   background: var(--adm-surface);
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-.bld-card__desc {
-  font-size: 12.5px;
-  color: var(--adm-muted);
-  line-height: 1.6;
-  margin: 14px 0 0;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--adm-border);
+  gap: 10px;
 }
 
-.bld__field-hint { font-size: 12px; color: var(--adm-muted); margin: 0; }
+.bld-fcard__char-count {
+  font-size: 11px;
+  color: var(--adm-muted-2);
+  text-align: right;
+  display: block;
+  margin-top: 2px;
+}
+
+.bld-fcard__field-hint { font-size: 12px; color: var(--adm-muted); margin: 0; }
 
 /* Tag input */
 .bld-tags {
