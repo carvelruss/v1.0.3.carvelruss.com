@@ -629,6 +629,7 @@ export default function AdminCaseStudyFormPage() {
         </div>
 
         {/* ── Bottom actions ── */}
+        <div className="a-form-actions-spacer" />
         <div className="a-form-actions">
           <button
             type="button"

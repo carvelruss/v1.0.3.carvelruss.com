@@ -1635,11 +1635,13 @@
 .a-card .a-field + .a-field   { margin-top: 1rem; }
 .a-card .a-toggle-wrap        { margin-top: 1rem; }
 
-/* Bottom action bar — sticky to viewport bottom */
+/* Bottom action bar — fixed to viewport bottom, right of sidebar */
 .a-form-actions {
-  position: sticky;
+  position: fixed;
   bottom: 0;
-  z-index: 10;
+  left: var(--adm-sidebar-w);
+  right: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -1647,7 +1649,11 @@
   padding: .875rem 1.5rem;
   background: var(--adm-surface);
   border-top: 1px solid var(--adm-border);
-  margin-top: 1.5rem;
+}
+
+/* Spacer so the fixed bar doesn't overlap the last form element */
+.a-form-actions-spacer {
+  height: 60px;
 }
 
 /* ── Case Study Section Editor ──────────────────────────────── */
