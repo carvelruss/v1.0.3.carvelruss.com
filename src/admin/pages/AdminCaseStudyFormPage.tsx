@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
-import RichEditor from '../components/RichEditor';
+import CaseStudyBuilder from '../components/CaseStudyBuilder';
 import { api } from '../../lib/api';
 import '../styles/blog-editor.css';
 
@@ -375,10 +375,18 @@ export default function AdminCaseStudyFormPage() {
               </div>
 
               <div className="a-field">
-                <label className="a-field__label">Content</label>
-                <RichEditor
+                <label className="a-field__label">Case Study Content</label>
+                <CaseStudyBuilder
                   value={form.content}
-                  onChange={html => set('content', html)}
+                  onChange={json => set('content', json)}
+                  projectMeta={{
+                    title:        form.title,
+                    role:         form.role,
+                    tech:         form.tech.split(',').map(t => t.trim()).filter(Boolean),
+                    timeline:     form.timeline,
+                    client_name:  form.client_name,
+                    project_type: form.project_type,
+                  }}
                 />
               </div>
             </div>
