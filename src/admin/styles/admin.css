@@ -2239,11 +2239,9 @@
   gap: .25rem;
   font-size: .6875rem;
   font-weight: 700;
-  padding: 2px 9px;
-  border-radius: 99px;
 }
-.adm-stat__delta--up   { background: var(--adm-success-soft); color: var(--adm-success); }
-.adm-stat__delta--down { background: var(--adm-warning-soft);  color: var(--adm-warning);  }
+.adm-stat__delta--up   { color: var(--adm-success); }
+.adm-stat__delta--down { color: var(--adm-warning);  }
 
 /* ── Quick actions ──────────────────────────────────────────── */
 .adm-quick-actions {
