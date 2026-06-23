@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { FiFacebook, FiTwitter, FiLinkedin, FiLink, FiCheck } from 'react-icons/fi';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/markdown';
 import type { Post } from '../types';
 import '../styles/blog-single.css';
 import BlogAuthorBox from '../components/blog/BlogAuthorBox';
-import BlogShare from '../components/blog/BlogShare';
 import RelatedArticles from '../components/blog/RelatedArticles';
 
 function formatDate(d?: string | null) {
@@ -26,9 +26,64 @@ export default function BlogSingle() {
   const [related, setRelated] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const sidebarRef    = useRef<HTMLElement>(null);
   const sidebarColRef = useRef<HTMLDivElement>(null);
+  const mainRef       = useRef<HTMLElement>(null);
+  const shareBarRef   = useRef<HTMLDivElement>(null);
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  /* ── Floating share bar (left of main content) ── */
+  useEffect(() => {
+    const bar  = shareBarRef.current;
+    const main = mainRef.current;
+    if (!bar || !main) return;
+
+    const update = () => {
+      const mainRect = main.getBoundingClientRect();
+      const barW     = bar.offsetWidth;
+      const barH     = bar.offsetHeight;
+      const leftPos  = mainRect.left - barW - 20;
+
+      if (leftPos < 8 || window.innerWidth <= 991) {
+        bar.style.opacity   = '0';
+        bar.style.pointerEvents = 'none';
+        return;
+      }
+
+      // Hide when scrolled past article
+      if (mainRect.bottom < 88 || mainRect.top > window.innerHeight) {
+        bar.style.opacity   = '0';
+        bar.style.pointerEvents = 'none';
+        return;
+      }
+
+      bar.style.opacity   = '1';
+      bar.style.pointerEvents = 'auto';
+      bar.style.left = `${leftPos}px`;
+
+      // Vertical: center in viewport, clamped within article
+      const idealTop = window.innerHeight / 2 - barH / 2;
+      const minTop   = 88;
+      const maxTop   = mainRect.bottom + window.scrollY - barH - window.scrollY;
+      bar.style.top  = `${Math.min(Math.max(idealTop, minTop), maxTop)}px`;
+    };
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [post]);
 
   /* ── JS sticky sidebar ── */
   useEffect(() => {
@@ -175,7 +230,7 @@ export default function BlogSingle() {
         <div className="bs-layout">
 
           {/* ────────── Main content ────────── */}
-          <main className="bs-main">
+          <main className="bs-main" ref={mainRef}>
 
             {post.category && (
               <span className="bs-cat">{post.category}</span>
@@ -218,7 +273,14 @@ export default function BlogSingle() {
               aria-label="Post content"
             />
 
-            <BlogShare title={post.title} url={window.location.href} />
+            {/* Inline share – shown on mobile only */}
+            <div className="bs-share bs-share--inline">
+              <span className="bs-share__label">Share this post:</span>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on Facebook"><FiFacebook size={16} /></a>
+              <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on X / Twitter"><FiTwitter size={16} /></a>
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on LinkedIn"><FiLinkedin size={16} /></a>
+              <button type="button" className={`bs-share__btn${copied ? ' bs-share__btn--copied' : ''}`} onClick={copyLink} aria-label={copied ? 'Link copied!' : 'Copy link'}>{copied ? <FiCheck size={16} /> : <FiLink size={16} />}</button>
+            </div>
 
             <RelatedArticles posts={related} />
 
@@ -245,6 +307,15 @@ export default function BlogSingle() {
 
         </div>
       </div>
+
+      {/* ── Floating share bar (desktop) ── */}
+      <div className="bs-share-float" ref={shareBarRef} aria-label="Share this post">
+        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on Facebook"><FiFacebook size={16} /></a>
+        <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on X / Twitter"><FiTwitter size={16} /></a>
+        <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on LinkedIn"><FiLinkedin size={16} /></a>
+        <button type="button" className={`bs-share__btn${copied ? ' bs-share__btn--copied' : ''}`} onClick={copyLink} aria-label={copied ? 'Link copied!' : 'Copy link'}>{copied ? <FiCheck size={16} /> : <FiLink size={16} />}</button>
+      </div>
+
     </article>
   );
 }

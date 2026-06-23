@@ -380,6 +380,23 @@
   color: #fff;
 }
 
+/* Inline share row — desktop hidden, mobile visible */
+.bs-share--inline {
+  display: none;
+}
+
+/* Floating share bar — desktop only, JS-positioned */
+.bs-share-float {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+
 /* ── 13. DISCUSSION / COMMENTS ────────────────────────────────── */
 .bs-discussion {
   margin-top: 2.5rem;
@@ -751,6 +768,14 @@
     margin-top: 2.5rem;
     transform: none !important;
     will-change: auto;
+  }
+
+  .bs-share-float {
+    display: none !important;
+  }
+
+  .bs-share--inline {
+    display: flex;
   }
 }
 
