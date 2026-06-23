@@ -709,6 +709,13 @@
   box-shadow: var(--bs-shadow-card);
 }
 
+/* "Tags:" label as its own heading row above the pills */
+.bs-sidebar .bs-tags__label {
+  flex-basis: 100%;
+  margin-right: 0;
+  margin-bottom: .25rem;
+}
+
 /* Related articles moved to bottom of main — add breathing room */
 .bs-main .bs-sidebar-related {
   margin-top: 2rem;
