@@ -15,6 +15,9 @@ interface PostRow {
   author: string;
   author_avatar: string | null;
   author_bio: string | null;
+  featured_image_caption: string | null;
+  reading_time: string | null;
+  views_count: number | null;
   status: 'draft' | 'published';
   published_at: string | null;
   created_at: string;
@@ -58,6 +61,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       author?: string;
       author_avatar?: string | null;
       author_bio?: string | null;
+      featured_image_caption?: string | null;
+      reading_time?: string | null;
+      views_count?: number | null;
       status?: 'draft' | 'published';
       published_at?: string | null;
     }>();
@@ -67,8 +73,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const slug = body.slug.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
 
     await env.DB.prepare(
-      `INSERT INTO posts (title, slug, content, excerpt, meta_description, og_image, keywords, category, author, author_avatar, author_bio, status, published_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO posts (title, slug, content, excerpt, meta_description, og_image, keywords, category, author, author_avatar, author_bio, featured_image_caption, reading_time, views_count, status, published_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
       .bind(
         body.title.trim(),
@@ -82,6 +88,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         body.author?.trim() ?? 'Your Name',
         body.author_avatar ?? null,
         body.author_bio ?? null,
+        body.featured_image_caption ?? null,
+        body.reading_time ?? null,
+        body.views_count ?? null,
         body.status ?? 'draft',
         body.published_at ?? (body.status === 'published' ? new Date().toISOString() : null),
       )
