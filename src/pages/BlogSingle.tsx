@@ -411,11 +411,11 @@ export default function BlogSingle() {
                 </div>
               )}
 
-              {/* Related posts */}
-              <RelatedArticles posts={related} />
-
             </main>
           </div>
+
+          {/* Related posts — full container width (1400px) */}
+          <RelatedArticles posts={related} />
 
         </div>
       </article>

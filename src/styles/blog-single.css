@@ -576,8 +576,11 @@
 .bs-author-bio__link:hover { color: var(--bs-accent-mid); }
 
 /* ── 20. RELATED ARTICLES — journal card grid ─────────────────── */
+/* Lives directly in bs-container so it inherits the full 1400px width */
 .bs-rj {
-  margin-top: 3rem;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--bs-border);
 }
 
 .bs-rj__header {
