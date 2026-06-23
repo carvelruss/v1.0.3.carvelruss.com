@@ -2,13 +2,12 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import {
   FiFacebook, FiTwitter, FiLinkedin, FiLink, FiCheck,
-  FiCalendar, FiClock, FiMessageCircle, FiShare2,
+  FiCalendar, FiClock, FiShare2,
 } from 'react-icons/fi';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/markdown';
 import type { Post } from '../types';
 import '../styles/blog-single.css';
-import BlogComments from '../components/blog/BlogComments';
 import RelatedArticles from '../components/blog/RelatedArticles';
 
 function formatDate(d?: string | null) {
@@ -21,7 +20,6 @@ function formatDate(d?: string | null) {
     : '';
 }
 
-const NAVBAR_H = 88;
 
 export default function BlogSingle() {
   const { slug }     = useParams<{ slug: string }>();
@@ -33,10 +31,8 @@ export default function BlogSingle() {
   const [notFound, setNotFound]     = useState(false);
   const [copied, setCopied]         = useState(false);
   const [readProgress, setReadProgress] = useState(0);
-  const [commentCount, setCommentCount] = useState<number | null>(null);
 
-  const articleRef  = useRef<HTMLElement>(null);
-  const commentsRef = useRef<HTMLElement>(null);
+  const articleRef = useRef<HTMLElement>(null);
 
   /* ── Reading progress ── */
   useEffect(() => {
@@ -51,15 +47,6 @@ export default function BlogSingle() {
     window.addEventListener('scroll', update, { passive: true });
     return () => window.removeEventListener('scroll', update);
   }, [post]);
-
-  /* ── Smooth-scroll to comments ── */
-  const scrollToComments = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    const el = commentsRef.current;
-    if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY - NAVBAR_H - 16;
-    window.scrollTo({ top: y, behavior: 'smooth' });
-  }, []);
 
   /* ── Share handler ── */
   const handleShare = useCallback(async (platform: string) => {
@@ -226,19 +213,6 @@ export default function BlogSingle() {
                   </li>
                 </>
               )}
-              <li className="bs-meta__div" aria-hidden="true" />
-              <li className="bs-meta__item">
-                <FiMessageCircle size={13} aria-hidden="true" />
-                <a
-                  href="#comments"
-                  className="bs-meta__comments"
-                  onClick={scrollToComments}
-                >
-                  {commentCount !== null
-                    ? `${commentCount} comment${commentCount !== 1 ? 's' : ''}`
-                    : 'Comments'}
-                </a>
-              </li>
             </ul>
           </header>
 
@@ -416,14 +390,6 @@ export default function BlogSingle() {
 
               {/* Related posts */}
               <RelatedArticles posts={related} />
-
-              {/* Comments */}
-              <section id="comments" ref={commentsRef} aria-label="Comments">
-                <BlogComments
-                  slug={slug!}
-                  onCountChange={setCommentCount}
-                />
-              </section>
 
             </main>
           </div>
