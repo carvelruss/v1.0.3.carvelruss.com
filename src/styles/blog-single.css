@@ -24,7 +24,7 @@
   --bs-radius-pill:   50px;
   --bs-shadow-card:   0 2px 8px rgba(13,33,90,.06), 0 8px 24px rgba(13,33,90,.04);
   --bs-font:          -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
-  --bs-navbar-h:      88px;
+  --bs-navbar-h:      80px;   /* fallback only — real value set by ResizeObserver */
 }
 
 /* ── 2. PAGE WRAPPER ──────────────────────────────────────────── */
@@ -198,12 +198,14 @@
 /* ── 12. SHARE SIDEBAR (sticky, desktop) ─────────────────────── */
 /*
   Bootstrap d-none d-lg-flex flex-column align-items-center applied in JSX.
-  This CSS handles sizing, stickiness, and spacing.
+  --site-header-height is written to :root by ResizeObserver in BlogSingle.tsx
+  so the top offset always matches the real header height at any screen size.
 */
 .bs-share-sidebar {
   position: sticky;
-  top: calc(var(--bs-navbar-h) + 1.5rem);
-  align-self: flex-start;  /* keeps buttons at their natural height, not stretched */
+  top: calc(var(--site-header-height, 80px) + 16px);
+  align-self: flex-start;  /* stays at natural height inside stretched shell */
+  z-index: 2;
   gap: 10px;
   width: 44px;
   flex-shrink: 0;

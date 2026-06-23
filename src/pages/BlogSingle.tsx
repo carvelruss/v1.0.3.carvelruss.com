@@ -34,6 +34,27 @@ export default function BlogSingle() {
 
   const articleRef = useRef<HTMLElement>(null);
 
+  /* ── Sync real header height → --site-header-height on :root ── */
+  useEffect(() => {
+    const header = document.querySelector<HTMLElement>('.sh');
+    if (!header) return;
+
+    const update = () =>
+      document.documentElement.style.setProperty(
+        '--site-header-height',
+        `${header.offsetHeight}px`
+      );
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(header);
+    window.addEventListener('resize', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
   /* ── Reading progress ── */
   useEffect(() => {
     const update = () => {
