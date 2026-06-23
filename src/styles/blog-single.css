@@ -1,7 +1,9 @@
 /* ================================================================
-   blog-single.css  —  BS = Blog Single post
-   Layout: left share-rail + main post column (no right sidebar)
-   Brand accent: #0D215A navy
+   blog-single.css  —  Blog Single post page
+   Layout: full-width header + hero, then share-sidebar | article-content
+   Brand accent: #0D215A navy  |  Warm accent: #E05230 for category/quote
+   Bootstrap utilities (d-flex, d-none d-lg-flex, flex-column, etc.)
+   complement these custom classes.
    ================================================================ */
 
 /* ── 1. DESIGN TOKENS ─────────────────────────────────────────── */
@@ -9,7 +11,8 @@
   --bs-accent:        #0D215A;
   --bs-accent-mid:    #1a4a9e;
   --bs-accent-dark:   #071440;
-  --bs-bg:            #fafafa;
+  --bs-accent-warm:   #E05230;    /* category, breadcrumb current, quote mark */
+  --bs-bg:            #ffffff;
   --bs-surface:       #ffffff;
   --bs-text:          #0f172a;
   --bs-text-soft:     #334155;
@@ -40,7 +43,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, var(--bs-accent-mid), var(--bs-accent));
+  background: linear-gradient(90deg, var(--bs-accent-warm), #c0392b);
   transform-origin: left;
   transform: scaleX(0);
   z-index: 9999;
@@ -50,11 +53,11 @@
 
 /* ── 4. CONTAINER ─────────────────────────────────────────────── */
 .bs-container {
-  max-width: 1200px;
+  max-width: 1080px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 3rem;
-  padding-right: 3rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
 /* ── 5. BREADCRUMB ────────────────────────────────────────────── */
@@ -62,10 +65,9 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: .25rem .5rem;
-  padding: 1.25rem 0 1.125rem;
-  font-size: .8125rem;
-  border-bottom: 1px solid var(--bs-border);
+  gap: .2rem .4rem;
+  padding: 1.25rem 0 0;
+  font-size: .8rem;
 }
 
 .bs-bc-link {
@@ -82,54 +84,129 @@
 }
 
 .bs-bc-current {
-  color: var(--bs-text);
+  color: var(--bs-accent-warm);
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 360px;
+  max-width: 380px;
 }
 
-/* ── 6. TWO-COLUMN LAYOUT ─────────────────────────────────────── */
-/*  Left  : share rail  (~60px)
-    Right : post column (remainder, capped at ~70ch for readability) */
-.bs-layout {
-  display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
-  gap: 0 32px;
-  padding-top: 2rem;
-  align-items: start;
+/* ── 6. POST HEADER (above hero image) ───────────────────────── */
+.bs-post-header {
+  padding-top: 1.5rem;
+  padding-bottom: 0;
+  max-width: 820px;
 }
 
-.bs-main {
-  min-width: 0;
-  max-width: 78ch;  /* ~65-75 character reading measure */
-}
-
-/* ── 7. SHARE RAIL (left, sticky on desktop) ──────────────────── */
-.bs-share-rail {
-  /* Takes up full column height so inner can be sticky */
-}
-
-.bs-share-rail__inner {
-  position: sticky;
-  top: calc(var(--bs-navbar-h) + 1.5rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.bs-share-rail__label {
-  font-size: .625rem;
+/* ── 7. CATEGORY LABEL ────────────────────────────────────────── */
+.bs-cat {
+  display: inline-block;
+  color: var(--bs-accent-warm);
+  font-size: .72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .09em;
-  color: var(--bs-muted-lt);
-  margin-bottom: 4px;
+  letter-spacing: .1em;
+  margin-bottom: .625rem;
 }
 
-/* Shared share button style */
+/* ── 8. TITLE ─────────────────────────────────────────────────── */
+.bs-title {
+  font-size: clamp(1.625rem, 3.5vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--bs-text);
+  margin-bottom: .875rem;
+  letter-spacing: -.025em;
+}
+
+/* ── 9. META ROW ──────────────────────────────────────────────── */
+.bs-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .375rem .625rem;
+  font-size: .875rem;
+  color: var(--bs-muted);
+}
+
+.bs-meta__item {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+.bs-meta__div {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: var(--bs-border);
+  flex-shrink: 0;
+}
+
+.bs-meta__comments {
+  color: var(--bs-muted);
+  text-decoration: none;
+  transition: color .18s;
+}
+.bs-meta__comments:hover { color: var(--bs-accent); }
+
+/* ── 10. FEATURED IMAGE (full container width) ────────────────── */
+.bs-feat-img {
+  margin: 1.25rem 0 0;
+}
+.bs-feat-img img {
+  width: 100%;
+  display: block;
+  max-height: 480px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.bs-img-caption {
+  text-align: center;
+  font-size: .8125rem;
+  color: var(--bs-muted);
+  font-style: italic;
+  margin-top: .5rem;
+}
+
+/* ── 11. ARTICLE SHELL (flex row: sidebar + content) ─────────── */
+/*
+  Bootstrap d-flex is applied in JSX.
+  These rules handle sizing, gaps, and sticky.
+  overflow must NOT be hidden on any ancestor — that breaks sticky.
+*/
+.bs-article-shell {
+  gap: 2.5rem;
+  margin-top: 2rem;
+  align-items: flex-start;
+}
+
+/* ── 12. SHARE SIDEBAR (sticky, desktop) ─────────────────────── */
+/*
+  Bootstrap d-none d-lg-flex flex-column align-items-center applied in JSX.
+  This CSS handles sizing, stickiness, and spacing.
+*/
+.bs-share-sidebar {
+  position: sticky;
+  top: calc(var(--bs-navbar-h) + 1.5rem);
+  gap: 10px;
+  width: 44px;
+  flex-shrink: 0;
+  padding-top: .125rem;
+}
+
+/* ── 13. ARTICLE CONTENT COLUMN ──────────────────────────────── */
+.bs-article-content {
+  flex: 1;
+  min-width: 0;
+  max-width: 720px;
+}
+
+/* ── 14. SHARED SHARE BUTTON STYLE ───────────────────────────── */
 .bs-share-btn {
   width: 38px;
   height: 38px;
@@ -159,7 +236,7 @@
   color: #fff;
 }
 
-/* ── 8. INLINE SHARE (mobile only) ───────────────────────────── */
+/* ── 15. INLINE SHARE (mobile only, shown via responsive rules) ─ */
 .bs-share-inline {
   display: none;
   flex-wrap: wrap;
@@ -179,87 +256,12 @@
   gap: .5rem;
 }
 
-/* ── 9. CATEGORY LABEL ────────────────────────────────────────── */
-.bs-cat {
-  display: inline-block;
-  color: var(--bs-muted);
-  font-size: .75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  margin-bottom: .75rem;
-}
-
-/* ── 10. TITLE ────────────────────────────────────────────────── */
-.bs-title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 800;
-  line-height: 1.18;
-  color: var(--bs-text);
-  margin-bottom: .875rem;
-  letter-spacing: -.025em;
-}
-
-/* ── 11. META ROW ─────────────────────────────────────────────── */
-.bs-meta {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.5rem;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: .375rem .625rem;
-  font-size: .875rem;
-  color: var(--bs-muted);
-}
-
-.bs-meta__item {
-  display: inline-flex;
-  align-items: center;
-  gap: .3rem;
-}
-
-/* Thin vertical rule between items */
-.bs-meta__div {
-  display: inline-block;
-  width: 1px;
-  height: 14px;
-  background: var(--bs-border);
-  flex-shrink: 0;
-}
-
-.bs-meta__comments {
-  color: var(--bs-muted);
-  text-decoration: none;
-  transition: color .18s;
-}
-.bs-meta__comments:hover { color: var(--bs-accent); }
-
-/* ── 12. FEATURED IMAGE ───────────────────────────────────────── */
-.bs-feat-img {
-  margin: 0 0 2rem;
-  overflow: hidden;
-}
-.bs-feat-img img {
-  width: 100%;
-  display: block;
-  max-height: 480px;
-  object-fit: cover;
-}
-.bs-img-caption {
-  text-align: center;
-  font-size: .8125rem;
-  color: var(--bs-muted);
-  font-style: italic;
-  margin-top: .5rem;
-}
-
-/* ── 13. AUTHOR BYLINE (inline, below hero) ───────────────────── */
+/* ── 16. AUTHOR BYLINE (inline, top of article content) ──────── */
 .bs-byline {
   display: flex;
   align-items: center;
   gap: .875rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--bs-border);
 }
@@ -306,7 +308,7 @@
   color: var(--bs-muted);
 }
 
-/* ── 14. PROSE / ARTICLE BODY ─────────────────────────────────── */
+/* ── 17. PROSE / ARTICLE BODY ─────────────────────────────────── */
 .bs-prose {
   font-size: 1.0625rem;
   line-height: 1.85;
@@ -314,6 +316,13 @@
 }
 .bs-prose p               { margin-bottom: 1.5rem; }
 .bs-prose p:last-child    { margin-bottom: 0; }
+
+/* Lead paragraph — first <p> in the prose block is bold */
+.bs-prose > p:first-of-type {
+  font-weight: 700;
+  color: var(--bs-text);
+}
+
 .bs-prose h1,
 .bs-prose h2 {
   font-size: clamp(1.25rem, 3vw, 1.625rem);
@@ -376,6 +385,8 @@
   color: #e2e8f0;
   font-size: .875rem;
 }
+
+/* ── Blockquote — large "99" warm-accent quote mark ────────────── */
 .bs-prose blockquote {
   background: var(--bs-bg-soft);
   border-left: none;
@@ -387,7 +398,7 @@
 .bs-prose blockquote::before {
   content: '\201D';
   font-size: 5.5rem;
-  color: var(--bs-accent);
+  color: var(--bs-accent-warm);
   opacity: 1;
   position: absolute;
   top: .25rem;
@@ -411,6 +422,7 @@
   font-style: normal;
   display: block;
 }
+
 .bs-prose img {
   max-width: 100%;
   border-radius: 10px;
@@ -441,7 +453,7 @@
   color: var(--bs-text-soft);
 }
 
-/* ── 15. TAGS ─────────────────────────────────────────────────── */
+/* ── 18. TAGS ─────────────────────────────────────────────────── */
 .bs-tags {
   display: flex;
   align-items: center;
@@ -476,7 +488,7 @@
   background: rgba(13,33,90,.05);
 }
 
-/* ── 16. AUTHOR BIO CARD (bottom of main) ─────────────────────── */
+/* ── 19. AUTHOR BIO CARD ──────────────────────────────────────── */
 .bs-author-bio {
   margin-top: 2.5rem;
   padding: 1.5rem;
@@ -545,7 +557,7 @@
 }
 .bs-author-bio__link:hover { color: var(--bs-accent-mid); }
 
-/* ── 17. RELATED ARTICLES ─────────────────────────────────────── */
+/* ── 20. RELATED ARTICLES ─────────────────────────────────────── */
 .bs-sidebar-related {
   margin-top: 2.5rem;
   background: var(--bs-surface);
@@ -604,7 +616,7 @@
   margin: 0;
 }
 
-/* ── 18. COMMENTS SECTION ─────────────────────────────────────── */
+/* ── 21. COMMENTS SECTION ─────────────────────────────────────── */
 #comments {
   margin-top: 3rem;
 }
@@ -644,7 +656,7 @@
   margin: 0 0 1.25rem;
 }
 
-/* ── 19. COMMENT ITEM ─────────────────────────────────────────── */
+/* ── 22. COMMENT ITEM ─────────────────────────────────────────── */
 .bs-comment {
   position: relative;
   padding: 1.125rem 0;
@@ -652,7 +664,6 @@
 }
 .bs-comment:last-child { border-bottom: none; }
 
-/* Replies get a left accent line as visual thread connector */
 .bs-comment--reply {
   border-left: 2px solid var(--bs-border);
   padding-left: 1rem;
@@ -727,9 +738,7 @@
   margin-top: .5rem;
 }
 
-/* ── 20. COMMENT FORM ─────────────────────────────────────────── */
-
-/* Honeypot: visually hidden but NOT display:none so bots still fill it */
+/* ── 23. COMMENT FORM ─────────────────────────────────────────── */
 .bs-cf-hp {
   position: absolute;
   left: -9999px;
@@ -738,7 +747,6 @@
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  tabIndex: -1;
 }
 
 .bs-cf { display: flex; flex-direction: column; gap: 1rem; }
@@ -761,7 +769,7 @@
   font-weight: 600;
   color: var(--bs-text);
 }
-.bs-cf-req { color: var(--bs-accent); }
+.bs-cf-req { color: var(--bs-accent-warm); }
 
 .bs-cf-input,
 .bs-cf-textarea {
@@ -845,7 +853,7 @@
   border-radius: 8px;
 }
 
-/* ── 21. LOADING STATE ────────────────────────────────────────── */
+/* ── 24. LOADING STATE ────────────────────────────────────────── */
 .bs-loading {
   display: flex;
   align-items: center;
@@ -863,7 +871,7 @@
 }
 @keyframes bsSpin { to { transform: rotate(360deg); } }
 
-/* ── 22. 404 STATE ────────────────────────────────────────────── */
+/* ── 25. 404 STATE ────────────────────────────────────────────── */
 .bs-not-found {
   display: flex;
   flex-direction: column;
@@ -894,7 +902,7 @@
   transform: translateY(-1px);
 }
 
-/* ── 23. RESPONSIVE ───────────────────────────────────────────── */
+/* ── 26. RESPONSIVE ───────────────────────────────────────────── */
 
 @media (max-width: 1199.98px) {
   .bs-container {
@@ -903,15 +911,12 @@
   }
 }
 
+/* Below lg (< 992px): share sidebar hidden (Bootstrap d-none handles it),
+   inline share row becomes visible */
 @media (max-width: 991.98px) {
-  .bs-layout {
-    grid-template-columns: 1fr;
+  .bs-article-shell {
+    flex-direction: column;
     gap: 0;
-  }
-
-  /* Hide the share rail column; inline share shows instead */
-  .bs-share-rail {
-    display: none;
   }
 
   .bs-share-inline {
@@ -929,8 +934,8 @@
     padding-right: 1.25rem;
   }
 
-  .bs-layout {
-    padding-top: 1.5rem;
+  .bs-article-shell {
+    margin-top: 1.5rem;
   }
 
   .bs-author-bio__header {
@@ -944,11 +949,11 @@
 
 @media (max-width: 575.98px) {
   .bs-bc-current {
-    max-width: 160px;
+    max-width: 180px;
   }
 
   .bs-title {
-    font-size: 1.625rem;
+    font-size: 1.5rem;
   }
 
   .bs-byline__avatar,

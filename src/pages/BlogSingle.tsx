@@ -61,7 +61,7 @@ export default function BlogSingle() {
     window.scrollTo({ top: y, behavior: 'smooth' });
   }, []);
 
-  /* ── Share handler (Web Share API on mobile, intent URLs on desktop) ── */
+  /* ── Share handler ── */
   const handleShare = useCallback(async (platform: string) => {
     const url   = window.location.href;
     const title = post?.title ?? '';
@@ -197,129 +197,114 @@ export default function BlogSingle() {
 
           {/* ── Breadcrumb ── */}
           <nav className="bs-breadcrumb" aria-label="Breadcrumb">
-            <Link to="/"     className="bs-bc-link">Home</Link>
-            <span className="bs-bc-sep" aria-hidden="true">&gt;</span>
+            <Link to="/" className="bs-bc-link">Home</Link>
+            <span className="bs-bc-sep" aria-hidden="true">›</span>
             <Link to="/blog" className="bs-bc-link">Blog</Link>
-            <span className="bs-bc-sep" aria-hidden="true">&gt;</span>
+            <span className="bs-bc-sep" aria-hidden="true">›</span>
             <span className="bs-bc-current" aria-current="page">{post.title}</span>
           </nav>
 
-          {/* ── Two-column layout: share rail (left) + post (right) ── */}
-          <div className="bs-layout">
-
-            {/* ── Share rail (sticky on desktop, hidden on mobile) ── */}
-            <aside className="bs-share-rail" aria-label="Share this post">
-              <div className="bs-share-rail__inner">
-                <span className="bs-share-rail__label">Share</span>
-
-                {canShare && (
-                  <button
-                    type="button"
-                    className="bs-share-btn"
-                    onClick={() => handleShare('native')}
-                    aria-label="Share"
-                    title="Share"
-                  >
-                    <FiShare2 size={15} />
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  className="bs-share-btn"
-                  onClick={() => handleShare('facebook')}
-                  aria-label="Share on Facebook"
-                  title="Share on Facebook"
+          {/* ── Post header: category + title + meta (above the hero image) ── */}
+          <header className="bs-post-header">
+            {post.category && (
+              <span className="bs-cat">{post.category}</span>
+            )}
+            <h1 className="bs-title">{post.title}</h1>
+            <ul className="bs-meta" role="list">
+              {post.published_at && (
+                <li className="bs-meta__item">
+                  <FiCalendar size={13} aria-hidden="true" />
+                  <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
+                </li>
+              )}
+              {post.reading_time && (
+                <>
+                  <li className="bs-meta__div" aria-hidden="true" />
+                  <li className="bs-meta__item">
+                    <FiClock size={13} aria-hidden="true" />
+                    <span>{post.reading_time}</span>
+                  </li>
+                </>
+              )}
+              <li className="bs-meta__div" aria-hidden="true" />
+              <li className="bs-meta__item">
+                <FiMessageCircle size={13} aria-hidden="true" />
+                <a
+                  href="#comments"
+                  className="bs-meta__comments"
+                  onClick={scrollToComments}
                 >
-                  <FiFacebook size={15} />
-                </button>
+                  {commentCount !== null
+                    ? `${commentCount} comment${commentCount !== 1 ? 's' : ''}`
+                    : 'Comments'}
+                </a>
+              </li>
+            </ul>
+          </header>
 
-                <button
-                  type="button"
-                  className="bs-share-btn"
-                  onClick={() => handleShare('twitter')}
-                  aria-label="Share on X / Twitter"
-                  title="Share on X / Twitter"
-                >
-                  <FiTwitter size={15} />
-                </button>
+          {/* ── Hero image — full container width ── */}
+          {post.og_image && (
+            <figure className="bs-feat-img">
+              <img src={post.og_image} alt={post.title} loading="lazy" />
+              {post.featured_image_caption && (
+                <figcaption className="bs-img-caption">
+                  {post.featured_image_caption}
+                </figcaption>
+              )}
+            </figure>
+          )}
 
-                <button
-                  type="button"
-                  className="bs-share-btn"
-                  onClick={() => handleShare('linkedin')}
-                  aria-label="Share on LinkedIn"
-                  title="Share on LinkedIn"
-                >
-                  <FiLinkedin size={15} />
-                </button>
+          {/* ── Article shell: share sidebar (left) + article content (right) ── */}
+          <div className="bs-article-shell d-flex">
 
-                <button
-                  type="button"
-                  className={`bs-share-btn${copied ? ' bs-share-btn--copied' : ''}`}
-                  onClick={() => handleShare('copy')}
-                  aria-label={copied ? 'Link copied!' : 'Copy link'}
-                  title={copied ? 'Link copied!' : 'Copy link'}
-                >
-                  {copied ? <FiCheck size={15} /> : <FiLink size={15} />}
-                </button>
-              </div>
+            {/* Share sidebar — sticky, visible on lg+ only via Bootstrap d-none d-lg-flex */}
+            <aside
+              className="bs-share-sidebar d-none d-lg-flex flex-column align-items-center"
+              aria-label="Share this post"
+            >
+              <button
+                type="button"
+                className="bs-share-btn"
+                onClick={() => handleShare('facebook')}
+                aria-label="Share on Facebook"
+                title="Share on Facebook"
+              >
+                <FiFacebook size={15} />
+              </button>
+
+              <button
+                type="button"
+                className="bs-share-btn"
+                onClick={() => handleShare('twitter')}
+                aria-label="Share on X / Twitter"
+                title="Share on X / Twitter"
+              >
+                <FiTwitter size={15} />
+              </button>
+
+              <button
+                type="button"
+                className="bs-share-btn"
+                onClick={() => handleShare('linkedin')}
+                aria-label="Share on LinkedIn"
+                title="Share on LinkedIn"
+              >
+                <FiLinkedin size={15} />
+              </button>
+
+              <button
+                type="button"
+                className={`bs-share-btn${copied ? ' bs-share-btn--copied' : ''}`}
+                onClick={() => handleShare('copy')}
+                aria-label={copied ? 'Link copied!' : 'Copy link'}
+                title={copied ? 'Link copied!' : 'Copy link'}
+              >
+                {copied ? <FiCheck size={15} /> : <FiLink size={15} />}
+              </button>
             </aside>
 
-            {/* ── Main post column ── */}
-            <main className="bs-main">
-
-              {/* Category */}
-              {post.category && (
-                <span className="bs-cat">{post.category}</span>
-              )}
-
-              {/* Title */}
-              <h1 className="bs-title">{post.title}</h1>
-
-              {/* Meta row */}
-              <ul className="bs-meta" role="list">
-                {post.published_at && (
-                  <li className="bs-meta__item">
-                    <FiCalendar size={13} aria-hidden="true" />
-                    <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
-                  </li>
-                )}
-                {post.reading_time && (
-                  <>
-                    <li className="bs-meta__div" aria-hidden="true" />
-                    <li className="bs-meta__item">
-                      <FiClock size={13} aria-hidden="true" />
-                      <span>{post.reading_time}</span>
-                    </li>
-                  </>
-                )}
-                <li className="bs-meta__div" aria-hidden="true" />
-                <li className="bs-meta__item">
-                  <FiMessageCircle size={13} aria-hidden="true" />
-                  <a
-                    href="#comments"
-                    className="bs-meta__comments"
-                    onClick={scrollToComments}
-                  >
-                    {commentCount !== null
-                      ? `${commentCount} comment${commentCount !== 1 ? 's' : ''}`
-                      : 'Comments'}
-                  </a>
-                </li>
-              </ul>
-
-              {/* Hero image */}
-              {post.og_image && (
-                <figure className="bs-feat-img">
-                  <img src={post.og_image} alt={post.title} loading="lazy" />
-                  {post.featured_image_caption && (
-                    <figcaption className="bs-img-caption">
-                      {post.featured_image_caption}
-                    </figcaption>
-                  )}
-                </figure>
-              )}
+            {/* ── Article content column ── */}
+            <main className="bs-article-content">
 
               {/* Author byline — inline, below hero */}
               <div className="bs-byline">
@@ -346,14 +331,14 @@ export default function BlogSingle() {
                 </div>
               </div>
 
-              {/* Prose */}
+              {/* Prose content */}
               <div
                 className="bs-prose"
                 dangerouslySetInnerHTML={{ __html: html }}
                 aria-label="Post content"
               />
 
-              {/* Inline share row — shown on mobile only */}
+              {/* Inline share row — shown on mobile only (< lg) */}
               <div className="bs-share-inline">
                 <span className="bs-share-inline__label">Share this post:</span>
                 <div className="bs-share-inline__btns">
@@ -442,6 +427,7 @@ export default function BlogSingle() {
 
             </main>
           </div>
+
         </div>
       </article>
     </>
