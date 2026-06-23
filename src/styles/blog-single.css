@@ -51,23 +51,7 @@
   pointer-events: none;
 }
 
-/* ── 4. CONTAINER ─────────────────────────────────────────────── */
-.bs-container {
-  width: 100%;
-  max-width: 1600px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-@media (min-width: 576px) {
-  .bs-container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-}
-
-/* ── 5. BREADCRUMB ────────────────────────────────────────────── */
+/* ── 4. BREADCRUMB ────────────────────────────────────────────── */
 .bs-breadcrumb {
   display: flex;
   align-items: center;

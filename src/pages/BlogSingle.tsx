@@ -193,7 +193,7 @@ export default function BlogSingle() {
       />
 
       <article className="bs-page" ref={articleRef}>
-        <div className="bs-container">
+        <div className="container-site">
 
           {/* ── Breadcrumb ── */}
           <nav className="bs-breadcrumb" aria-label="Breadcrumb">
