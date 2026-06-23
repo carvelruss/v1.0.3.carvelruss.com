@@ -24,38 +24,67 @@ function formatDate(d?: string | null) {
 export default function RelatedArticles({ posts }: Props) {
   if (posts.length === 0) return null;
 
+  const visible = posts.slice(0, 3);
+
   return (
-    <div className="bs-sidebar-related">
-      <p className="bs-sidebar-related__heading">Related articles</p>
-      <div className="bs-related-list">
-        {posts.slice(0, 3).map((post, i) => (
+    <section className="bs-rj" aria-label="Related articles">
+
+      {/* Header row */}
+      <div className="bs-rj__header">
+        <h2 className="bs-rj__heading">Latest from the journal</h2>
+        <span className="bs-rj__count">
+          {visible.length} {visible.length === 1 ? 'story' : 'stories'} published
+        </span>
+      </div>
+
+      {/* Cards grid */}
+      <div className="bs-rj__grid">
+        {visible.map((post, i) => (
           <Link
             key={post.slug}
             to={`/blogs/${post.slug}`}
-            className="bs-related-item"
+            className="bs-rj-card"
             aria-label={post.title}
           >
-            <div
-              className="bs-related-item__img"
-              style={
-                post.og_image
-                  ? { backgroundImage: `url(${post.og_image})` }
-                  : { background: PLACEHOLDERS[i % PLACEHOLDERS.length] }
-              }
-              aria-hidden="true"
-            />
-            <div className="bs-related-item__body">
-              <p className="bs-related-item__title">{post.title}</p>
-              <p className="bs-related-item__meta">
-                {(post.views_count ?? 0) > 0
-                  ? `${post.views_count!.toLocaleString()} views · `
-                  : ''}
-                {formatDate(post.published_at)}
+            {/* Background image */}
+            {post.og_image ? (
+              <img
+                src={post.og_image}
+                alt=""
+                className="bs-rj-card__img"
+                loading="lazy"
+              />
+            ) : (
+              <div
+                className="bs-rj-card__img bs-rj-card__img--placeholder"
+                style={{ background: PLACEHOLDERS[i % PLACEHOLDERS.length] }}
+                aria-hidden="true"
+              />
+            )}
+
+            {/* Dark gradient overlay */}
+            <div className="bs-rj-card__overlay" aria-hidden="true" />
+
+            {/* Category badge */}
+            {post.category && (
+              <span className="bs-rj-card__badge">{post.category}</span>
+            )}
+
+            {/* Bottom text */}
+            <div className="bs-rj-card__body">
+              <p className="bs-rj-card__title">{post.title}</p>
+              <p className="bs-rj-card__meta">
+                {post.author}
+                {post.published_at && (
+                  <> · <time dateTime={post.published_at}>{formatDate(post.published_at)}</time></>
+                )}
+                {post.reading_time && <> · {post.reading_time}</>}
               </p>
             </div>
           </Link>
         ))}
       </div>
-    </div>
+
+    </section>
   );
 }
