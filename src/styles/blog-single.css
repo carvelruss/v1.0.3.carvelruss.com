@@ -197,18 +197,25 @@
 
 /* ── 12. SHARE SIDEBAR (sticky, desktop) ─────────────────────── */
 /*
-  Bootstrap d-none d-lg-flex flex-column align-items-center applied in JSX.
-  --site-header-height is written to :root by ResizeObserver in BlogSingle.tsx
-  so the top offset always matches the real header height at any screen size.
+  Wrapper pattern: .bs-share-wrapper is the flex item — it stretches to the
+  full height of bs-article-shell (= full article height). .bs-share-sidebar
+  is sticky INSIDE the wrapper, so its scroll range spans the whole article.
+  Without the wrapper, the sticky element's own box (height ~200px) bounds
+  its scroll range and it stops sticking almost immediately.
+
+  --site-header-height is written to :root by ResizeObserver in BlogSingle.tsx.
 */
+.bs-share-wrapper {
+  width: 44px;
+  flex-shrink: 0;
+}
+
 .bs-share-sidebar {
   position: sticky;
   top: calc(var(--site-header-height, 80px) + 16px);
-  align-self: flex-start;  /* stays at natural height inside stretched shell */
   z-index: 2;
   gap: 10px;
   width: 44px;
-  flex-shrink: 0;
   padding-top: .125rem;
 }
 

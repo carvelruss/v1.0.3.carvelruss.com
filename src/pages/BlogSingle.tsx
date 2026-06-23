@@ -252,9 +252,10 @@ export default function BlogSingle() {
           {/* ── Article shell: share sidebar (left) + article content (right) ── */}
           <div className="bs-article-shell d-flex">
 
-            {/* Share sidebar — sticky, visible on lg+ only via Bootstrap d-none d-lg-flex */}
+            {/* Wrapper stretches to match article column height; sidebar is sticky inside */}
+            <div className="bs-share-wrapper d-none d-lg-block">
             <aside
-              className="bs-share-sidebar d-none d-lg-flex flex-column align-items-center"
+              className="bs-share-sidebar d-flex flex-column align-items-center"
               aria-label="Share this post"
             >
               <button
@@ -297,6 +298,7 @@ export default function BlogSingle() {
                 {copied ? <FiCheck size={15} /> : <FiLink size={15} />}
               </button>
             </aside>
+            </div>
 
             {/* ── Article content column ── */}
             <main className="bs-article-content">
