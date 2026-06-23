@@ -1,11 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { FiFacebook, FiTwitter, FiLinkedin, FiLink, FiCheck } from 'react-icons/fi';
+import {
+  FiFacebook, FiTwitter, FiLinkedin, FiLink, FiCheck,
+  FiCalendar, FiClock, FiMessageCircle, FiArrowLeft, FiShare2,
+} from 'react-icons/fi';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/markdown';
 import type { Post } from '../types';
 import '../styles/blog-single.css';
-import BlogAuthorBox from '../components/blog/BlogAuthorBox';
+import BlogComments from '../components/blog/BlogComments';
 import RelatedArticles from '../components/blog/RelatedArticles';
 
 function formatDate(d?: string | null) {
@@ -18,102 +21,71 @@ function formatDate(d?: string | null) {
     : '';
 }
 
+const NAVBAR_H = 88;
+
 export default function BlogSingle() {
   const { slug }     = useParams<{ slug: string }>();
   const navigate     = useNavigate();
-  const [post, setPost]       = useState<Post | null>(null);
-  const [html, setHtml]       = useState('');
-  const [related, setRelated] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [post, setPost]             = useState<Post | null>(null);
+  const [html, setHtml]             = useState('');
+  const [related, setRelated]       = useState<Post[]>([]);
+  const [loading, setLoading]       = useState(true);
+  const [notFound, setNotFound]     = useState(false);
+  const [copied, setCopied]         = useState(false);
+  const [readProgress, setReadProgress] = useState(0);
+  const [commentCount, setCommentCount] = useState<number | null>(null);
 
-  const sidebarRef    = useRef<HTMLElement>(null);
-  const sidebarColRef = useRef<HTMLDivElement>(null);
-  const mainRef       = useRef<HTMLElement>(null);
-  const shareBarRef   = useRef<HTMLDivElement>(null);
+  const articleRef  = useRef<HTMLElement>(null);
+  const commentsRef = useRef<HTMLElement>(null);
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
+  /* ── Reading progress ── */
+  useEffect(() => {
+    const update = () => {
+      const el = articleRef.current;
+      if (!el) return;
+      const { top, height } = el.getBoundingClientRect();
+      const scrolled = Math.max(0, -top);
+      const total    = height - window.innerHeight;
+      setReadProgress(total > 0 ? Math.min(100, (scrolled / total) * 100) : 0);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, [post]);
+
+  /* ── Smooth-scroll to comments ── */
+  const scrollToComments = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    const el = commentsRef.current;
+    if (!el) return;
+    const y = el.getBoundingClientRect().top + window.scrollY - NAVBAR_H - 16;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }, []);
+
+  /* ── Share handler (Web Share API on mobile, intent URLs on desktop) ── */
+  const handleShare = useCallback(async (platform: string) => {
+    const url   = window.location.href;
+    const title = post?.title ?? '';
+    if (platform === 'native') {
+      if (navigator.share) {
+        try { await navigator.share({ title, url }); } catch { /* user cancelled */ }
+      }
+      return;
+    }
+    if (platform === 'copy') {
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  /* ── Floating share bar (left of main content) ── */
-  useEffect(() => {
-    const bar  = shareBarRef.current;
-    const main = mainRef.current;
-    if (!bar || !main) return;
-
-    const update = () => {
-      const mainRect = main.getBoundingClientRect();
-      const barW     = bar.offsetWidth;
-      const barH     = bar.offsetHeight;
-      const leftPos  = mainRect.left - barW - 20;
-
-      if (leftPos < 8 || window.innerWidth <= 991) {
-        bar.style.opacity   = '0';
-        bar.style.pointerEvents = 'none';
-        return;
-      }
-
-      // Hide when scrolled past article
-      if (mainRect.bottom < 88 || mainRect.top > window.innerHeight) {
-        bar.style.opacity   = '0';
-        bar.style.pointerEvents = 'none';
-        return;
-      }
-
-      bar.style.opacity   = '1';
-      bar.style.pointerEvents = 'auto';
-      bar.style.left = `${leftPos}px`;
-
-      // Vertical: center in viewport, clamped within article
-      const idealTop = window.innerHeight / 2 - barH / 2;
-      const minTop   = 88;
-      const maxTop   = mainRect.bottom + window.scrollY - barH - window.scrollY;
-      bar.style.top  = `${Math.min(Math.max(idealTop, minTop), maxTop)}px`;
+      return;
+    }
+    const intents: Record<string, string> = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      twitter:  `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
     };
-
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
+    if (intents[platform]) window.open(intents[platform], '_blank', 'noopener,noreferrer');
   }, [post]);
 
-  /* ── JS sticky sidebar ── */
-  useEffect(() => {
-    const sidebar = sidebarRef.current;
-    const col     = sidebarColRef.current;
-    if (!sidebar || !col) return;
-
-    const OFFSET = 88; // fixed header height + gap
-
-    const update = () => {
-      if (window.innerWidth <= 991) {
-        sidebar.style.transform = '';
-        return;
-      }
-      const colRect  = col.getBoundingClientRect();
-      const sidebarH = sidebar.offsetHeight;
-      const maxTY    = col.offsetHeight - sidebarH;
-      const ty       = Math.max(0, Math.min(OFFSET - colRect.top, maxTY));
-      sidebar.style.transform = ty > 0 ? `translateY(${ty}px)` : '';
-    };
-
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, [post]);
-
+  /* ── Data fetch + SEO ── */
   useEffect(() => {
     if (!slug) return;
 
@@ -176,9 +148,7 @@ export default function BlogSingle() {
         try {
           const all = await api.getPosts(false);
           setRelated(all.filter(o => o.slug !== slug).slice(0, 3));
-        } catch {
-          /* related posts are optional */
-        }
+        } catch { /* related posts are optional */ }
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
@@ -209,113 +179,276 @@ export default function BlogSingle() {
     );
   }
 
-  const tags = post.keywords
-    ? post.keywords.split(',').map(t => t.trim()).filter(Boolean)
-    : [];
+  const tags     = post.keywords?.split(',').map(t => t.trim()).filter(Boolean) ?? [];
+  const initials = post.author.split(' ').map(n => n[0] ?? '').join('').slice(0, 2).toUpperCase();
+  const canShare = typeof navigator !== 'undefined' && 'share' in navigator;
 
   return (
-    <article className="bs-page">
-      <div className="bs-container">
+    <>
+      {/* Reading progress bar — fixed at top of viewport */}
+      <div
+        className="bs-read-progress"
+        style={{ transform: `scaleX(${readProgress / 100})` }}
+        aria-hidden="true"
+      />
 
-        {/* ── Breadcrumb ── */}
-        <nav className="bs-breadcrumb" aria-label="Breadcrumb">
-          <Link to="/"     className="bs-bc-link">Home</Link>
-          <span className="bs-bc-sep" aria-hidden="true">›</span>
-          <Link to="/blog" className="bs-bc-link">Blog</Link>
-          <span className="bs-bc-sep" aria-hidden="true">›</span>
-          <span className="bs-bc-current" aria-current="page">{post.title}</span>
-        </nav>
+      <article className="bs-page" ref={articleRef}>
+        <div className="bs-container">
 
-        {/* ── Two-column layout ── */}
-        <div className="bs-layout">
+          {/* ── Breadcrumb + back link ── */}
+          <nav className="bs-breadcrumb" aria-label="Breadcrumb">
+            <Link to="/blog" className="bs-bc-back">
+              <FiArrowLeft size={13} aria-hidden="true" />
+              Back to Blog
+            </Link>
+            <span className="bs-bc-pipe" aria-hidden="true" />
+            <Link to="/"     className="bs-bc-link">Home</Link>
+            <span className="bs-bc-sep" aria-hidden="true">›</span>
+            <Link to="/blog" className="bs-bc-link">Blog</Link>
+            <span className="bs-bc-sep" aria-hidden="true">›</span>
+            <span className="bs-bc-current" aria-current="page">{post.title}</span>
+          </nav>
 
-          {/* ────────── Main content ────────── */}
-          <main className="bs-main" ref={mainRef}>
+          {/* ── Two-column layout: share rail (left) + post (right) ── */}
+          <div className="bs-layout">
 
-            {post.category && (
-              <span className="bs-cat">{post.category}</span>
-            )}
+            {/* ── Share rail (sticky on desktop, hidden on mobile) ── */}
+            <aside className="bs-share-rail" aria-label="Share this post">
+              <div className="bs-share-rail__inner">
+                <span className="bs-share-rail__label">Share</span>
 
-            <h1 className="bs-title">{post.title}</h1>
-
-            <div className="bs-meta">
-              <span className="bs-meta__author">{post.author}</span>
-              {post.published_at && (
-                <>
-                  <span className="bs-meta__dot" aria-hidden="true">·</span>
-                  <time className="bs-meta__date" dateTime={post.published_at}>
-                    {formatDate(post.published_at)}
-                  </time>
-                </>
-              )}
-              {post.reading_time && (
-                <>
-                  <span className="bs-meta__dot" aria-hidden="true">·</span>
-                  <span className="bs-meta__read">{post.reading_time}</span>
-                </>
-              )}
-            </div>
-
-            {post.og_image && (
-              <figure className="bs-feat-img">
-                <img src={post.og_image} alt={post.title} loading="lazy" />
-                {post.featured_image_caption && (
-                  <figcaption className="bs-img-caption">
-                    {post.featured_image_caption}
-                  </figcaption>
+                {canShare && (
+                  <button
+                    type="button"
+                    className="bs-share-btn"
+                    onClick={() => handleShare('native')}
+                    aria-label="Share"
+                    title="Share"
+                  >
+                    <FiShare2 size={15} />
+                  </button>
                 )}
-              </figure>
-            )}
 
-            <div
-              className="bs-prose"
-              dangerouslySetInnerHTML={{ __html: html }}
-              aria-label="Post content"
-            />
+                <button
+                  type="button"
+                  className="bs-share-btn"
+                  onClick={() => handleShare('facebook')}
+                  aria-label="Share on Facebook"
+                  title="Share on Facebook"
+                >
+                  <FiFacebook size={15} />
+                </button>
 
-            {/* Inline share – shown on mobile only */}
-            <div className="bs-share bs-share--inline">
-              <span className="bs-share__label">Share this post:</span>
-              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on Facebook"><FiFacebook size={16} /></a>
-              <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on X / Twitter"><FiTwitter size={16} /></a>
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on LinkedIn"><FiLinkedin size={16} /></a>
-              <button type="button" className={`bs-share__btn${copied ? ' bs-share__btn--copied' : ''}`} onClick={copyLink} aria-label={copied ? 'Link copied!' : 'Copy link'}>{copied ? <FiCheck size={16} /> : <FiLink size={16} />}</button>
-            </div>
+                <button
+                  type="button"
+                  className="bs-share-btn"
+                  onClick={() => handleShare('twitter')}
+                  aria-label="Share on X / Twitter"
+                  title="Share on X / Twitter"
+                >
+                  <FiTwitter size={15} />
+                </button>
 
-            <RelatedArticles posts={related} />
+                <button
+                  type="button"
+                  className="bs-share-btn"
+                  onClick={() => handleShare('linkedin')}
+                  aria-label="Share on LinkedIn"
+                  title="Share on LinkedIn"
+                >
+                  <FiLinkedin size={15} />
+                </button>
 
-          </main>
+                <button
+                  type="button"
+                  className={`bs-share-btn${copied ? ' bs-share-btn--copied' : ''}`}
+                  onClick={() => handleShare('copy')}
+                  aria-label={copied ? 'Link copied!' : 'Copy link'}
+                  title={copied ? 'Link copied!' : 'Copy link'}
+                >
+                  {copied ? <FiCheck size={15} /> : <FiLink size={15} />}
+                </button>
+              </div>
+            </aside>
 
-          {/* ────────── Sidebar ────────── */}
-          <div className="bs-sidebar-col" ref={sidebarColRef}>
-            <aside className="bs-sidebar" ref={sidebarRef} aria-label="Sidebar">
-              <BlogAuthorBox
-                author={post.author}
-                avatar={post.author_avatar}
-                bio={post.author_bio}
+            {/* ── Main post column ── */}
+            <main className="bs-main">
+
+              {/* Category */}
+              {post.category && (
+                <span className="bs-cat">{post.category}</span>
+              )}
+
+              {/* Title */}
+              <h1 className="bs-title">{post.title}</h1>
+
+              {/* Meta row */}
+              <ul className="bs-meta" role="list">
+                {post.published_at && (
+                  <li className="bs-meta__item">
+                    <FiCalendar size={13} aria-hidden="true" />
+                    <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
+                  </li>
+                )}
+                {post.reading_time && (
+                  <>
+                    <li className="bs-meta__div" aria-hidden="true" />
+                    <li className="bs-meta__item">
+                      <FiClock size={13} aria-hidden="true" />
+                      <span>{post.reading_time}</span>
+                    </li>
+                  </>
+                )}
+                <li className="bs-meta__div" aria-hidden="true" />
+                <li className="bs-meta__item">
+                  <FiMessageCircle size={13} aria-hidden="true" />
+                  <a
+                    href="#comments"
+                    className="bs-meta__comments"
+                    onClick={scrollToComments}
+                  >
+                    {commentCount !== null
+                      ? `${commentCount} comment${commentCount !== 1 ? 's' : ''}`
+                      : 'Comments'}
+                  </a>
+                </li>
+              </ul>
+
+              {/* Hero image */}
+              {post.og_image && (
+                <figure className="bs-feat-img">
+                  <img src={post.og_image} alt={post.title} loading="lazy" />
+                  {post.featured_image_caption && (
+                    <figcaption className="bs-img-caption">
+                      {post.featured_image_caption}
+                    </figcaption>
+                  )}
+                </figure>
+              )}
+
+              {/* Author byline — inline, below hero */}
+              <div className="bs-byline">
+                {post.author_avatar ? (
+                  <img
+                    src={post.author_avatar}
+                    alt={post.author}
+                    className="bs-byline__avatar"
+                    width={44}
+                    height={44}
+                  />
+                ) : (
+                  <div className="bs-byline__initials" aria-hidden="true">
+                    {initials}
+                  </div>
+                )}
+                <div className="bs-byline__info">
+                  <span className="bs-byline__name">{post.author}</span>
+                  {post.author_bio && (
+                    <span className="bs-byline__role">
+                      {post.author_bio.split('.')[0]}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Prose */}
+              <div
+                className="bs-prose"
+                dangerouslySetInnerHTML={{ __html: html }}
+                aria-label="Post content"
               />
+
+              {/* Inline share row — shown on mobile only */}
+              <div className="bs-share-inline">
+                <span className="bs-share-inline__label">Share this post:</span>
+                <div className="bs-share-inline__btns">
+                  {canShare && (
+                    <button type="button" className="bs-share-btn" onClick={() => handleShare('native')} aria-label="Share">
+                      <FiShare2 size={15} />
+                    </button>
+                  )}
+                  <button type="button" className="bs-share-btn" onClick={() => handleShare('facebook')} aria-label="Share on Facebook">
+                    <FiFacebook size={15} />
+                  </button>
+                  <button type="button" className="bs-share-btn" onClick={() => handleShare('twitter')} aria-label="Share on X">
+                    <FiTwitter size={15} />
+                  </button>
+                  <button type="button" className="bs-share-btn" onClick={() => handleShare('linkedin')} aria-label="Share on LinkedIn">
+                    <FiLinkedin size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    className={`bs-share-btn${copied ? ' bs-share-btn--copied' : ''}`}
+                    onClick={() => handleShare('copy')}
+                    aria-label={copied ? 'Link copied!' : 'Copy link'}
+                  >
+                    {copied ? <FiCheck size={15} /> : <FiLink size={15} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Tags */}
               {tags.length > 0 && (
                 <div className="bs-tags" aria-label="Post tags">
                   <span className="bs-tags__label">Tags:</span>
                   {tags.map(tag => (
-                    <span key={tag} className="bs-tag">{tag}</span>
+                    <Link
+                      key={tag}
+                      to={`/blog?tag=${encodeURIComponent(tag)}`}
+                      className="bs-tag"
+                    >
+                      {tag}
+                    </Link>
                   ))}
                 </div>
               )}
-            </aside>
+
+              {/* Author bio card */}
+              {(post.author_bio || post.author_avatar) && (
+                <div className="bs-author-bio">
+                  <div className="bs-author-bio__header">
+                    {post.author_avatar ? (
+                      <img
+                        src={post.author_avatar}
+                        alt={post.author}
+                        className="bs-author-bio__avatar"
+                        width={72}
+                        height={72}
+                      />
+                    ) : (
+                      <div className="bs-author-bio__initials" aria-hidden="true">
+                        {initials}
+                      </div>
+                    )}
+                    <div>
+                      <p className="bs-author-bio__label">Written by</p>
+                      <h6 className="bs-author-bio__name">{post.author}</h6>
+                    </div>
+                  </div>
+                  {post.author_bio && (
+                    <p className="bs-author-bio__text">{post.author_bio}</p>
+                  )}
+                  <Link to="/blog" className="bs-author-bio__link">
+                    Browse all articles →
+                  </Link>
+                </div>
+              )}
+
+              {/* Related posts */}
+              <RelatedArticles posts={related} />
+
+              {/* Comments */}
+              <section id="comments" ref={commentsRef} aria-label="Comments">
+                <BlogComments
+                  slug={slug!}
+                  onCountChange={setCommentCount}
+                />
+              </section>
+
+            </main>
           </div>
-
         </div>
-      </div>
-
-      {/* ── Floating share bar (desktop) ── */}
-      <div className="bs-share-float" ref={shareBarRef} aria-label="Share this post">
-        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on Facebook"><FiFacebook size={16} /></a>
-        <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on X / Twitter"><FiTwitter size={16} /></a>
-        <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="bs-share__btn" aria-label="Share on LinkedIn"><FiLinkedin size={16} /></a>
-        <button type="button" className={`bs-share__btn${copied ? ' bs-share__btn--copied' : ''}`} onClick={copyLink} aria-label={copied ? 'Link copied!' : 'Copy link'}>{copied ? <FiCheck size={16} /> : <FiLink size={16} />}</button>
-      </div>
-
-    </article>
+      </article>
+    </>
   );
 }

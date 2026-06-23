@@ -136,6 +136,18 @@ Product Strategy · UX Research · UI Design · Frontend Development · Backend 
    'Founder, UI/UX Designer, Frontend Developer, Backend Developer',
    '/logos/scoutlify-logo.svg', NULL, NULL, NULL, 1);
 
+-- ── Post comments ────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS post_comments (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  post_id    INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  parent_id  INTEGER REFERENCES post_comments(id) ON DELETE CASCADE,
+  author     TEXT    NOT NULL,
+  email      TEXT    NOT NULL,
+  body       TEXT    NOT NULL,
+  status     TEXT    NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','approved','spam')),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- ── Client inquiries ──────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS inquiries (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
