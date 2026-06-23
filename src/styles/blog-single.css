@@ -94,11 +94,7 @@
   position: sticky;
   top: 88px;
   align-self: start;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
-  scrollbar-width: none;
 }
-.bs-sidebar::-webkit-scrollbar { display: none; }
 
 /* ── 6. CATEGORY PILL ─────────────────────────────────────────── */
 .bs-cat {
