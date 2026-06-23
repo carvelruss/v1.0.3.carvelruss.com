@@ -87,13 +87,16 @@
   min-width: 0;
 }
 
+/* Wrapper occupies full column height so JS can measure scroll distance */
+.bs-sidebar-col {
+  align-self: stretch;
+}
+
 .bs-sidebar {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  position: sticky;
-  top: 88px;
-  align-self: start;
+  will-change: transform;
 }
 
 /* ── 6. CATEGORY PILL ─────────────────────────────────────────── */
@@ -737,12 +740,17 @@
     gap: 0;
   }
 
+  .bs-sidebar-col {
+    align-self: auto;
+  }
+
   .bs-sidebar {
-    position: static;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin-top: 2.5rem;
+    transform: none !important;
+    will-change: auto;
   }
 }
 

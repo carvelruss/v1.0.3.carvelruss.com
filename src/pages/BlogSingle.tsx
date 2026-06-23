@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/markdown';
@@ -26,6 +26,38 @@ export default function BlogSingle() {
   const [related, setRelated] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  const sidebarRef    = useRef<HTMLElement>(null);
+  const sidebarColRef = useRef<HTMLDivElement>(null);
+
+  /* ── JS sticky sidebar ── */
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    const col     = sidebarColRef.current;
+    if (!sidebar || !col) return;
+
+    const OFFSET = 88; // fixed header height + gap
+
+    const update = () => {
+      if (window.innerWidth <= 991) {
+        sidebar.style.transform = '';
+        return;
+      }
+      const colRect  = col.getBoundingClientRect();
+      const sidebarH = sidebar.offsetHeight;
+      const maxTY    = col.offsetHeight - sidebarH;
+      const ty       = Math.max(0, Math.min(OFFSET - colRect.top, maxTY));
+      sidebar.style.transform = ty > 0 ? `translateY(${ty}px)` : '';
+    };
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [post]);
 
   useEffect(() => {
     if (!slug) return;
@@ -193,21 +225,23 @@ export default function BlogSingle() {
           </main>
 
           {/* ────────── Sidebar ────────── */}
-          <aside className="bs-sidebar" aria-label="Sidebar">
-            <BlogAuthorBox
-              author={post.author}
-              avatar={post.author_avatar}
-              bio={post.author_bio}
-            />
-            {tags.length > 0 && (
-              <div className="bs-tags" aria-label="Post tags">
-                <span className="bs-tags__label">Tags:</span>
-                {tags.map(tag => (
-                  <span key={tag} className="bs-tag">{tag}</span>
-                ))}
-              </div>
-            )}
-          </aside>
+          <div className="bs-sidebar-col" ref={sidebarColRef}>
+            <aside className="bs-sidebar" ref={sidebarRef} aria-label="Sidebar">
+              <BlogAuthorBox
+                author={post.author}
+                avatar={post.author_avatar}
+                bio={post.author_bio}
+              />
+              {tags.length > 0 && (
+                <div className="bs-tags" aria-label="Post tags">
+                  <span className="bs-tags__label">Tags:</span>
+                  {tags.map(tag => (
+                    <span key={tag} className="bs-tag">{tag}</span>
+                  ))}
+                </div>
+              )}
+            </aside>
+          </div>
 
         </div>
       </div>
