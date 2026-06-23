@@ -68,26 +68,6 @@
   border-bottom: 1px solid var(--bs-border);
 }
 
-.bs-bc-back {
-  display: inline-flex;
-  align-items: center;
-  gap: .3rem;
-  color: var(--bs-accent);
-  text-decoration: none;
-  font-weight: 600;
-  transition: color .18s;
-}
-.bs-bc-back:hover { color: var(--bs-accent-mid); }
-
-.bs-bc-pipe {
-  display: inline-block;
-  width: 1px;
-  height: 14px;
-  background: var(--bs-border);
-  margin: 0 .25rem;
-  flex-shrink: 0;
-}
-
 .bs-bc-link {
   color: var(--bs-muted);
   text-decoration: none;
@@ -199,19 +179,15 @@
   gap: .5rem;
 }
 
-/* ── 9. CATEGORY PILL ─────────────────────────────────────────── */
+/* ── 9. CATEGORY LABEL ────────────────────────────────────────── */
 .bs-cat {
   display: inline-block;
-  background: rgba(13,33,90,.07);
-  color: var(--bs-accent);
-  border: 1px solid rgba(13,33,90,.15);
-  border-radius: var(--bs-radius-pill);
-  padding: .275rem .875rem;
-  font-size: .7rem;
+  color: var(--bs-muted);
+  font-size: .75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .07em;
-  margin-bottom: .875rem;
+  letter-spacing: .1em;
+  margin-bottom: .75rem;
 }
 
 /* ── 10. TITLE ────────────────────────────────────────────────── */
@@ -262,13 +238,12 @@
 /* ── 12. FEATURED IMAGE ───────────────────────────────────────── */
 .bs-feat-img {
   margin: 0 0 2rem;
-  border-radius: 12px;
   overflow: hidden;
 }
 .bs-feat-img img {
   width: 100%;
   display: block;
-  max-height: 440px;
+  max-height: 480px;
   object-fit: cover;
 }
 .bs-img-caption {
@@ -403,20 +378,20 @@
 }
 .bs-prose blockquote {
   background: var(--bs-bg-soft);
-  border-left: 4px solid var(--bs-accent);
-  border-radius: 0 10px 10px 0;
-  padding: 1.25rem 1.5rem;
+  border-left: none;
+  border-radius: 10px;
+  padding: 1.5rem 1.75rem 1.5rem;
   margin: 2rem 0;
   position: relative;
 }
 .bs-prose blockquote::before {
-  content: '\201C';
-  font-size: 4.5rem;
+  content: '\201D';
+  font-size: 5.5rem;
   color: var(--bs-accent);
-  opacity: .12;
+  opacity: 1;
   position: absolute;
-  top: -.5rem;
-  left: .875rem;
+  top: .25rem;
+  left: 1.125rem;
   line-height: 1;
   font-family: Georgia, serif;
   pointer-events: none;
@@ -424,8 +399,10 @@
 .bs-prose blockquote p {
   font-size: 1.0625rem;
   font-style: italic;
+  font-weight: 700;
   color: var(--bs-text);
   margin-bottom: .5rem;
+  padding-top: 3rem;
   position: relative;
 }
 .bs-prose blockquote cite {

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import {
   FiFacebook, FiTwitter, FiLinkedin, FiLink, FiCheck,
-  FiCalendar, FiClock, FiMessageCircle, FiArrowLeft, FiShare2,
+  FiCalendar, FiClock, FiMessageCircle, FiShare2,
 } from 'react-icons/fi';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/markdown';
@@ -195,17 +195,12 @@ export default function BlogSingle() {
       <article className="bs-page" ref={articleRef}>
         <div className="bs-container">
 
-          {/* ── Breadcrumb + back link ── */}
+          {/* ── Breadcrumb ── */}
           <nav className="bs-breadcrumb" aria-label="Breadcrumb">
-            <Link to="/blog" className="bs-bc-back">
-              <FiArrowLeft size={13} aria-hidden="true" />
-              Back to Blog
-            </Link>
-            <span className="bs-bc-pipe" aria-hidden="true" />
             <Link to="/"     className="bs-bc-link">Home</Link>
-            <span className="bs-bc-sep" aria-hidden="true">›</span>
+            <span className="bs-bc-sep" aria-hidden="true">&gt;</span>
             <Link to="/blog" className="bs-bc-link">Blog</Link>
-            <span className="bs-bc-sep" aria-hidden="true">›</span>
+            <span className="bs-bc-sep" aria-hidden="true">&gt;</span>
             <span className="bs-bc-current" aria-current="page">{post.title}</span>
           </nav>
 
