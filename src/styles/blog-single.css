@@ -76,6 +76,9 @@
   gap: .2rem .4rem;
   padding: 1.25rem 0 0;
   font-size: .8rem;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .bs-bc-link {
@@ -104,7 +107,9 @@
 .bs-post-header {
   padding-top: 1.5rem;
   padding-bottom: 0;
-  max-width: 820px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── 7. CATEGORY LABEL ────────────────────────────────────────── */
@@ -184,13 +189,15 @@
 /* ── 11. ARTICLE SHELL (flex row: sidebar + content) ─────────── */
 /*
   Bootstrap d-flex is applied in JSX.
-  These rules handle sizing, gaps, and sticky.
+  justify-content: center keeps the sidebar+content unit centered
+  inside the wide container without stretching the article column.
   overflow must NOT be hidden on any ancestor — that breaks sticky.
 */
 .bs-article-shell {
   gap: 2.5rem;
   margin-top: 2rem;
   align-items: flex-start;
+  justify-content: center;
 }
 
 /* ── 12. SHARE SIDEBAR (sticky, desktop) ─────────────────────── */
@@ -209,9 +216,9 @@
 
 /* ── 13. ARTICLE CONTENT COLUMN ──────────────────────────────── */
 .bs-article-content {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   max-width: 720px;
+  min-width: 0;
 }
 
 /* ── 14. SHARED SHARE BUTTON STYLE ───────────────────────────── */
