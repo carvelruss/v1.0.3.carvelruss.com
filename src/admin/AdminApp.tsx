@@ -1,4 +1,4 @@
-import { Component, lazy, Suspense, type ReactNode } from 'react';
+import { Component, lazy, Suspense, type ComponentType, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { AuthProvider } from './context/AuthContext';
@@ -10,11 +10,30 @@ import InboxAdmin from './pages/InboxAdmin';
 import PostForm from './components/PostForm';
 import './styles/admin.css';
 
-const AdminMediaPage           = lazy(() => import('./pages/AdminMediaPage'));
-const AdminSettingsPage        = lazy(() => import('./pages/AdminSettingsPage'));
-const AdminCaseStudyFormPage   = lazy(() => import('./pages/AdminCaseStudyFormPage'));
-const AdminInquiryDetailPage   = lazy(() => import('./pages/AdminInquiryDetailPage'));
-const AdminAnalyticsPage       = lazy(() => import('./pages/AdminAnalyticsPage'));
+// On chunk 404 (stale HTML after a new deployment), reload once to get
+// fresh HTML. sessionStorage guards against infinite reload loops.
+function lazyChunk<T extends ComponentType<unknown>>(
+  factory: () => Promise<{ default: T }>,
+  key: string,
+) {
+  return lazy(() =>
+    factory().catch((err) => {
+      const flag = `chunk-reloaded-${key}`;
+      if (!sessionStorage.getItem(flag)) {
+        sessionStorage.setItem(flag, '1');
+        window.location.reload();
+        return new Promise<never>(() => {});
+      }
+      throw err;
+    }),
+  );
+}
+
+const AdminMediaPage           = lazyChunk(() => import('./pages/AdminMediaPage'),         'media');
+const AdminSettingsPage        = lazyChunk(() => import('./pages/AdminSettingsPage'),      'settings');
+const AdminCaseStudyFormPage   = lazyChunk(() => import('./pages/AdminCaseStudyFormPage'), 'cs-form');
+const AdminInquiryDetailPage   = lazyChunk(() => import('./pages/AdminInquiryDetailPage'),'inquiry');
+const AdminAnalyticsPage       = lazyChunk(() => import('./pages/AdminAnalyticsPage'),     'analytics');
 
 class AdminErrorBoundary extends Component<{ children: ReactNode }, { error: string | null }> {
   state = { error: null };
