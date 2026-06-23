@@ -249,13 +249,13 @@ export default function BlogSingle() {
             </figure>
           )}
 
-          {/* ── Article shell: share sidebar (left) + article content (right) ── */}
-          <div className="bs-article-shell d-flex">
+          {/* ── Article shell: sidebar (left) + article content (right) ── */}
+          <div className="bs-article-shell">
 
-            {/* Wrapper stretches to match article column height; sidebar is sticky inside */}
-            <div className="bs-share-wrapper d-none d-lg-block">
+            {/* Sticky share sidebar — visibility handled by CSS, no Bootstrap utilities */}
+            <div className="bs-share-wrapper">
             <aside
-              className="bs-share-sidebar d-flex flex-column align-items-center"
+              className="bs-share-sidebar"
               aria-label="Share this post"
             >
               <button

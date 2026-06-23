@@ -181,39 +181,39 @@
   margin-top: .5rem;
 }
 
-/* ── 11. ARTICLE SHELL (flex row: sidebar + content) ─────────── */
+/* ── 11. ARTICLE SHELL (grid: sidebar | content) ─────────────── */
 /*
-  Bootstrap d-flex is applied in JSX.
-  justify-content: center keeps the sidebar+content unit centered
-  inside the wide container without stretching the article column.
-  overflow must NOT be hidden on any ancestor — that breaks sticky.
+  CSS Grid gives each column item its own grid area = full row height.
+  The sidebar's grid area is as tall as the article content, so
+  position: sticky inside it has a full-height containing block.
+  No Bootstrap utility classes on this layout — all controlled here.
 */
 .bs-article-shell {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 720px);
   gap: 2.5rem;
-  margin-top: 2rem;
-  align-items: stretch;   /* container height = tallest child (content column) */
   justify-content: center;
+  margin-top: 2rem;
 }
 
 /* ── 12. SHARE SIDEBAR (sticky, desktop) ─────────────────────── */
 /*
-  Wrapper pattern: .bs-share-wrapper is the flex item — it stretches to the
-  full height of bs-article-shell (= full article height). .bs-share-sidebar
-  is sticky INSIDE the wrapper, so its scroll range spans the whole article.
-  Without the wrapper, the sticky element's own box (height ~200px) bounds
-  its scroll range and it stops sticking almost immediately.
-
-  --site-header-height is written to :root by ResizeObserver in BlogSingle.tsx.
+  The grid row is as tall as the tallest column (article content).
+  bs-share-wrapper occupies the left grid cell at that full height.
+  bs-share-sidebar is sticky inside it → sticks for the whole article.
+  --site-header-height written to :root by ResizeObserver in BlogSingle.tsx.
 */
 .bs-share-wrapper {
-  width: 44px;
-  flex-shrink: 0;
+  /* inherits full grid row height — provides the tall containing block */
 }
 
 .bs-share-sidebar {
   position: sticky;
   top: calc(var(--site-header-height, 80px) + 16px);
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 10px;
   width: 44px;
   padding-top: .125rem;
@@ -221,8 +221,6 @@
 
 /* ── 13. ARTICLE CONTENT COLUMN ──────────────────────────────── */
 .bs-article-content {
-  width: 100%;
-  max-width: 720px;
   min-width: 0;
 }
 
@@ -996,8 +994,11 @@
    inline share row becomes visible */
 @media (max-width: 991.98px) {
   .bs-article-shell {
-    flex-direction: column;
-    gap: 0;
+    grid-template-columns: minmax(0, 720px);  /* single column, sidebar hidden */
+  }
+
+  .bs-share-wrapper {
+    display: none;
   }
 
   .bs-share-inline {
