@@ -191,7 +191,7 @@
 .bs-article-shell {
   gap: 2.5rem;
   margin-top: 2rem;
-  align-items: flex-start;
+  align-items: stretch;   /* container height = tallest child (content column) */
   justify-content: center;
 }
 
@@ -203,6 +203,7 @@
 .bs-share-sidebar {
   position: sticky;
   top: calc(var(--bs-navbar-h) + 1.5rem);
+  align-self: flex-start;  /* keeps buttons at their natural height, not stretched */
   gap: 10px;
   width: 44px;
   flex-shrink: 0;
