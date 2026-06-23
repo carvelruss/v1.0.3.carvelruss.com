@@ -186,16 +186,9 @@ export default function BlogSingle() {
               aria-label="Post content"
             />
 
-            {tags.length > 0 && (
-              <div className="bs-tags" aria-label="Post tags">
-                <span className="bs-tags__label">Tags:</span>
-                {tags.map(tag => (
-                  <span key={tag} className="bs-tag">{tag}</span>
-                ))}
-              </div>
-            )}
-
             <BlogShare title={post.title} url={window.location.href} />
+
+            <RelatedArticles posts={related} />
 
           </main>
 
@@ -206,7 +199,14 @@ export default function BlogSingle() {
               avatar={post.author_avatar}
               bio={post.author_bio}
             />
-            <RelatedArticles posts={related} />
+            {tags.length > 0 && (
+              <div className="bs-tags" aria-label="Post tags">
+                <span className="bs-tags__label">Tags:</span>
+                {tags.map(tag => (
+                  <span key={tag} className="bs-tag">{tag}</span>
+                ))}
+              </div>
+            )}
           </aside>
 
         </div>

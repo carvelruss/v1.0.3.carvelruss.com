@@ -697,7 +697,24 @@
   transform: translateY(-1px);
 }
 
-/* ── 18. RESPONSIVE ───────────────────────────────────────────── */
+/* ── 18. LAYOUT PLACEMENT OVERRIDES ──────────────────────────── */
+
+/* Tags moved into the sidebar — give it a card look */
+.bs-sidebar .bs-tags {
+  margin-top: 0;
+  background: var(--bs-surface);
+  border: 1.5px solid var(--bs-border);
+  border-radius: var(--bs-radius-card);
+  padding: 1.25rem 1.375rem;
+  box-shadow: var(--bs-shadow-card);
+}
+
+/* Related articles moved to bottom of main — add breathing room */
+.bs-main .bs-sidebar-related {
+  margin-top: 2rem;
+}
+
+/* ── 19. RESPONSIVE ───────────────────────────────────────────── */
 
 @media (max-width: 1199.98px) {
   .bs-container {
