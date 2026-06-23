@@ -95,12 +95,8 @@
 }
 
 .bs-bc-current {
-  color: var(--bs-accent-warm);
+  color: var(--bs-accent);
   font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 380px;
 }
 
 /* ── 6. POST HEADER (above hero image) ───────────────────────── */
@@ -115,7 +111,7 @@
 /* ── 7. CATEGORY LABEL ────────────────────────────────────────── */
 .bs-cat {
   display: inline-block;
-  color: var(--bs-accent-warm);
+  color: var(--bs-accent);
   font-size: .72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -951,10 +947,6 @@
 }
 
 @media (max-width: 575.98px) {
-  .bs-bc-current {
-    max-width: 180px;
-  }
-
   .bs-title {
     font-size: 1.5rem;
   }
