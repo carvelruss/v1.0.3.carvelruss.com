@@ -53,11 +53,18 @@
 
 /* ── 4. CONTAINER ─────────────────────────────────────────────── */
 .bs-container {
-  max-width: 1080px;
+  width: 100%;
+  max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 576px) {
+  .bs-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 /* ── 5. BREADCRUMB ────────────────────────────────────────────── */
@@ -904,13 +911,6 @@
 
 /* ── 26. RESPONSIVE ───────────────────────────────────────────── */
 
-@media (max-width: 1199.98px) {
-  .bs-container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-}
-
 /* Below lg (< 992px): share sidebar hidden (Bootstrap d-none handles it),
    inline share row becomes visible */
 @media (max-width: 991.98px) {
@@ -929,11 +929,6 @@
 }
 
 @media (max-width: 767.98px) {
-  .bs-container {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-
   .bs-article-shell {
     margin-top: 1.5rem;
   }
