@@ -11,6 +11,7 @@ interface PostRow {
   meta_description: string | null;
   og_image: string | null;
   keywords: string | null;
+  category: string | null;
   author: string;
   author_avatar: string | null;
   author_bio: string | null;
@@ -53,6 +54,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       meta_description?: string;
       og_image?: string;
       keywords?: string;
+      category?: string | null;
       author?: string;
       author_avatar?: string | null;
       author_bio?: string | null;
@@ -65,8 +67,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const slug = body.slug.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
 
     await env.DB.prepare(
-      `INSERT INTO posts (title, slug, content, excerpt, meta_description, og_image, keywords, author, author_avatar, author_bio, status, published_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO posts (title, slug, content, excerpt, meta_description, og_image, keywords, category, author, author_avatar, author_bio, status, published_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
       .bind(
         body.title.trim(),
@@ -76,6 +78,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         body.meta_description ?? null,
         body.og_image ?? null,
         body.keywords ?? null,
+        body.category ?? null,
         body.author?.trim() ?? 'Your Name',
         body.author_avatar ?? null,
         body.author_bio ?? null,

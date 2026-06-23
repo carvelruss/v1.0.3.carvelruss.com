@@ -11,6 +11,7 @@ interface PostRow {
   meta_description: string | null;
   og_image: string | null;
   keywords: string | null;
+  category: string | null;
   author: string;
   author_avatar: string | null;
   author_bio: string | null;
@@ -50,6 +51,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
       meta_description?: string | null;
       og_image?: string | null;
       keywords?: string | null;
+      category?: string | null;
       author?: string;
       author_avatar?: string | null;
       author_bio?: string | null;
@@ -74,7 +76,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
         : existing.published_at;
 
     await env.DB.prepare(
-      `UPDATE posts SET title=?, slug=?, content=?, excerpt=?, meta_description=?, og_image=?, keywords=?, author=?, author_avatar=?, author_bio=?, status=?, published_at=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?`,
+      `UPDATE posts SET title=?, slug=?, content=?, excerpt=?, meta_description=?, og_image=?, keywords=?, category=?, author=?, author_avatar=?, author_bio=?, status=?, published_at=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?`,
     )
       .bind(
         body.title?.trim() ?? existing.title,
@@ -84,6 +86,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
         body.meta_description !== undefined ? body.meta_description : existing.meta_description,
         body.og_image !== undefined ? body.og_image : existing.og_image,
         body.keywords !== undefined ? body.keywords : existing.keywords,
+        body.category !== undefined ? body.category : existing.category,
         body.author?.trim() ?? existing.author,
         body.author_avatar !== undefined ? body.author_avatar : existing.author_avatar,
         body.author_bio !== undefined ? body.author_bio : existing.author_bio,
