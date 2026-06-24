@@ -6,6 +6,8 @@ import { api } from '../../lib/api';
 
 interface DayCount { date: string; count: number }
 
+interface HeatCell { day: number; hour: number; count: number }
+
 interface AnalyticsData {
   days: number;
   pageViews: {
@@ -24,6 +26,7 @@ interface AnalyticsData {
     byDay:      DayCount[];
     prevByDay:  DayCount[];
   };
+  heatmap: HeatCell[];
 }
 
 /* ── Helpers ─────────────────────────────────────────────────── */
@@ -323,6 +326,107 @@ function StatCard({
   );
 }
 
+/* ── Activity Heatmap ────────────────────────────────────────── */
+
+const HM_COLORS = ['#eef2ff', '#c7d2fe', '#818cf8', '#4f46e5', '#3730a3'];
+
+function ActivityHeatmap({ data, periodLabel }: { data: HeatCell[]; periodLabel: string }) {
+  const [tip, setTip] = useState<{ dayIdx: number; hour: number; count: number; x: number; y: number } | null>(null);
+
+  // Shift UTC hours → browser local time (e.g. +8 for Manila)
+  const tzOffset = Math.round(-new Date().getTimezoneOffset() / 60);
+
+  // Day order: Mon(1)…Sat(6), Sun(0) — SQLite %w: 0=Sun
+  const DAY_ORDER  = [1, 2, 3, 4, 5, 6, 0];
+  const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  // Build 7×24 grid [dayIdx][hour]
+  const grid: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
+  data.forEach(d => {
+    const shifted = d.hour + tzOffset;
+    const localHour = ((shifted % 24) + 24) % 24;
+    let localDay = d.day;
+    if (shifted >= 24)  localDay = (d.day + 1) % 7;
+    else if (shifted < 0) localDay = (d.day + 6) % 7;
+    const dayIdx = DAY_ORDER.indexOf(localDay);
+    if (dayIdx !== -1) grid[dayIdx][localHour] += d.count;
+  });
+
+  const max = Math.max(...grid.flat(), 1);
+
+  const getColor = (count: number) => {
+    if (count === 0) return HM_COLORS[0];
+    const ratio = count / max;
+    if (ratio < 0.25) return HM_COLORS[1];
+    if (ratio < 0.50) return HM_COLORS[2];
+    if (ratio < 0.75) return HM_COLORS[3];
+    return HM_COLORS[4];
+  };
+
+  const fmtHour = (h: number) => {
+    if (h === 0)   return '12 AM';
+    if (h < 12)    return `${h} AM`;
+    if (h === 12)  return '12 PM';
+    return `${h - 12} PM`;
+  };
+
+  const q = [Math.ceil(max * 0.25), Math.ceil(max * 0.5), Math.ceil(max * 0.75), max];
+
+  return (
+    <div className="a-card hm-card">
+      <div className="hm-head">
+        <div>
+          <div className="hm-title">Users at a Time</div>
+          <div className="hm-sub">{periodLabel} · local time</div>
+        </div>
+      </div>
+
+      <div className="hm-wrap">
+        {/* Heatmap grid */}
+        <div className="hm-grid">
+          {Array.from({ length: 24 }, (_, hour) => (
+            <div key={hour} className="hm-row">
+              {Array.from({ length: 7 }, (_, dayIdx) => (
+                <div
+                  key={dayIdx}
+                  className="hm-cell"
+                  style={{ background: getColor(grid[dayIdx][hour]) }}
+                  onMouseEnter={e => setTip({ dayIdx, hour, count: grid[dayIdx][hour], x: e.clientX, y: e.clientY })}
+                  onMouseLeave={() => setTip(null)}
+                />
+              ))}
+              <span className="hm-time">{hour % 2 === 0 ? fmtHour(hour) : ''}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Day labels */}
+        <div className="hm-days">
+          {DAY_LABELS.map(d => <span key={d} className="hm-day">{d}</span>)}
+          <span className="hm-day-spacer" />
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="hm-legend">
+        {HM_COLORS.slice(1).map((color, i) => (
+          <div key={i} className="hm-legend-item">
+            <span className="hm-legend-dot" style={{ background: color }} />
+            <span>{i === 0 ? `1–${q[0]}` : `${q[i - 1] + 1}–${q[i]}`}</span>
+          </div>
+        ))}
+      </div>
+
+      {tip && (
+        <div className="hm-tooltip" style={{ left: tip.x + 14, top: tip.y + 14 }}>
+          <strong>{DAY_LABELS[tip.dayIdx]}, {fmtHour(tip.hour)}</strong>
+          <span>{tip.count.toLocaleString()} views</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Top Pages Table ─────────────────────────────────────────── */
 
 const TP_PAGE_SIZE = 8;
@@ -586,6 +690,12 @@ export default function AdminAnalyticsPage() {
         </div>
 
       </div>
+
+      {/* Activity Heatmap — full width */}
+      {!loading && data && (
+        <ActivityHeatmap data={data.heatmap} periodLabel={periodLabel} />
+      )}
+
     </AdminLayout>
   );
 }
