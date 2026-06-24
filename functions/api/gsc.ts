@@ -95,8 +95,8 @@ const KEY_PATHS = ['/', '/case-studies', '/skills', '/blog', '/contact'];
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   if (!(await isAdmin(request, env))) return err('Unauthorized', 401);
 
-  const gscSa      = (env as unknown as Record<string, string | undefined>).GSC_SERVICE_ACCOUNT;
-  const gscSiteUrl = (env as unknown as Record<string, string | undefined>).GSC_SITE_URL;
+  const gscSa      = ((env as unknown as Record<string, string | undefined>).GSC_SERVICE_ACCOUNT ?? '').trim();
+  const gscSiteUrl = ((env as unknown as Record<string, string | undefined>).GSC_SITE_URL ?? '').trim();
 
   if (!gscSa || !gscSiteUrl) {
     return json({ configured: false });
