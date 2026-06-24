@@ -67,7 +67,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       )
       .run();
 
-    // Send email notification (fire-and-forget — email failure never breaks form submission)
+    // Send email notification — awaited so it completes before the Worker exits
     if (env.RESEND_API_KEY) {
       const rows = [
         `<p><strong>From:</strong> ${name.trim()} &lt;${email.trim()}&gt;</p>`,
@@ -78,7 +78,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         `<hr><p>${message.trim().replace(/\n/g, '<br>')}</p>`,
       ].filter(Boolean).join('\n');
 
-      fetch('https://api.resend.com/emails', {
+      await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${env.RESEND_API_KEY}`,
