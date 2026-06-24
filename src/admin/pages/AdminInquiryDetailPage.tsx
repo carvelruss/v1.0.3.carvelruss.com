@@ -8,6 +8,7 @@ type InquiryStatus = 'unread' | 'read' | 'replied' | 'archived';
 
 function formatDate(d: string) {
   return new Date(d).toLocaleString('en-US', {
+    timeZone: 'Asia/Manila',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
