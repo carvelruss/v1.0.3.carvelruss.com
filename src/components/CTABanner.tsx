@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '../lib/track';
 
 interface CTABannerProps {
   heading?: string;
@@ -36,10 +37,12 @@ export default function CTABanner({
       <h2 className="ws-cta-banner__heading">{heading}</h2>
       <p className="ws-cta-banner__sub">{subtext}</p>
       <div className="ws-cta-banner__actions">
-        <button className="ws-cta-btn-white" onClick={() => go(primaryHref)}>
+        <button className="ws-cta-btn-white"
+          onClick={() => { trackEvent('cta_click', 'cta_banner_primary'); go(primaryHref); }}>
           {primaryLabel} →
         </button>
-        <button className="ws-cta-btn-outline" onClick={() => go(secondaryHref)}>
+        <button className="ws-cta-btn-outline"
+          onClick={() => { trackEvent('cta_click', 'cta_banner_secondary'); go(secondaryHref); }}>
           {secondaryLabel}
         </button>
       </div>

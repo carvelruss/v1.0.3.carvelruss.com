@@ -52,6 +52,14 @@ interface AnalyticsData {
     newVisitors:       number;
     returningVisitors: number;
   };
+  trafficSources: {
+    sources: { source: string; count: number }[];
+  };
+  events: {
+    ctaClicks:   { event_type: string; label: string | null; count: number }[];
+    formFunnel:  { event_type: string; count: number }[];
+    scrollDepth: { value: number; count: number }[];
+  };
 }
 
 type DashTab = 'overview' | 'traffic' | 'engagement' | 'portfolio' | 'leads' | 'seo';
@@ -1181,6 +1189,220 @@ function PerformanceList({ title, subtitle, rows, loading, emptyMsg }: {
   );
 }
 
+/* ── Traffic Sources ─────────────────────────────────────────── */
+
+const SEARCH_ENGINES = new Set(['google.com','bing.com','yahoo.com','duckduckgo.com','baidu.com','yandex.com','ecosia.org','ask.com']);
+const SOCIAL_NETWORKS = new Set(['linkedin.com','facebook.com','twitter.com','x.com','instagram.com','reddit.com','youtube.com','pinterest.com','tiktok.com','github.com','discord.com']);
+
+type SourceCat = 'Direct' | 'Organic' | 'Social' | 'Referral';
+
+function categorizeSrc(src: string): SourceCat {
+  if (!src) return 'Direct';
+  if (SEARCH_ENGINES.has(src))   return 'Organic';
+  if (SOCIAL_NETWORKS.has(src))  return 'Social';
+  return 'Referral';
+}
+
+const CAT_COLOR: Record<SourceCat, string> = {
+  Direct:   '#6366f1',
+  Organic:  '#10b981',
+  Social:   '#f59e0b',
+  Referral: '#1a4a9e',
+};
+
+function TrafficSourcesCard({ sources, loading }: {
+  sources: { source: string; count: number }[];
+  loading: boolean;
+}) {
+  const cats: Record<SourceCat, number> = { Direct: 0, Organic: 0, Social: 0, Referral: 0 };
+  for (const s of sources) cats[categorizeSrc(s.source)] += s.count;
+  const total    = Object.values(cats).reduce((a, b) => a + b, 0) || 1;
+  const catOrder = (['Organic','Direct','Social','Referral'] as SourceCat[]);
+
+  const topReferrals = sources
+    .filter(s => s.source && !SEARCH_ENGINES.has(s.source) && !SOCIAL_NETWORKS.has(s.source))
+    .slice(0, 5);
+
+  return (
+    <div className="a-card an-src-card">
+      <div className="an-src-head">
+        <div className="an-src-title">Traffic Sources</div>
+        <div className="an-src-sub">Where your visitors come from</div>
+      </div>
+      {loading ? (
+        <div style={{ height: 100 }} />
+      ) : (
+        <>
+          <div className="an-src-cats">
+            {catOrder.map(cat => {
+              const pct = Math.round((cats[cat] / total) * 100);
+              return (
+                <div key={cat} className="an-src-cat">
+                  <div className="an-src-cat__row">
+                    <span className="an-src-cat__dot" style={{ background: CAT_COLOR[cat] }} />
+                    <span className="an-src-cat__label">{cat}</span>
+                    <span className="an-src-cat__pct">{pct}%</span>
+                    <span className="an-src-cat__count">{fmtNum(cats[cat])}</span>
+                  </div>
+                  <div className="an-src-bar-track">
+                    <div className="an-src-bar-fill" style={{ width: `${pct}%`, background: CAT_COLOR[cat] }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {topReferrals.length > 0 && (
+            <div className="an-src-referrals">
+              <div className="an-src-ref-label">Top Referrals</div>
+              {topReferrals.map(r => (
+                <div key={r.source} className="an-src-ref-row">
+                  <span className="an-src-ref-host">{r.source}</span>
+                  <span className="an-src-ref-count">{fmtNum(r.count)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ── CTA Performance ─────────────────────────────────────────── */
+
+const CTA_LABELS: Record<string, string> = {
+  view_case_studies:    'View Case Studies',
+  get_in_touch:         'Get in Touch',
+  contact_me:           'Contact Me',
+  cta_banner_primary:   'CTA Banner — Primary',
+  cta_banner_secondary: 'CTA Banner — Secondary',
+};
+
+function CtaPerformanceCard({ clicks, loading }: {
+  clicks: { event_type: string; label: string | null; count: number }[];
+  loading: boolean;
+}) {
+  const max = Math.max(...clicks.map(c => c.count), 1);
+  return (
+    <div className="a-card an-cta-card">
+      <div className="an-cta-head">
+        <div className="an-cta-title">CTA Performance</div>
+        <div className="an-cta-sub">Button clicks ranked by frequency</div>
+      </div>
+      {loading ? (
+        <div style={{ height: 80 }} />
+      ) : clicks.length === 0 ? (
+        <div className="an-cta-empty">No CTA clicks recorded yet. Add traffic to start tracking.</div>
+      ) : (
+        <div className="an-cta-list">
+          {clicks.map((c, i) => {
+            const label = (c.label ? (CTA_LABELS[c.label] ?? c.label) : c.event_type);
+            return (
+              <div key={`${c.event_type}-${c.label}`} className="an-cta-item">
+                <span className="an-cta-rank">#{i + 1}</span>
+                <div className="an-cta-info">
+                  <span className="an-cta-label">{label}</span>
+                  <div className="an-cta-bar-track">
+                    <div className="an-cta-bar-fill" style={{ width: `${Math.round((c.count / max) * 100)}%` }} />
+                  </div>
+                </div>
+                <span className="an-cta-count">{fmtNum(c.count)}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Form Funnel ─────────────────────────────────────────────── */
+
+function FormFunnelCard({ funnel, loading }: {
+  funnel: { event_type: string; count: number }[];
+  loading: boolean;
+}) {
+  const views   = funnel.find(f => f.event_type === 'form_view')?.count   ?? 0;
+  const submits = funnel.find(f => f.event_type === 'form_submit')?.count ?? 0;
+  const rate    = views > 0 ? ((submits / views) * 100).toFixed(1) : '0.0';
+  const pct     = views > 0 ? Math.round((submits / views) * 100) : 0;
+
+  return (
+    <div className="a-card an-funnel-card">
+      <div className="an-funnel-head">
+        <div className="an-funnel-title">Contact Form Funnel</div>
+        <div className="an-funnel-sub">Views → Submissions conversion</div>
+      </div>
+      {loading ? (
+        <div style={{ height: 80 }} />
+      ) : (
+        <>
+          <div className="an-funnel-steps">
+            <div className="an-funnel-step">
+              <div className="an-funnel-step__num" style={{ color: '#1a4a9e' }}>{fmtNum(views)}</div>
+              <div className="an-funnel-step__label">Form Views</div>
+            </div>
+            <div className="an-funnel-arrow">→</div>
+            <div className="an-funnel-step">
+              <div className="an-funnel-step__num" style={{ color: '#10b981' }}>{fmtNum(submits)}</div>
+              <div className="an-funnel-step__label">Submissions</div>
+            </div>
+            <div className="an-funnel-arrow">→</div>
+            <div className="an-funnel-step">
+              <div className="an-funnel-step__num" style={{ color: '#f59e0b' }}>{rate}%</div>
+              <div className="an-funnel-step__label">Conv. Rate</div>
+            </div>
+          </div>
+          <div className="an-funnel-bar-track">
+            <div className="an-funnel-bar-fill" style={{ width: `${pct}%` }} />
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ── Scroll Depth ────────────────────────────────────────────── */
+
+function ScrollDepthCard({ depths, loading }: {
+  depths: { value: number; count: number }[];
+  loading: boolean;
+}) {
+  const MILESTONES = [25, 50, 75, 100];
+  const map = new Map(depths.map(d => [d.value, d.count]));
+  const max = Math.max(...depths.map(d => d.count), 1);
+
+  return (
+    <div className="a-card an-scroll-card">
+      <div className="an-scroll-head">
+        <div className="an-scroll-title">Scroll Depth</div>
+        <div className="an-scroll-sub">How far visitors read your pages</div>
+      </div>
+      {loading ? (
+        <div style={{ height: 80 }} />
+      ) : depths.length === 0 ? (
+        <div className="an-scroll-empty">No scroll data yet. Traffic needed to start tracking depth.</div>
+      ) : (
+        <div className="an-scroll-list">
+          {MILESTONES.map(m => {
+            const count = map.get(m) ?? 0;
+            const pct   = Math.round((count / max) * 100);
+            return (
+              <div key={m} className="an-scroll-item">
+                <span className="an-scroll-pct">{m}%</span>
+                <div className="an-scroll-bar-track">
+                  <div className="an-scroll-bar-fill" style={{ width: `${pct}%`, opacity: 0.4 + (m / 100) * 0.6 }} />
+                </div>
+                <span className="an-scroll-count">{fmtNum(count)}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Placeholder section ─────────────────────────────────────── */
 
 function PlaceholderSection({ title, subtitle, items, phase }: {
@@ -1384,18 +1606,24 @@ export default function AdminAnalyticsPage() {
 
       {/* ══════════════ TRAFFIC ══════════════ */}
       {activeTab === 'traffic' && (
-        <div className="an-traffic-row">
-          <ReturnVsNew
-            newV={data?.audience.newVisitors ?? 0}
-            returning={data?.audience.returningVisitors ?? 0}
+        <>
+          <TrafficSourcesCard
+            sources={data?.trafficSources.sources ?? []}
             loading={loading}
           />
-          <CountriesTable
-            countries={data?.geography.topCountries ?? []}
-            totalViews={data?.pageViews.period ?? 0}
-            loading={loading}
-          />
-        </div>
+          <div className="an-traffic-row">
+            <ReturnVsNew
+              newV={data?.audience.newVisitors ?? 0}
+              returning={data?.audience.returningVisitors ?? 0}
+              loading={loading}
+            />
+            <CountriesTable
+              countries={data?.geography.topCountries ?? []}
+              totalViews={data?.pageViews.period ?? 0}
+              loading={loading}
+            />
+          </div>
+        </>
       )}
 
       {/* ══════════════ ENGAGEMENT ══════════════ */}
@@ -1448,17 +1676,22 @@ export default function AdminAnalyticsPage() {
 
       {/* ══════════════ LEAD GENERATION ══════════════ */}
       {activeTab === 'leads' && (
-        <PlaceholderSection
-          title="Lead Generation Analytics"
-          subtitle="Track how visitors engage with your CTAs, contact forms, and conversion funnel."
-          phase={2}
-          items={[
-            { title: 'CTA Click Analytics', desc: 'Track clicks on "Hire Me", "View CV", and other call-to-action buttons across every page.' },
-            { title: 'Contact Form Funnel', desc: 'See how many visitors open the contact form vs. submit it, and where drop-offs happen.' },
-            { title: 'Scroll Depth Tracking', desc: 'Measure how far visitors scroll on your case study and blog pages.' },
-            { title: 'Inquiry Source Attribution', desc: 'Discover which pages and traffic sources generate the most inquiries.' },
-          ]}
-        />
+        <>
+          <div className="an-leads-top-row">
+            <FormFunnelCard
+              funnel={data?.events.formFunnel ?? []}
+              loading={loading}
+            />
+            <ScrollDepthCard
+              depths={data?.events.scrollDepth ?? []}
+              loading={loading}
+            />
+          </div>
+          <CtaPerformanceCard
+            clicks={data?.events.ctaClicks ?? []}
+            loading={loading}
+          />
+        </>
       )}
 
       {/* ══════════════ SEO ══════════════ */}

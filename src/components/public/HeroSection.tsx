@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
+import { trackEvent } from '../../lib/track';
 import {
   FiArrowRight,
   FiTarget,
@@ -102,11 +103,13 @@ export default function HeroSection() {
 
             {/* CTA buttons */}
             <div className="hs__actions">
-              <Link to="/case-studies" className="hs__btn-primary">
+              <Link to="/case-studies" className="hs__btn-primary"
+                onClick={() => trackEvent('cta_click', 'view_case_studies')}>
                 View Case Studies&nbsp;
                 <FiArrowRight size={17} aria-hidden={true} />
               </Link>
-              <Link to="/contact" className="hs__btn-secondary">
+              <Link to="/contact" className="hs__btn-secondary"
+                onClick={() => trackEvent('cta_click', 'contact_me')}>
                 Contact Me
               </Link>
             </div>

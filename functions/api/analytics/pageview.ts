@@ -18,10 +18,20 @@ function detectBrowser(ua: string): string {
   return 'Other';
 }
 
+function extractReferrerHost(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  try {
+    const hostname = new URL(raw).hostname.replace(/^www\./, '');
+    return hostname || null;
+  } catch {
+    return null;
+  }
+}
+
 // POST /api/analytics/pageview — public, no auth
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   try {
-    const body = await request.json<{ path?: string; session_id?: string }>();
+    const body = await request.json<{ path?: string; session_id?: string; referrer?: string | null }>();
     const path      = String(body.path ?? '').slice(0, 255).trim();
     if (!path) return err('path required');
 
@@ -30,10 +40,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const deviceType = detectDevice(ua);
     const browser    = detectBrowser(ua);
     const sessionId  = String(body.session_id ?? '').slice(0, 64) || null;
+    const referrer   = extractReferrerHost(body.referrer);
 
     await env.DB.prepare(
-      'INSERT INTO page_views (path, country, device_type, browser, session_id) VALUES (?, ?, ?, ?, ?)',
-    ).bind(path, country, deviceType, browser, sessionId).run();
+      'INSERT INTO page_views (path, country, device_type, browser, session_id, referrer) VALUES (?, ?, ?, ?, ?, ?)',
+    ).bind(path, country, deviceType, browser, sessionId, referrer).run();
 
     return json({ ok: true });
   } catch {

@@ -74,6 +74,30 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       env.DB.prepare("SELECT browser, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) AND created_at < datetime('now', ?) GROUP BY browser ORDER BY count DESC LIMIT 6").bind(prev, since).all<BrowserRow>(),
     ]);
 
+    // Phase 2: traffic sources + CTA events (wrapped so missing column/table doesn't 500 the overview)
+    const [trafficSources, ctaRows, formRows, scrollRows] = await Promise.all([
+      env.DB.prepare(`
+        SELECT COALESCE(referrer, '') as source, COUNT(*) as count
+        FROM page_views WHERE created_at >= datetime('now', ?)
+        GROUP BY COALESCE(referrer, '') ORDER BY count DESC LIMIT 20
+      `).bind(since).all<{ source: string; count: number }>().catch(() => ({ results: [] as { source: string; count: number }[] })),
+      env.DB.prepare(`
+        SELECT event_type, label, COUNT(*) as count FROM cta_events
+        WHERE event_type = 'cta_click' AND created_at >= datetime('now', ?)
+        GROUP BY event_type, label ORDER BY count DESC LIMIT 20
+      `).bind(since).all<{ event_type: string; label: string | null; count: number }>().catch(() => ({ results: [] as { event_type: string; label: string | null; count: number }[] })),
+      env.DB.prepare(`
+        SELECT event_type, COUNT(*) as count FROM cta_events
+        WHERE event_type IN ('form_view','form_submit') AND created_at >= datetime('now', ?)
+        GROUP BY event_type
+      `).bind(since).all<{ event_type: string; count: number }>().catch(() => ({ results: [] as { event_type: string; count: number }[] })),
+      env.DB.prepare(`
+        SELECT value, COUNT(*) as count FROM cta_events
+        WHERE event_type = 'scroll_depth' AND created_at >= datetime('now', ?)
+        GROUP BY value ORDER BY value ASC
+      `).bind(since).all<{ value: number; count: number }>().catch(() => ({ results: [] as { value: number; count: number }[] })),
+    ]);
+
     const [topCountries, newVis, returningVis] = await Promise.all([
       env.DB.prepare(`
         SELECT country, COUNT(*) as count FROM page_views
@@ -144,6 +168,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       audience: {
         newVisitors:       newVis?.count       ?? 0,
         returningVisitors: returningVis?.count ?? 0,
+      },
+      trafficSources: {
+        sources: trafficSources.results ?? [],
+      },
+      events: {
+        ctaClicks:   ctaRows.results   ?? [],
+        formFunnel:  formRows.results  ?? [],
+        scrollDepth: scrollRows.results ?? [],
       },
     });
   } catch {

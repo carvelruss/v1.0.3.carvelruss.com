@@ -3369,3 +3369,83 @@
 }
 .an-ph-card__title { font-size: 13.5px; font-weight: 600; color: var(--adm-text); margin-bottom: 6px; }
 .an-ph-card__desc  { font-size: 12.5px; color: var(--adm-muted); line-height: 1.6; }
+
+/* ── Traffic Sources ─────────────────────────────────────────── */
+.an-src-card  { padding: 20px; margin-bottom: 20px; }
+.an-src-head  { margin-bottom: 18px; }
+.an-src-title { font-size: 14px; font-weight: 700; color: var(--adm-text); }
+.an-src-sub   { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
+
+.an-src-cats  { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.an-src-cat   {}
+.an-src-cat__row {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; margin-bottom: 5px;
+}
+.an-src-cat__dot   { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.an-src-cat__label { flex: 1; font-weight: 500; color: var(--adm-text-2); }
+.an-src-cat__pct   { font-weight: 700; color: var(--adm-text); min-width: 36px; text-align: right; }
+.an-src-cat__count { font-size: 11.5px; color: var(--adm-muted); min-width: 32px; text-align: right; }
+.an-src-bar-track  { height: 6px; background: var(--adm-surface-2); border-radius: 3px; overflow: hidden; }
+.an-src-bar-fill   { height: 100%; border-radius: 3px; transition: width .4s ease; }
+
+.an-src-referrals  { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--adm-border); }
+.an-src-ref-label  { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--adm-muted); margin-bottom: 10px; }
+.an-src-ref-row    { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--adm-border); }
+.an-src-ref-row:last-child { border-bottom: none; }
+.an-src-ref-host   { font-size: 13px; font-weight: 500; color: var(--adm-text); }
+.an-src-ref-count  { font-size: 12px; font-weight: 600; color: var(--adm-muted); }
+
+/* ── Lead Gen top row ────────────────────────────────────────── */
+.an-leads-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: start;
+}
+@media (max-width: 700px) { .an-leads-top-row { grid-template-columns: 1fr; } }
+
+/* ── CTA Performance ─────────────────────────────────────────── */
+.an-cta-card  { padding: 20px; }
+.an-cta-head  { margin-bottom: 16px; }
+.an-cta-title { font-size: 14px; font-weight: 700; color: var(--adm-text); }
+.an-cta-sub   { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
+.an-cta-empty { font-size: 13px; color: var(--adm-muted); padding: 12px 0; }
+.an-cta-list  { display: flex; flex-direction: column; gap: 12px; }
+.an-cta-item  { display: flex; align-items: center; gap: 10px; }
+.an-cta-rank  { font-size: 12px; color: var(--adm-muted); width: 22px; flex-shrink: 0; font-weight: 600; }
+.an-cta-info  { flex: 1; min-width: 0; }
+.an-cta-label { font-size: 13px; font-weight: 500; color: var(--adm-text); display: block; margin-bottom: 4px;
+                overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.an-cta-bar-track { height: 5px; background: var(--adm-surface-2); border-radius: 3px; overflow: hidden; }
+.an-cta-bar-fill  { height: 100%; border-radius: 3px;
+                    background: linear-gradient(90deg, #1a4a9e 0%, #0D215A 100%); transition: width .4s; }
+.an-cta-count  { font-size: 12px; font-weight: 700; color: var(--adm-text); min-width: 32px; text-align: right; }
+
+/* ── Form Funnel ─────────────────────────────────────────────── */
+.an-funnel-card    { padding: 20px; }
+.an-funnel-head    { margin-bottom: 20px; }
+.an-funnel-title   { font-size: 14px; font-weight: 700; color: var(--adm-text); }
+.an-funnel-sub     { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
+.an-funnel-steps   { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.an-funnel-step    { text-align: center; flex: 1; }
+.an-funnel-step__num   { font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.an-funnel-step__label { font-size: 11.5px; color: var(--adm-muted); font-weight: 500; }
+.an-funnel-arrow   { font-size: 18px; color: var(--adm-muted); flex-shrink: 0; }
+.an-funnel-bar-track { height: 8px; background: var(--adm-surface-2); border-radius: 4px; overflow: hidden; }
+.an-funnel-bar-fill  { height: 100%; border-radius: 4px;
+                       background: linear-gradient(90deg, #1a4a9e 0%, #10b981 100%); transition: width .4s; }
+
+/* ── Scroll Depth ────────────────────────────────────────────── */
+.an-scroll-card   { padding: 20px; }
+.an-scroll-head   { margin-bottom: 16px; }
+.an-scroll-title  { font-size: 14px; font-weight: 700; color: var(--adm-text); }
+.an-scroll-sub    { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
+.an-scroll-empty  { font-size: 13px; color: var(--adm-muted); padding: 12px 0; }
+.an-scroll-list   { display: flex; flex-direction: column; gap: 12px; }
+.an-scroll-item   { display: flex; align-items: center; gap: 10px; }
+.an-scroll-pct    { font-size: 12px; font-weight: 600; color: var(--adm-muted); width: 32px; flex-shrink: 0; }
+.an-scroll-bar-track { flex: 1; height: 12px; background: var(--adm-surface-2); border-radius: 6px; overflow: hidden; }
+.an-scroll-bar-fill  { height: 100%; border-radius: 6px; background: #1a4a9e; transition: width .4s; }
+.an-scroll-count  { font-size: 12px; font-weight: 600; color: var(--adm-text); min-width: 32px; text-align: right; }

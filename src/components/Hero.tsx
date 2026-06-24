@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '../lib/track';
 
 const STATS = [
   {
@@ -68,13 +69,13 @@ export default function Hero() {
             <div className="hero-section__actions">
               <button
                 className="hero-section__btn-primary"
-                onClick={() => navigate('/case-studies')}
+                onClick={() => { trackEvent('cta_click', 'view_case_studies'); navigate('/case-studies'); }}
               >
                 View Case Studies →
               </button>
               <button
                 className="hero-section__btn-ghost"
-                onClick={() => scrollTo('contact')}
+                onClick={() => { trackEvent('cta_click', 'get_in_touch'); scrollTo('contact'); }}
               >
                 Get in Touch
               </button>

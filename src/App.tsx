@@ -1,25 +1,36 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
-
-function getSessionId(): string {
-  let sid = sessionStorage.getItem('_sid');
-  if (!sid) {
-    sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    sessionStorage.setItem('_sid', sid);
-  }
-  return sid;
-}
+import { useEffect, useRef } from 'react';
+import { trackPageView, trackEvent } from './lib/track';
 
 function PageTracker() {
   const location = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
     if (location.pathname.startsWith('/admin')) return;
-    fetch('/api/analytics/pageview', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: location.pathname, session_id: getSessionId() }),
-    }).catch(() => {});
+    trackPageView(location.pathname);
+  }, [location.pathname]);
+  return null;
+}
+
+function ScrollTracker() {
+  const location  = useLocation();
+  const firedRef  = useRef(new Set<number>());
+  useEffect(() => {
+    firedRef.current = new Set();
+    const depths = [25, 50, 75, 100];
+    const onScroll = () => {
+      const scrolled = window.scrollY + window.innerHeight;
+      const total    = document.documentElement.scrollHeight;
+      const pct      = Math.floor((scrolled / total) * 100);
+      for (const d of depths) {
+        if (pct >= d && !firedRef.current.has(d)) {
+          firedRef.current.add(d);
+          trackEvent('scroll_depth', null, d);
+        }
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, [location.pathname]);
   return null;
 }
@@ -159,6 +170,7 @@ export default function App() {
     <BrowserRouter>
       <RevealObserver />
       <PageTracker />
+      <ScrollTracker />
       <ScrollToTopButton />
       <Routes>
         <Route path="/"                      element={<WebStudioLanding />} />

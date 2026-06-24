@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '../lib/track';
 
 declare global {
   interface Window {
@@ -58,6 +59,8 @@ export default function Contact() {
   const [loading,     setLoading]     = useState(false);
   const [globalError, setGlobalError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => { trackEvent('form_view'); }, []);
 
   useEffect(() => {
     const mount = () => {
@@ -140,6 +143,7 @@ export default function Contact() {
       const data = await res.json() as { success?: boolean; error?: string };
 
       if (res.ok && data.success) {
+        trackEvent('form_submit');
         navigate('/thank-you');
       } else {
         setGlobalError(data.error ?? 'Something went wrong. Please try again.');
