@@ -143,7 +143,7 @@ export default function PostsAdmin() {
           <button className="a-btn a-btn--primary" onClick={() => navigate('/admin/posts/new')}>
             + New Post
           </button>
-          <a className="a-btn a-btn--ghost" href="/blog" target="_blank" rel="noopener noreferrer">
+          <a className="a-btn a-btn--ghost a-mobile-hide" href="/blog" target="_blank" rel="noopener noreferrer">
             ↗ View site
           </a>
         </div>
