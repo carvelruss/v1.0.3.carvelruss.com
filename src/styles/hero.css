@@ -855,6 +855,7 @@
 
   .hs__subtitle { max-width: 560px; }
 
+  .hs__actions  { justify-content: center; }
   .hs__features { justify-content: center; }
 
   .hs__feature {
