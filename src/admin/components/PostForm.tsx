@@ -359,13 +359,22 @@ export default function PostForm() {
         setDirty(false);
         setLastSaved(new Date());
         if (!silent) toast(status === 'published' ? 'Post published!' : 'Draft saved', 'success');
-        if (newSlug !== editSlug) navigate(`/admin/posts/${newSlug}/edit`, { replace: true });
+        if (!silent && status === 'published') {
+          navigate('/admin/posts');
+        } else if (newSlug !== editSlug) {
+          navigate(`/admin/posts/${newSlug}/edit`, { replace: true });
+        }
       } else {
         const { slug: newSlug } = await api.createPost(payload);
         setDirty(false);
         setLastSaved(new Date());
-        toast('Post created!', 'success');
-        navigate(`/admin/posts/${newSlug}/edit`, { replace: true });
+        if (status === 'published') {
+          toast('Post published!', 'success');
+          navigate('/admin/posts');
+        } else {
+          toast('Post created!', 'success');
+          navigate(`/admin/posts/${newSlug}/edit`, { replace: true });
+        }
       }
     } catch (e: unknown) {
       toast(e instanceof Error ? e.message : 'Save failed', 'error');
