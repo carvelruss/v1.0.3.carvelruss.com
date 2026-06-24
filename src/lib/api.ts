@@ -1,4 +1,5 @@
 import type { Project, Post, Inquiry, MediaAsset, SiteSetting } from '../types';
+import { compressImage } from './compressImage';
 
 const TOKEN_KEY = 'portfolio_admin_token';
 
@@ -53,8 +54,9 @@ class ApiClient {
   async uploadImage(file: File): Promise<{ url: string }> {
     const token = this.getToken();
     if (!token) throw new Error('Not authenticated');
+    const compressed = await compressImage(file);
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', compressed);
     const res = await fetch('/api/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },

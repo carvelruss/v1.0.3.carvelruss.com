@@ -247,7 +247,7 @@ export default function BlogSingle() {
           {/* ── Hero image — full container width ── */}
           {post.og_image && (
             <figure className="bs-feat-img">
-              <img src={post.og_image} alt={post.title} loading="lazy" />
+              <img src={post.og_image} alt={post.title} fetchPriority="high" decoding="async" />
               {post.featured_image_caption && (
                 <figcaption className="bs-img-caption">
                   {post.featured_image_caption}

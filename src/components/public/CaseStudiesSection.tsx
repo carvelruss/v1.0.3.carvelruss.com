@@ -301,6 +301,8 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
             src={study.cover_url}
             alt=""
             className="csl-card__cover-img"
+            loading="lazy"
+            decoding="async"
           />
         ) : (
           <Thumb />
