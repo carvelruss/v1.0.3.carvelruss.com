@@ -442,7 +442,11 @@ function DeviceChart({ data, days, periodLabel }: { data: DeviceRow[]; days: num
       </div>
 
       {tip && (
-        <div className="hm-tooltip" style={{ left: tip.x + 14, top: tip.y + 14 }}>
+        <div className="hm-tooltip" style={{
+          left:      tip.x > window.innerWidth - 180 ? 'auto' : tip.x + 14,
+          right:     tip.x > window.innerWidth - 180 ? window.innerWidth - tip.x + 14 : 'auto',
+          top: tip.y + 14,
+        }}>
           <strong>{tip.dateLabel}</strong>
           {DEVICES.map(d => (
             <span key={d.key} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -548,7 +552,11 @@ function ActivityHeatmap({ data, periodLabel }: { data: HeatCell[]; periodLabel:
       </div>
 
       {tip && (
-        <div className="hm-tooltip" style={{ left: tip.x + 14, top: tip.y + 14 }}>
+        <div className="hm-tooltip" style={{
+          left:  tip.x > window.innerWidth - 160 ? 'auto' : tip.x + 14,
+          right: tip.x > window.innerWidth - 160 ? window.innerWidth - tip.x + 14 : 'auto',
+          top: tip.y + 14,
+        }}>
           <strong>{DAY_LABELS[tip.dayIdx]}, {fmtHour(tip.hour)}</strong>
           <span>{tip.count.toLocaleString()} views</span>
         </div>
