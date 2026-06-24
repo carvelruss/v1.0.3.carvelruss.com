@@ -2883,8 +2883,9 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
 }
+.an-heat-pages > * { height: 100%; }
 @media (max-width: 900px) {
   .an-heat-pages { grid-template-columns: 1fr; }
 }
