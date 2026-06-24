@@ -19,10 +19,18 @@ function ScrollTracker() {
   useEffect(() => {
     firedRef.current = new Set();
     const depths = [25, 50, 75, 100];
+
+    // Cache scrollHeight — reading it on every scroll forces layout recalculation.
+    // ResizeObserver updates the cache only when the document actually resizes.
+    let totalHeight = document.documentElement.scrollHeight;
+    const ro = new ResizeObserver(() => {
+      totalHeight = document.documentElement.scrollHeight;
+    });
+    ro.observe(document.documentElement);
+
     const onScroll = () => {
       const scrolled = window.scrollY + window.innerHeight;
-      const total    = document.documentElement.scrollHeight;
-      const pct      = Math.floor((scrolled / total) * 100);
+      const pct      = Math.floor((scrolled / totalHeight) * 100);
       for (const d of depths) {
         if (pct >= d && !firedRef.current.has(d)) {
           firedRef.current.add(d);
@@ -31,7 +39,7 @@ function ScrollTracker() {
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); ro.disconnect(); };
   }, [location.pathname]);
   return null;
 }

@@ -38,35 +38,42 @@ export default function BlogSingle() {
   useEffect(() => {
     const header = document.querySelector<HTMLElement>('.sh');
     if (!header) return;
-
     const update = () =>
       document.documentElement.style.setProperty(
         '--site-header-height',
         `${header.offsetHeight}px`
       );
-
     update();
+    // ResizeObserver batches layout reads — no forced reflow. Redundant
+    // window.resize listener removed since ResizeObserver already covers it.
     const ro = new ResizeObserver(update);
     ro.observe(header);
-    window.addEventListener('resize', update);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('resize', update);
-    };
+    return () => ro.disconnect();
   }, []);
 
   /* ── Reading progress ── */
   useEffect(() => {
+    const el = articleRef.current;
+    if (!el) return;
+
+    // Cache absolute position — getBoundingClientRect() on every scroll forces
+    // a synchronous layout. Read it once here and update only on resize.
+    let articleTop    = el.getBoundingClientRect().top + window.scrollY;
+    let articleHeight = el.offsetHeight;
+
+    const ro = new ResizeObserver(() => {
+      articleTop    = el.getBoundingClientRect().top + window.scrollY;
+      articleHeight = el.offsetHeight;
+    });
+    ro.observe(el);
+
     const update = () => {
-      const el = articleRef.current;
-      if (!el) return;
-      const { top, height } = el.getBoundingClientRect();
-      const scrolled = Math.max(0, -top);
-      const total    = height - window.innerHeight;
+      const scrolled = Math.max(0, window.scrollY - articleTop);
+      const total    = articleHeight - window.innerHeight;
       setReadProgress(total > 0 ? Math.min(100, (scrolled / total) * 100) : 0);
     };
     window.addEventListener('scroll', update, { passive: true });
-    return () => window.removeEventListener('scroll', update);
+    return () => { window.removeEventListener('scroll', update); ro.disconnect(); };
   }, [post]);
 
   /* ── Share handler ── */
