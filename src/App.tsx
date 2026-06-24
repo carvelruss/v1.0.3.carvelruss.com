@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 function PageTracker() {
   const location = useLocation();
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (location.pathname.startsWith('/admin')) return;
     fetch('/api/analytics/pageview', {
       method: 'POST',
