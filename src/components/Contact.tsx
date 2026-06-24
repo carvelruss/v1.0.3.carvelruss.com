@@ -1,4 +1,5 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 declare global {
   interface Window {
@@ -55,8 +56,8 @@ export default function Contact() {
   const [message,     setMessage]     = useState('');
   const [errors,      setErrors]      = useState<Record<string, string>>({});
   const [loading,     setLoading]     = useState(false);
-  const [submitted,   setSubmitted]   = useState(false);
   const [globalError, setGlobalError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const mount = () => {
@@ -139,11 +140,7 @@ export default function Contact() {
       const data = await res.json() as { success?: boolean; error?: string };
 
       if (res.ok && data.success) {
-        setSubmitted(true);
-        formRef.current?.reset();
-        setName(''); setEmail(''); setSubject('');
-        setProjectType(''); setBudgetRange(''); setTimeline(''); setMessage('');
-        if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
+        navigate('/thank-you');
       } else {
         setGlobalError(data.error ?? 'Something went wrong. Please try again.');
         if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
@@ -154,24 +151,6 @@ export default function Contact() {
       setLoading(false);
     }
   };
-
-  if (submitted) {
-    return (
-      <div className="ctf-success">
-        <div className="ctf-success__icon" aria-hidden="true">✓</div>
-        <h3 className="ctf-success__title">Message Sent!</h3>
-        <p className="ctf-success__text">
-          Thank you for reaching out. I'll get back to you within 24 hours.
-        </p>
-        <button
-          className="ctf-success__btn"
-          onClick={() => setSubmitted(false)}
-        >
-          Send Another Message
-        </button>
-      </div>
-    );
-  }
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} noValidate className="ctf">
