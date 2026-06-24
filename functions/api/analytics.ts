@@ -2,10 +2,11 @@
 
 import { type Env, json, err, isAdmin } from '../_helpers';
 
-interface DayCount   { date: string; count: number }
-interface HeatCell   { day: number; hour: number; count: number }
-interface DeviceRow  { date: string; device_type: string; count: number }
-interface SessionAgg { sessions: number; bounce_rate: number; avg_duration: number }
+interface DayCount    { date: string; count: number }
+interface HeatCell    { day: number; hour: number; count: number }
+interface DeviceRow   { date: string; device_type: string; count: number }
+interface SessionAgg  { sessions: number; bounce_rate: number; avg_duration: number }
+interface BrowserRow  { browser: string; count: number }
 
 // Subquery helpers (string templates — passed to DB.prepare)
 const sessionSubquery = (window: string) =>
@@ -68,6 +69,11 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       env.DB.prepare(`SELECT date(min_created) as date, CAST(AVG(CASE WHEN page_count>1 THEN dur ELSE 0 END) AS INTEGER) as count FROM (${sessionSubquery(since)}) GROUP BY date ORDER BY date ASC`).all<DayCount>(),
     ]);
 
+    const [browserCur, browserPrev] = await Promise.all([
+      env.DB.prepare("SELECT browser, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) GROUP BY browser ORDER BY count DESC LIMIT 6").bind(since).all<BrowserRow>(),
+      env.DB.prepare("SELECT browser, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) AND created_at < datetime('now', ?) GROUP BY browser ORDER BY count DESC LIMIT 6").bind(prev, since).all<BrowserRow>(),
+    ]);
+
     return json({
       days,
       pageViews: {
@@ -99,6 +105,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
         prevByDay:        sessionsPrevByDay.results ?? [],
         bounceByDay:      bounceByDay.results       ?? [],
         durationByDay:    durationByDay.results     ?? [],
+      },
+      browserStats: {
+        current:  browserCur.results  ?? [],
+        previous: browserPrev.results ?? [],
       },
     });
   } catch {

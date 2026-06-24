@@ -29,6 +29,10 @@ interface AnalyticsData {
   };
   heatmap:     HeatCell[];
   deviceByDay: DeviceRow[];
+  browserStats: {
+    current:  { browser: string; count: number }[];
+    previous: { browser: string; count: number }[];
+  };
   sessions: {
     period:          number;
     prevPeriod:      number;
@@ -413,6 +417,75 @@ function SessionsChart({ data, days, periodLabel }: { data: SessionsData; days: 
 
       <div className="sc-footer">
         <span className="sc-footer__sub">{periodLabel} · dashed line is previous period</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Browser Chart ───────────────────────────────────────────── */
+
+const BROWSER_COLORS = ['#6366f1', '#38bdf8', '#10b981', '#f59e0b', '#f43f5e', '#94a3b8'];
+
+function BrowserChart({
+  current, previous,
+}: {
+  current:  { browser: string; count: number }[];
+  previous: { browser: string; count: number }[];
+}) {
+  const total  = current.reduce((s, b) => s + b.count, 0) || 1;
+  const prevMap = new Map(previous.map(b => [b.browser, b.count]));
+
+  const R = 54; const CX = 80; const CY = 80;
+  const CIRC = 2 * Math.PI * R;
+
+  // Build donut segments
+  let cumLen = 0;
+  const segments = current.map((b, i) => {
+    const pct = b.count / total;
+    const len = Math.max(0, pct * CIRC - 2);
+    const seg = { ...b, color: BROWSER_COLORS[i % BROWSER_COLORS.length]!, len, offset: cumLen };
+    cumLen += pct * CIRC;
+    return seg;
+  });
+
+  return (
+    <div className="a-card bc-card">
+      <div className="bc-title">Session by Browser</div>
+
+      {/* Donut */}
+      <div className="bc-donut-wrap">
+        <svg viewBox="0 0 160 160" className="bc-svg">
+          <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f1f5f9" strokeWidth="14" />
+          {segments.map((seg, i) => (
+            <circle key={i} cx={CX} cy={CY} r={R} fill="none"
+              stroke={seg.color} strokeWidth="14"
+              strokeDasharray={`${seg.len} ${CIRC - seg.len}`}
+              strokeDashoffset={-seg.offset}
+              transform={`rotate(-90 ${CX} ${CY})`}
+            />
+          ))}
+        </svg>
+      </div>
+
+      {/* Legend rows */}
+      <div className="bc-list">
+        {current.slice(0, 5).map((b, i) => {
+          const pct    = ((b.count / total) * 100).toFixed(1);
+          const prev   = prevMap.get(b.browser) ?? 0;
+          const change = prev > 0 ? Math.round(((b.count - prev) / prev) * 100) : null;
+          return (
+            <div key={b.browser} className="bc-row">
+              <span className="bc-dot" style={{ background: BROWSER_COLORS[i % BROWSER_COLORS.length] }} />
+              <span className="bc-name">{b.browser}</span>
+              <span className="bc-pct">{pct}%</span>
+              {change != null && (
+                <span className={`bc-change ${change >= 0 ? 'bc-change--up' : 'bc-change--down'}`}>
+                  {change >= 0 ? '▲' : '▼'} {Math.abs(change)}%
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -819,9 +892,12 @@ export default function AdminAnalyticsPage() {
         <StatCard label="Avg Views/Day" value={data ? fmtNum(avgDay)                : '—'} sub={`over ${days} days`}   color="#f59e0b" />
       </div>
 
-      {/* ── Sessions overview ── */}
-      {!loading && data?.sessions && (
-        <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
+      {/* ── Sessions + Browser row ── */}
+      {!loading && data && (
+        <div className="an-sessions-row">
+          <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
+          <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} />
+        </div>
       )}
 
       {/* ── Main body ── */}

@@ -2963,3 +2963,42 @@
 @media (max-width: 700px) {
   .sc-tabs { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Sessions row layout ─────────────────────────────────────── */
+.an-sessions-row {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .an-sessions-row { grid-template-columns: 1fr; }
+}
+
+/* ── Browser Chart ───────────────────────────────────────────── */
+.bc-card { padding: 18px 20px 16px; }
+.bc-title {
+  font-size: 14px; font-weight: 700; color: var(--adm-text); margin-bottom: 12px;
+}
+.bc-donut-wrap {
+  display: flex; justify-content: center; margin-bottom: 16px;
+}
+.bc-svg { width: 140px; height: 140px; }
+
+.bc-list { display: flex; flex-direction: column; gap: 0; }
+.bc-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 0; border-bottom: 1px solid var(--adm-border);
+  font-size: 13px;
+}
+.bc-row:last-child { border-bottom: none; }
+.bc-dot {
+  width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+}
+.bc-name  { flex: 1; color: var(--adm-text-2); font-weight: 500; }
+.bc-pct   { color: var(--adm-text); font-weight: 600; min-width: 42px; text-align: right; }
+.bc-change {
+  font-size: 11.5px; font-weight: 600; min-width: 50px; text-align: right;
+}
+.bc-change--up   { color: var(--adm-success); }
+.bc-change--down { color: var(--adm-danger); }
