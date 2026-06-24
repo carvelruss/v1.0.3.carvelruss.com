@@ -851,10 +851,10 @@
 }
 .a-datepicker-popper .react-datepicker__day--outside-month { color: #d1d5db; font-weight: 400; }
 
-/* Today — orange outline circle */
+/* Today — accent outline circle */
 .a-datepicker-popper .react-datepicker__day--today {
-  border: 2px solid #f97316;
-  color: #f97316; font-weight: 700;
+  border: 2px solid var(--ep-accent);
+  color: var(--ep-accent); font-weight: 700;
   line-height: 30px;
 }
 .a-datepicker-popper .react-datepicker__day--today.react-datepicker__day--selected,
@@ -862,14 +862,14 @@
   border: none; color: #fff; line-height: 34px;
 }
 
-/* Selected — dark filled circle */
+/* Selected — accent filled circle */
 .a-datepicker-popper .react-datepicker__day--selected,
 .a-datepicker-popper .react-datepicker__day--keyboard-selected {
-  background: #111827; color: #fff !important;
+  background: var(--ep-accent); color: #fff !important;
   border-radius: 50%; font-weight: 600; border: none;
 }
 .a-datepicker-popper .react-datepicker__day--selected:hover,
-.a-datepicker-popper .react-datepicker__day--keyboard-selected:hover { background: #1f2937; }
+.a-datepicker-popper .react-datepicker__day--keyboard-selected:hover { background: var(--ep-accent-dark); }
 
 /* Time input row */
 .a-datepicker-popper .react-datepicker__input-time-container {
@@ -895,7 +895,7 @@
   color: #111827; font-family: inherit;
   background: #fff; cursor: pointer;
 }
-.a-cal-time__sel:focus { outline: none; border-color: #6366f1; }
+.a-cal-time__sel:focus { outline: none; border-color: var(--ep-accent); }
 .a-cal-time__colon { font-size: 14px; font-weight: 700; color: #374151; }
 .a-cal-time__ampm {
   display: flex; border: 1.5px solid #e5e7eb;
@@ -907,7 +907,7 @@
   cursor: pointer; font-family: inherit;
   transition: background .1s, color .1s;
 }
-.a-cal-ampm-btn.active { background: #111827; color: #fff; }
+.a-cal-ampm-btn.active { background: var(--ep-accent); color: #fff; }
 .a-cal-ampm-btn:not(.active):hover { background: #f3f4f6; }
 
 /* Footer */
@@ -925,15 +925,15 @@
   font-family: inherit; padding: 0;
   transition: color .12s;
 }
-.a-cal-footer__link:hover { color: #111827; }
+.a-cal-footer__link:hover { color: var(--ep-accent); }
 .a-cal-footer__set {
-  background: #111827; color: #fff;
+  background: var(--ep-accent); color: #fff;
   border: none; border-radius: 8px;
   padding: 7px 14px; font-size: 13px;
   font-weight: 600; cursor: pointer;
   font-family: inherit; transition: background .12s;
 }
-.a-cal-footer__set:hover { background: #1f2937; }
+.a-cal-footer__set:hover { background: var(--ep-accent-dark); }
 
 /* ── Toast notifications ─────────────────────────────────────────────────────── */
 .ep-toasts {
