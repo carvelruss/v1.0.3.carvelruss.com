@@ -114,19 +114,20 @@ interface TooltipState {
 }
 
 function AreaChart({
-  data, prevData, color = '#6366f1', label = 'Views',
+  data, prevData, color = '#6366f1', label = 'Views', yAxisRight = false,
 }: {
   data: DayCount[];
   prevData?: DayCount[];
   color?: string;
   label?: string;
+  yAxisRight?: boolean;
 }) {
   const containerRef  = useRef<HTMLDivElement>(null);
   const svgRef        = useRef<SVGSVGElement>(null);
   const [tip, setTip] = useState<TooltipState | null>(null);
 
   const W = 800; const H = 220;
-  const PAD = { top: 16, right: 16, bottom: 32, left: 44 };
+  const PAD = { top: 16, right: yAxisRight ? 44 : 16, bottom: 32, left: yAxisRight ? 16 : 44 };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;
 
@@ -238,7 +239,12 @@ function AreaChart({
             <g key={i}>
               <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
                 stroke="#e2e8f0" strokeWidth="1" strokeDasharray={i === 5 ? '0' : '4 3'} />
-              <text x={PAD.left - 8} y={y + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
+              <text
+                x={yAxisRight ? W - PAD.right + 8 : PAD.left - 8}
+                y={y + 4}
+                textAnchor={yAxisRight ? 'start' : 'end'}
+                fontSize="10" fill="#94a3b8"
+              >
                 {fmtNum(val)}
               </text>
             </g>
@@ -317,14 +323,19 @@ function AreaChart({
 /* ── Stat Card ───────────────────────────────────────────────── */
 
 function StatCard({
-  label, value, change, sub, sparkData, color = '#6366f1',
+  label, value, change, sub, sparkData, color = '#6366f1', active, onClick,
 }: {
   label: string; value: string; change?: number | null;
   sub?: string; sparkData?: DayCount[]; color?: string;
+  active?: boolean; onClick?: () => void;
 }) {
   const up = change != null && change >= 0;
   return (
-    <div className="an-stat">
+    <div
+      className={`an-stat${active ? ' an-stat--active' : ''}`}
+      onClick={onClick}
+      style={onClick ? { cursor: 'pointer' } : undefined}
+    >
       <div className="an-stat__top">
         <div>
           <div className="an-stat__label">{label}</div>
@@ -332,7 +343,7 @@ function StatCard({
           {change != null ? (
             <div className={`an-stat__change ${up ? 'an-stat__change--up' : 'an-stat__change--down'}`}>
               <span className="an-stat__arrow">{up ? '▲' : '▼'}</span>
-              {up ? '+' : ''}{change}%
+              {Math.abs(change).toFixed(1)}%
             </div>
           ) : sub ? (
             <div className="an-stat__sub">{sub}</div>
@@ -551,36 +562,53 @@ function BrowserChart({
 /* ── Bar Chart ───────────────────────────────────────────────── */
 
 function BarChart({
-  data, color = '#6366f1', label = 'Count',
+  data, color = '#6366f1', label = 'Count', gradient = false, simplifyAxis = false, noYAxis = false,
 }: {
-  data:   DayCount[];
-  color?: string;
-  label?: string;
+  data:          DayCount[];
+  color?:        string;
+  label?:        string;
+  gradient?:     boolean;
+  simplifyAxis?: boolean;
+  noYAxis?:      boolean;
 }) {
   const containerRef  = useRef<HTMLDivElement>(null);
   const svgRef        = useRef<SVGSVGElement>(null);
   const [tip, setTip] = useState<TooltipState | null>(null);
 
-  const W = 800; const H = 220;
-  const PAD = { top: 16, right: 16, bottom: 32, left: 44 };
+  const W = 800; const H = 200;
+  const PAD = { top: 12, right: noYAxis ? 12 : 16, bottom: 28, left: noYAxis ? 12 : 44 };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;
 
   const max     = Math.max(...data.map(d => d.count), 1);
   const niceMax = Math.ceil(max / 5) * 5 || 5;
 
-  const n         = data.length || 1;
-  const slotW     = cW / n;
-  const gap       = Math.max(1, Math.round(slotW * 0.2));
-  const barW      = Math.max(2, slotW - gap);
-  const showEvery = n <= 7 ? 1 : n <= 30 ? 5 : 10;
+  const n     = data.length || 1;
+  const slotW = cW / n;
+  const gap   = Math.max(1, Math.round(slotW * 0.25));
+  const barW  = Math.max(2, slotW - gap);
 
   const bars = data.map((d, i) => {
     const x  = PAD.left + i * slotW + gap / 2;
-    const bH = Math.max(2, (d.count / niceMax) * cH);
+    const bH = Math.max(d.count > 0 ? 4 : 0, (d.count / niceMax) * cH);
     const y  = PAD.top + cH - bH;
     return { ...d, x, y, bH, cx: x + barW / 2 };
   });
+
+  const xAxisLabels = simplifyAxis && n >= 2
+    ? [
+        { cx: bars[0]!.cx,                  label: fmtDate(bars[0]!.date).toUpperCase() },
+        { cx: bars[Math.floor(n / 2)]!.cx,  label: fmtDate(bars[Math.floor(n / 2)]!.date).toUpperCase() },
+        { cx: bars[n - 1]!.cx,              label: 'TODAY' },
+      ]
+    : bars
+        .map((b, i) => ({ cx: b.cx, label: fmtDate(b.date), i }))
+        .filter((_b, i) => {
+          const showEvery = n <= 7 ? 1 : n <= 30 ? 5 : 10;
+          return i % showEvery === 0;
+        });
+
+  const gridLines = noYAxis ? 1 : 6;
 
   const findIdx = useCallback((clientX: number) => {
     const svg = svgRef.current;
@@ -627,18 +655,29 @@ function BarChart({
         onPointerLeave={onPointerLeave}
         onPointerDown={onPointerDown}
       >
-        {/* Y-axis grid + labels */}
-        {Array.from({ length: 6 }, (_, i) => {
-          const frac = i / 5;
+        <defs>
+          {gradient && bars.map((_b, i) => (
+            <linearGradient key={i} id={`bg-${i}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stopColor={color} stopOpacity={tip?.index === i ? 1 : 0.85} />
+              <stop offset="100%" stopColor={color} stopOpacity="0" />
+            </linearGradient>
+          ))}
+        </defs>
+
+        {/* Grid lines */}
+        {Array.from({ length: gridLines }, (_, i) => {
+          const frac = i / (gridLines - 1);
           const y    = PAD.top + frac * cH;
           const val  = Math.round(niceMax * (1 - frac));
           return (
             <g key={i}>
               <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
-                stroke="#e2e8f0" strokeWidth="1" strokeDasharray={i === 5 ? '0' : '4 3'} />
-              <text x={PAD.left - 8} y={y + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
-                {fmtNum(val)}
-              </text>
+                stroke="#e2e8f0" strokeWidth="1" strokeDasharray={i === gridLines - 1 ? '0' : '4 3'} />
+              {!noYAxis && (
+                <text x={PAD.left - 8} y={y + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
+                  {fmtNum(val)}
+                </text>
+              )}
             </g>
           );
         })}
@@ -646,14 +685,14 @@ function BarChart({
         {/* Bars */}
         {bars.map((b, i) => (
           <rect key={i} x={b.x} y={b.y} width={barW} height={b.bH} rx="3" ry="3"
-            fill={tip?.index === i ? color : `${color}55`}
+            fill={gradient ? `url(#bg-${i})` : (tip?.index === i ? color : `${color}55`)}
           />
         ))}
 
         {/* X-axis labels */}
-        {bars.map((b, i) => i % showEvery === 0 && (
-          <text key={i} x={b.cx} y={H - 4} textAnchor="middle" fontSize="10" fill="#94a3b8">
-            {fmtDate(b.date)}
+        {xAxisLabels.map((xl, i) => (
+          <text key={i} x={xl.cx} y={H - 4} textAnchor="middle" fontSize="10" fill="#94a3b8">
+            {xl.label}
           </text>
         ))}
       </svg>
@@ -1028,12 +1067,17 @@ const PERIODS = [
 
 /* ── Main Component ──────────────────────────────────────────── */
 
+type ActiveMetric = 'views' | 'sessions' | 'inquiries' | 'avgday';
+
+const CHART_COLOR = '#d6613d';
+
 export default function AdminAnalyticsPage() {
-  const [days, setDays]       = useState(7);
-  const [open, setOpen]       = useState(false);
-  const [data, setData]       = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState('');
+  const [days, setDays]               = useState(30);
+  const [open, setOpen]               = useState(false);
+  const [data, setData]               = useState<AnalyticsData | null>(null);
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState('');
+  const [activeMetric, setActiveMetric] = useState<ActiveMetric>('views');
 
   useEffect(() => {
     setLoading(true); setError('');
@@ -1054,76 +1098,154 @@ export default function AdminAnalyticsPage() {
   const pvByDay     = data ? fillDays(data.pageViews.byDay,    days, 0)    : [];
   const pvPrevByDay = data ? fillDays(data.pageViews.prevByDay, days, days) : [];
   const cByDay      = data ? fillDays(data.contacts.byDay,     days, 0)    : [];
+  const sessByDay   = data ? fillDays(data.sessions.byDay,     days, 0)    : [];
+  const sessPrev    = data ? fillDays(data.sessions.prevByDay,  days, days) : [];
 
-  const pvChange = data ? calcChange(data.pageViews.period, data.pageViews.prevPeriod) : null;
-  const cChange  = data ? calcChange(data.contacts.period,  data.contacts.prevPeriod)  : null;
-  const avgDay   = data && days > 0 ? Math.round(data.pageViews.period / days) : 0;
+  const pvChange   = data ? calcChange(data.pageViews.period, data.pageViews.prevPeriod) : null;
+  const cChange    = data ? calcChange(data.contacts.period,  data.contacts.prevPeriod)  : null;
+  const sessChange = data ? calcChange(data.sessions.period,  data.sessions.prevPeriod)  : null;
+  const avgDay     = data && days > 0 ? Math.round(data.pageViews.period / days) : 0;
 
   const periodLabel = PERIODS.find(p => p.days === days)?.label ?? `Last ${days} days`;
+
+  const chartData: Record<ActiveMetric, { cur: DayCount[]; prev: DayCount[]; label: string }> = {
+    views:    { cur: pvByDay,   prev: pvPrevByDay, label: 'Views' },
+    sessions: { cur: sessByDay, prev: sessPrev,    label: 'Sessions' },
+    inquiries:{ cur: cByDay,    prev: [],           label: 'Inquiries' },
+    avgday:   { cur: pvByDay,   prev: pvPrevByDay, label: 'Views' },
+  };
+
+  const active = chartData[activeMetric];
+
+  const avgPerDay = data && days > 0
+    ? (data.contacts.period / days).toFixed(1)
+    : '0.0';
 
   return (
     <AdminLayout pageTitle="Analytics">
 
       {error && <div className="a-alert a-alert--error" style={{ marginBottom: 16 }}>{error}</div>}
 
-      {/* ── Stat cards ── */}
-      <div className="an-stat-grid">
-        <StatCard label="Page Views"    value={data ? fmtNum(data.pageViews.period) : '—'} change={pvChange} sparkData={pvByDay}  color="#6366f1" />
-        <StatCard label="Unique Pages"  value={data ? fmtNum(data.pageViews.unique) : '—'} sub="distinct paths visited" color="#0ea5e9" />
-        <StatCard label="Inquiries"     value={data ? fmtNum(data.contacts.period)  : '—'} change={cChange}  sparkData={cByDay}   color="#10b981" />
-        <StatCard label="Avg Views/Day" value={data ? fmtNum(avgDay)                : '—'} sub={`over ${days} days`}   color="#f59e0b" />
+      {/* ── Overview card: stat tabs + line chart ── */}
+      <div className="a-card an-overview">
+
+        {/* Stat tabs */}
+        <div className="an-ov-tabs">
+          <StatCard
+            label="Page Views" value={data ? fmtNum(data.pageViews.period) : '—'}
+            change={pvChange} color={CHART_COLOR}
+            active={activeMetric === 'views'} onClick={() => setActiveMetric('views')}
+          />
+          <StatCard
+            label="Sessions" value={data ? fmtNum(data.sessions.period) : '—'}
+            change={sessChange} color={CHART_COLOR}
+            active={activeMetric === 'sessions'} onClick={() => setActiveMetric('sessions')}
+          />
+          <StatCard
+            label="Inquiries" value={data ? fmtNum(data.contacts.period) : '—'}
+            change={cChange} color={CHART_COLOR}
+            active={activeMetric === 'inquiries'} onClick={() => setActiveMetric('inquiries')}
+          />
+          <StatCard
+            label="Avg Views/Day" value={data ? fmtNum(avgDay) : '—'}
+            sub={`over ${days} days`} color={CHART_COLOR}
+            active={activeMetric === 'avgday'} onClick={() => setActiveMetric('avgday')}
+          />
+        </div>
+
+        {/* Chart area */}
+        <div className="an-ov-chart">
+          {loading ? (
+            <div style={{ height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="a-loading" />
+            </div>
+          ) : (
+            <AreaChart
+              data={active.cur}
+              prevData={active.prev.length ? active.prev : undefined}
+              color={CHART_COLOR}
+              label={active.label}
+              yAxisRight
+            />
+          )}
+        </div>
+
+        {/* Footer: period selector + legend */}
+        <div className="an-ov-footer">
+          <div className="an-ov-legend">
+            <span className="an-ov-leg-item an-ov-leg-item--cur">
+              <span className="an-ov-leg-line" />
+              {periodLabel}
+            </span>
+            <span className="an-ov-leg-item an-ov-leg-item--prev">
+              <span className="an-ov-leg-line an-ov-leg-line--dashed" />
+              Prior {days} days
+            </span>
+          </div>
+          <div className="an-period-wrap">
+            <button className="an-period-btn" onClick={() => setOpen(o => !o)}>
+              {periodLabel}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            {open && (
+              <div className="an-period-menu">
+                {PERIODS.map(p => (
+                  <button key={p.days} className={`an-period-item${days === p.days ? ' active' : ''}`}
+                    onClick={() => { setDays(p.days); setOpen(false); }}>
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* ── Sessions + Browser row ── */}
+      {/* ── Bottom row: Inquiries card + Browser chart ── */}
+      <div className="an-bottom-row">
+
+        {/* Inquiries card */}
+        <div className="a-card an-inq-card">
+          <div className="an-inq-head">
+            <span className="an-inq-title">Inquiries · {periodLabel}</span>
+            <a href="/admin/inquiries" className="an-inq-action">Moderate ↗</a>
+          </div>
+          <div className="an-inq-meta">
+            <span className="an-inq-count">{data ? data.contacts.period : '—'}</span>
+            <span className="an-inq-sub">
+              {data ? `inquiries · avg ${avgPerDay}/day` : 'inquiries'}
+            </span>
+          </div>
+          {loading ? (
+            <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="a-loading" />
+            </div>
+          ) : (
+            <BarChart data={cByDay} color={CHART_COLOR} label="Inquiries" gradient simplifyAxis noYAxis />
+          )}
+        </div>
+
+        {/* Browser chart */}
+        {!loading && data && (
+          <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} />
+        )}
+      </div>
+
+      {/* ── Sessions + Device row ── */}
       {!loading && data && (
         <div className="an-sessions-row">
           <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
-          <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} />
+          <DeviceChart data={data.deviceByDay} days={days} periodLabel={periodLabel} />
         </div>
       )}
 
-      {/* ── Main body ── */}
+      {/* ── Main body: heatmap + top pages + summary ── */}
       <div className="an-body">
 
         <div className="an-main">
-
-          {/* Visitors chart */}
-          <div className="a-card an-chart-card">
-            <div className="an-chart-head">
-              <div>
-                <div className="an-chart-title">Visitors Overview</div>
-                <div className="an-chart-sub">Page views per day — dashed line is the previous period</div>
-              </div>
-              <div className="an-period-wrap">
-                <button className="an-period-btn" onClick={() => setOpen(o => !o)}>
-                  {periodLabel}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </button>
-                {open && (
-                  <div className="an-period-menu">
-                    {PERIODS.map(p => (
-                      <button key={p.days} className={`an-period-item${days === p.days ? ' active' : ''}`}
-                        onClick={() => { setDays(p.days); setOpen(false); }}>
-                        {p.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-            {loading ? (
-              <div style={{ height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div className="a-loading" />
-              </div>
-            ) : (
-              <AreaChart data={pvByDay} prevData={pvPrevByDay} color="#6366f1" label="Views" />
-            )}
-          </div>
-
-          {/* Heatmap + Top Pages side by side */}
           <div className="an-heat-pages">
             {loading ? (
               <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
@@ -1138,7 +1260,7 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
 
-        {/* Right sidebar */}
+        {/* Right sidebar: summary only */}
         <div className="an-sidebar">
           <div className="a-card an-summary">
             <div className="an-section-head">
@@ -1164,34 +1286,6 @@ export default function AdminAnalyticsPage() {
               </div>
             </div>
           </div>
-
-          <div className="a-card">
-            <div className="an-section-head">
-              <span className="an-section-title">Inquiries</span>
-              <span className="an-section-sub">{periodLabel}</span>
-            </div>
-            {loading ? (
-              <div style={{ padding: '1rem 0', textAlign: 'center' }}><div className="a-loading" /></div>
-            ) : (
-              <BarChart data={cByDay} color="#10b981" label="Inquiries" />
-            )}
-            <div className="an-contact-total">
-              <span>{data ? data.contacts.period : '—'} inquiries</span>
-              {cChange != null && (
-                <span className={`an-stat__change ${cChange >= 0 ? 'an-stat__change--up' : 'an-stat__change--down'}`}>
-                  <span className="an-stat__arrow">{cChange >= 0 ? '▲' : '▼'}</span>
-                  {cChange >= 0 ? '+' : ''}{cChange}% vs prev
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Device breakdown */}
-          {loading ? (
-            <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
-          ) : (
-            <DeviceChart data={data?.deviceByDay ?? []} days={days} periodLabel={periodLabel} />
-          )}
         </div>
 
       </div>
