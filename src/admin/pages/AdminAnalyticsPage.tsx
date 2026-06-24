@@ -561,8 +561,8 @@ function BarChart({
         <defs>
           {gradient && bars.map((_b, i) => (
             <linearGradient key={i} id={`bg-${i}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor={color} stopOpacity={tip?.index === i ? 1 : 0.85} />
-              <stop offset="100%" stopColor={color} stopOpacity="0" />
+              <stop offset="0%"   stopColor="#1a4a9e" stopOpacity={tip?.index === i ? 1 : 0.9} />
+              <stop offset="100%" stopColor="#0D215A" stopOpacity="0.15" />
             </linearGradient>
           ))}
         </defs>
@@ -974,7 +974,7 @@ const PERIODS = [
 
 /* ── Main Component ──────────────────────────────────────────── */
 
-const CHART_COLOR = '#d6613d';
+const CHART_COLOR = '#1a4a9e';
 
 export default function AdminAnalyticsPage() {
   const [days, setDays]       = useState(30);
