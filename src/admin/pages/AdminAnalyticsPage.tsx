@@ -323,8 +323,8 @@ function SessionsChart({ data, days, periodLabel }: { data: SessionsData; days: 
   const durChange = calcChange(data.avgDuration, data.prevAvgDuration);
 
   const chartData: Record<SessionTab, { cur: DayCount[]; prev: DayCount[]; label: string; color: string; fmt: (v: number) => string }> = {
-    users:    { cur: fillDays(data.byDay, days),       prev: fillDays(data.prevByDay, days, days),   label: 'Users',            color: '#6366f1', fmt: v => v.toLocaleString() },
-    sessions: { cur: fillDays(data.byDay, days),       prev: fillDays(data.prevByDay, days, days),   label: 'Sessions',         color: '#6366f1', fmt: v => v.toLocaleString() },
+    users:    { cur: fillDays(data.byDay, days),       prev: fillDays(data.prevByDay, days, days),   label: 'Users',            color: '#1a4a9e', fmt: v => v.toLocaleString() },
+    sessions: { cur: fillDays(data.byDay, days),       prev: fillDays(data.prevByDay, days, days),   label: 'Sessions',         color: '#1a4a9e', fmt: v => v.toLocaleString() },
     bounce:   { cur: fillDays(data.bounceByDay, days), prev: fillDays(data.bounceByDay, days, days), label: 'Bounce Rate',      color: '#f59e0b', fmt: v => v.toFixed(1) + '%' },
     duration: { cur: fillDays(data.durationByDay, days), prev: fillDays(data.durationByDay, days, days), label: 'Session Duration', color: '#10b981', fmt: fmtDuration },
   };
