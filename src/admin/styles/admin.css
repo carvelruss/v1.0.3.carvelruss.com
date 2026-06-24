@@ -15,6 +15,10 @@
   --adm-muted:       #64748B;
   --adm-muted-2:     #94A3B8;
 
+  --adm-accent:        #6366f1;
+  --adm-accent-dark:   #4f46e5;
+  --adm-accent-soft:   rgba(99,102,241,0.08);
+
   --adm-primary:       #1E4ED8;
   --adm-primary-dark:  #1638B8;
   --adm-primary-soft:  rgba(30,78,216,0.08);
@@ -1506,6 +1510,8 @@
 /* ── 33. LOGIN PAGE (al-* namespace) ───────────────────────── */
 .al-root {
   /* Mirror design tokens here — .admin-root vars don't cascade into .al-root */
+  --adm-accent:       #6366f1;
+  --adm-accent-dark:  #4f46e5;
   --adm-primary:      #1E4ED8;
   --adm-primary-dark: #1638B8;
   --adm-bg:           #F3F6FC;
