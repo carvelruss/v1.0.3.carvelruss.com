@@ -197,7 +197,7 @@ function AreaChart({
         onPointerDown={onPointerDown}
       >
         <defs>
-          <linearGradient id={`ac-${label}`} x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={`ac-${label.replace(/\s+/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={color} stopOpacity="0.18" />
             <stop offset="100%" stopColor={color} stopOpacity="0.01" />
           </linearGradient>
@@ -231,7 +231,7 @@ function AreaChart({
         )}
 
         {/* Area fill + current line */}
-        <path d={areaPath} fill={`url(#ac-${label})`} />
+        <path d={areaPath} fill={`url(#ac-${label.replace(/\s+/g, '-').toLowerCase()})`} />
         <path d={linePath} fill="none" stroke={color} strokeWidth="2"
           strokeLinejoin="round" strokeLinecap="round" />
 
