@@ -850,7 +850,7 @@
   .hs__content {
     align-items: center;
     text-align: center;
-    padding-right: 0;
+    padding-right: calc(var(--bs-gutter-x, 1.5rem) * .5);
   }
 
   .hs__subtitle { max-width: 560px; }
