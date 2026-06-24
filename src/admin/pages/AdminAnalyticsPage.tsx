@@ -632,12 +632,19 @@ export default function AdminAnalyticsPage() {
             )}
           </div>
 
-          {/* Top pages */}
-          {loading ? (
-            <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
-          ) : (
-            <TopPagesTable pages={data?.pageViews.topPages ?? []} periodLabel={periodLabel} />
-          )}
+          {/* Heatmap + Top Pages side by side */}
+          <div className="an-heat-pages">
+            {loading ? (
+              <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
+            ) : (
+              <ActivityHeatmap data={data?.heatmap ?? []} periodLabel={periodLabel} />
+            )}
+            {loading ? (
+              <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
+            ) : (
+              <TopPagesTable pages={data?.pageViews.topPages ?? []} periodLabel={periodLabel} />
+            )}
+          </div>
         </div>
 
         {/* Right sidebar */}
@@ -690,11 +697,6 @@ export default function AdminAnalyticsPage() {
         </div>
 
       </div>
-
-      {/* Activity Heatmap — full width */}
-      {!loading && data && (
-        <ActivityHeatmap data={data.heatmap} periodLabel={periodLabel} />
-      )}
 
     </AdminLayout>
   );
