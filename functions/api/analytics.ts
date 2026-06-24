@@ -23,7 +23,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       env.DB.prepare("SELECT COUNT(*) as n FROM page_views WHERE created_at >= datetime('now', ?) AND created_at < datetime('now', ?)").bind(prev, since).first<{ n: number }>(),
       env.DB.prepare("SELECT date(created_at) as date, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) GROUP BY date(created_at) ORDER BY date ASC").bind(since).all<DayCount>(),
       env.DB.prepare("SELECT date(created_at) as date, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) AND created_at < datetime('now', ?) GROUP BY date(created_at) ORDER BY date ASC").bind(prev, since).all<DayCount>(),
-      env.DB.prepare("SELECT path, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) GROUP BY path ORDER BY count DESC LIMIT 10").bind(since).all<{ path: string; count: number }>(),
+      env.DB.prepare("SELECT path, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) GROUP BY path ORDER BY count DESC LIMIT 100").bind(since).all<{ path: string; count: number }>(),
       env.DB.prepare("SELECT COUNT(DISTINCT path) as n FROM page_views WHERE created_at >= datetime('now', ?)").bind(since).first<{ n: number }>(),
       env.DB.prepare('SELECT COUNT(*) as n FROM inquiries').first<{ n: number }>(),
       env.DB.prepare("SELECT COUNT(*) as n FROM inquiries WHERE created_at >= datetime('now', ?)").bind(since).first<{ n: number }>(),

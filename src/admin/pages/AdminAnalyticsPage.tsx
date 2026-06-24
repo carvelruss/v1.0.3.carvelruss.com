@@ -323,6 +323,113 @@ function StatCard({
   );
 }
 
+/* ── Top Pages Table ─────────────────────────────────────────── */
+
+const TP_PAGE_SIZE = 8;
+
+function TopPagesTable({
+  pages, periodLabel,
+}: {
+  pages: { path: string; count: number }[];
+  periodLabel: string;
+}) {
+  const [search, setSearch]   = useState('');
+  const [page, setPage]       = useState(1);
+  const [sortCol, setSortCol] = useState<'path' | 'count'>('count');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
+  const filtered = pages
+    .filter(p => !search || p.path.toLowerCase().includes(search.toLowerCase()))
+    .slice()
+    .sort((a, b) => {
+      const mul = sortDir === 'asc' ? 1 : -1;
+      if (sortCol === 'count') return mul * (a.count - b.count);
+      return mul * a.path.localeCompare(b.path);
+    });
+
+  const total      = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / TP_PAGE_SIZE));
+  const safePage   = Math.min(page, totalPages);
+  const rows       = filtered.slice((safePage - 1) * TP_PAGE_SIZE, safePage * TP_PAGE_SIZE);
+  const start      = total === 0 ? 0 : (safePage - 1) * TP_PAGE_SIZE + 1;
+  const end        = Math.min(safePage * TP_PAGE_SIZE, total);
+
+  const toggleSort = (col: 'path' | 'count') => {
+    if (sortCol === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortCol(col); setSortDir('desc'); }
+    setPage(1);
+  };
+
+  const SortIcon = ({ col }: { col: 'path' | 'count' }) => (
+    <svg className={`tp-sort-icon${sortCol === col ? ' active' : ''}`} width="10" height="10" viewBox="0 0 10 14" fill="currentColor">
+      <path d="M5 0L9 5H1L5 0Z" opacity={sortCol === col && sortDir === 'asc' ? 1 : 0.35} />
+      <path d="M5 14L1 9H9L5 14Z" opacity={sortCol === col && sortDir === 'desc' ? 1 : 0.35} />
+    </svg>
+  );
+
+  return (
+    <div className="a-card tp-card">
+      <div className="tp-head">
+        <h3 className="tp-title">What are my top pages?<span className="tp-period">{periodLabel}</span></h3>
+        <div className="tp-search-wrap">
+          <input
+            className="tp-search"
+            type="search"
+            placeholder="Search…"
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+          />
+          <svg className="tp-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </div>
+      </div>
+
+      <div className="tp-table-wrap">
+        <table className="tp-table">
+          <thead>
+            <tr>
+              <th className="tp-th tp-th--path" onClick={() => toggleSort('path')}>
+                Page Path <SortIcon col="path" />
+              </th>
+              <th className="tp-th tp-th--num" onClick={() => toggleSort('count')}>
+                Page Views <SortIcon col="count" />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr><td colSpan={2} className="tp-empty">No pages match your search.</td></tr>
+            ) : rows.map(p => (
+              <tr key={p.path} className="tp-row">
+                <td className="tp-path">
+                  <a href={p.path || '/'} target="_blank" rel="noopener noreferrer">
+                    {p.path || '/'}
+                  </a>
+                </td>
+                <td className="tp-views">{p.count.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="tp-footer">
+        <span className="tp-count">{start} to {end} of {total}</span>
+        <div className="tp-pager">
+          <button className="tp-pager-btn" disabled={safePage <= 1} onClick={() => setPage(p => p - 1)}>
+            Previous
+          </button>
+          <button className="tp-pager-btn tp-pager-btn--primary" disabled={safePage >= totalPages} onClick={() => setPage(p => p + 1)}>
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Period selector ─────────────────────────────────────────── */
 
 const PERIODS = [
@@ -422,36 +529,11 @@ export default function AdminAnalyticsPage() {
           </div>
 
           {/* Top pages */}
-          <div className="a-card">
-            <div className="an-section-head">
-              <span className="an-section-title">Top Pages</span>
-              <span className="an-section-sub">{periodLabel}</span>
-            </div>
-            {loading ? (
-              <div style={{ padding: '1.5rem 0', textAlign: 'center' }}><div className="a-loading" /></div>
-            ) : !data || data.pageViews.topPages.length === 0 ? (
-              <div style={{ padding: '1.5rem 0', textAlign: 'center', color: 'var(--adm-muted)', fontSize: 13 }}>No page views recorded yet</div>
-            ) : (
-              <table className="an-pages-table">
-                <thead><tr><th>#</th><th>Page</th><th style={{ textAlign: 'right' }}>Views</th></tr></thead>
-                <tbody>
-                  {data.pageViews.topPages.map((p, i) => {
-                    const pct = Math.round((p.count / (data.pageViews.topPages[0]?.count ?? 1)) * 100);
-                    return (
-                      <tr key={p.path}>
-                        <td className="an-pages-rank">{i + 1}</td>
-                        <td>
-                          <div className="an-pages-path">{p.path || '/'}</div>
-                          <div className="an-pages-bar"><div className="an-pages-bar-fill" style={{ width: `${pct}%` }} /></div>
-                        </td>
-                        <td className="an-pages-count">{p.count.toLocaleString()}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
+          {loading ? (
+            <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
+          ) : (
+            <TopPagesTable pages={data?.pageViews.topPages ?? []} periodLabel={periodLabel} />
+          )}
         </div>
 
         {/* Right sidebar */}
