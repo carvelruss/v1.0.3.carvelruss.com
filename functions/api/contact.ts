@@ -67,6 +67,33 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       )
       .run();
 
+    // Send email notification (fire-and-forget — email failure never breaks form submission)
+    if (env.RESEND_API_KEY) {
+      const rows = [
+        `<p><strong>From:</strong> ${name.trim()} &lt;${email.trim()}&gt;</p>`,
+        subject?.trim() ? `<p><strong>Subject:</strong> ${subject.trim()}</p>` : '',
+        project_type?.trim() ? `<p><strong>Project type:</strong> ${project_type.trim()}</p>` : '',
+        budget_range?.trim() ? `<p><strong>Budget:</strong> ${budget_range.trim()}</p>` : '',
+        timeline?.trim() ? `<p><strong>Timeline:</strong> ${timeline.trim()}</p>` : '',
+        `<hr><p>${message.trim().replace(/\n/g, '<br>')}</p>`,
+      ].filter(Boolean).join('\n');
+
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Portfolio <inquiries@carvelruss.com>',
+          to: ['business.carvelruss@gmail.com', 'hello@carvelruss.com'],
+          reply_to: email.trim(),
+          subject: `New inquiry from ${name.trim()}`,
+          html: rows,
+        }),
+      }).catch(() => {});
+    }
+
     return json({ success: true, message: 'Your message has been received. I will get back to you soon!' });
   } catch {
     return err('Failed to submit message. Please try again later.', 500);

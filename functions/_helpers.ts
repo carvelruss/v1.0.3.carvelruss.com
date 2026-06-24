@@ -20,6 +20,7 @@ export interface Env {
   ADMIN_PASSWORD: string;
   JWT_SECRET: string;
   TURNSTILE_SECRET: string;
+  RESEND_API_KEY?: string;
 }
 
 export function json(data: unknown, status = 200): Response {
