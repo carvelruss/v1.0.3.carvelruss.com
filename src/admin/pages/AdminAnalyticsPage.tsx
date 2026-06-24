@@ -424,25 +424,77 @@ function SessionsChart({ data, days, periodLabel }: { data: SessionsData; days: 
 
 /* ── Browser Chart ───────────────────────────────────────────── */
 
-const BROWSER_COLORS = ['#6366f1', '#38bdf8', '#10b981', '#f59e0b', '#f43f5e', '#94a3b8'];
+const BROWSER_COLORS = ['#4285f4', '#1C84F1', '#FF7139', '#0078D4', '#1428A0', '#94a3b8'];
+
+function BrowserIcon({ name }: { name: string }) {
+  const b = name.toLowerCase();
+  if (b === 'chrome') return (
+    <svg width="22" height="22" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="12" fill="#4285F4"/>
+      <path d="M12,12 L12,0.6 A11.4,11.4 0 0 1 22.3,6.3 Z" fill="#EA4335"/>
+      <path d="M12,12 L22.3,6.3 A11.4,11.4 0 0 1 22.3,17.7 Z" fill="#FBBC05"/>
+      <path d="M12,12 L22.3,17.7 A11.4,11.4 0 0 1 1.7,17.7 Z" fill="#34A853"/>
+      <path d="M12,12 L1.7,6.3 A11.4,11.4 0 0 1 12,0.6 Z" fill="#EA4335"/>
+      <circle cx="12" cy="12" r="5.2" fill="white"/>
+      <circle cx="12" cy="12" r="4.5" fill="#4285F4"/>
+    </svg>
+  );
+  if (b === 'safari') return (
+    <svg width="22" height="22" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="12" fill="#1C84F1"/>
+      <circle cx="12" cy="12" r="10.5" fill="white"/>
+      <circle cx="12" cy="12" r="9.5" fill="#1C84F1"/>
+      <line x1="12" y1="3.5" x2="12" y2="20.5" stroke="rgba(255,255,255,.25)" strokeWidth=".7"/>
+      <line x1="3.5" y1="12" x2="20.5" y2="12" stroke="rgba(255,255,255,.25)" strokeWidth=".7"/>
+      <polygon points="12,5 10.5,12.2 12,11.2 13.5,12.2" fill="white"/>
+      <polygon points="12,19 13.5,11.8 12,12.8 10.5,11.8" fill="#FF3B30"/>
+    </svg>
+  );
+  if (b === 'firefox' || b === 'mozilla') return (
+    <svg width="22" height="22" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="12" fill="#FF7139"/>
+      <circle cx="12" cy="12" r="8" fill="#FF980E"/>
+      <circle cx="12" cy="12" r="5" fill="#FF7139"/>
+      <circle cx="12" cy="12" r="2.5" fill="#FF980E"/>
+    </svg>
+  );
+  if (b === 'edge') return (
+    <svg width="22" height="22" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="12" fill="#0078D4"/>
+      <text x="12" y="17" textAnchor="middle" fill="white" fontSize="13" fontWeight="bold" fontFamily="sans-serif">e</text>
+    </svg>
+  );
+  if (b === 'samsung') return (
+    <svg width="22" height="22" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="12" fill="#1428A0"/>
+      <text x="12" y="16.5" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="sans-serif">S</text>
+    </svg>
+  );
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="12" fill="#94A3B8"/>
+      <circle cx="12" cy="12" r="5.5" fill="white" fillOpacity=".5"/>
+    </svg>
+  );
+}
 
 function BrowserChart({
-  current, previous,
+  current, previous, periodLabel,
 }: {
-  current:  { browser: string; count: number }[];
-  previous: { browser: string; count: number }[];
+  current:     { browser: string; count: number }[];
+  previous:    { browser: string; count: number }[];
+  periodLabel: string;
 }) {
-  const total  = current.reduce((s, b) => s + b.count, 0) || 1;
+  const total   = current.reduce((s, b) => s + b.count, 0) || 1;
   const prevMap = new Map(previous.map(b => [b.browser, b.count]));
 
-  const R = 54; const CX = 80; const CY = 80;
+  const R = 66; const CX = 90; const CY = 90;
   const CIRC = 2 * Math.PI * R;
 
-  // Build donut segments
   let cumLen = 0;
-  const segments = current.map((b, i) => {
+  const segments = current.slice(0, 5).map((b, i) => {
     const pct = b.count / total;
-    const len = Math.max(0, pct * CIRC - 2);
+    const len = Math.max(0, pct * CIRC - 3);
     const seg = { ...b, color: BROWSER_COLORS[i % BROWSER_COLORS.length]!, len, offset: cumLen };
     cumLen += pct * CIRC;
     return seg;
@@ -450,15 +502,17 @@ function BrowserChart({
 
   return (
     <div className="a-card bc-card">
-      <div className="bc-title">Session by Browser</div>
+      <div className="bc-head">
+        <span className="bc-title">Session by Browser</span>
+        <button className="bc-more" title="Options">···</button>
+      </div>
 
-      {/* Donut */}
       <div className="bc-donut-wrap">
-        <svg viewBox="0 0 160 160" className="bc-svg">
-          <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f1f5f9" strokeWidth="14" />
+        <svg viewBox="0 0 180 180" className="bc-svg">
+          <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f1f5f9" strokeWidth="18" />
           {segments.map((seg, i) => (
             <circle key={i} cx={CX} cy={CY} r={R} fill="none"
-              stroke={seg.color} strokeWidth="14"
+              stroke={seg.color} strokeWidth="18"
               strokeDasharray={`${seg.len} ${CIRC - seg.len}`}
               strokeDashoffset={-seg.offset}
               transform={`rotate(-90 ${CX} ${CY})`}
@@ -467,25 +521,37 @@ function BrowserChart({
         </svg>
       </div>
 
-      {/* Legend rows */}
       <div className="bc-list">
-        {current.slice(0, 5).map((b, i) => {
+        {current.slice(0, 4).map((b, i) => {
           const pct    = ((b.count / total) * 100).toFixed(1);
           const prev   = prevMap.get(b.browser) ?? 0;
-          const change = prev > 0 ? Math.round(((b.count - prev) / prev) * 100) : null;
+          const change = prev > 0 ? ((b.count - prev) / prev * 100) : null;
           return (
             <div key={b.browser} className="bc-row">
-              <span className="bc-dot" style={{ background: BROWSER_COLORS[i % BROWSER_COLORS.length] }} />
-              <span className="bc-name">{b.browser}</span>
-              <span className="bc-pct">{pct}%</span>
+              <div className="bc-name-col">
+                <BrowserIcon name={b.browser} />
+                <span className="bc-name">{b.browser}</span>
+              </div>
+              <div className="bc-pct-col">
+                <span className="bc-dot" style={{ background: BROWSER_COLORS[i % BROWSER_COLORS.length] }} />
+                <span className="bc-pct">{pct}%</span>
+              </div>
               {change != null && (
                 <span className={`bc-change ${change >= 0 ? 'bc-change--up' : 'bc-change--down'}`}>
-                  {change >= 0 ? '▲' : '▼'} {Math.abs(change)}%
+                  {change >= 0 ? '▲' : '▼'} {Math.abs(change).toFixed(1)}%
                 </span>
               )}
             </div>
           );
         })}
+      </div>
+
+      <div className="bc-footer">
+        <span className="bc-footer__period">
+          {periodLabel}
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <a href="/admin/analytics" className="bc-footer__link">Browser Overview ›</a>
       </div>
     </div>
   );
@@ -896,7 +962,7 @@ export default function AdminAnalyticsPage() {
       {!loading && data && (
         <div className="an-sessions-row">
           <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
-          <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} />
+          <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} periodLabel={periodLabel} />
         </div>
       )}
 
