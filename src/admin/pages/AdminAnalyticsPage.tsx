@@ -375,56 +375,21 @@ function SessionsChart({ data, days, periodLabel }: { data: SessionsData; days: 
 
 const BROWSER_COLORS = ['#4285f4', '#1C84F1', '#FF7139', '#0078D4', '#1428A0', '#94a3b8'];
 
+const BROWSER_LOGO: Record<string, string> = {
+  chrome:  '/browsers-logo/chrome.png',
+  safari:  '/browsers-logo/safari.png',
+  edge:    '/browsers-logo/edge.png',
+  brave:   '/browsers-logo/brave.png',
+  other:   '/browsers-logo/other.png',
+  firefox: '/browsers-logo/other.png',
+  mozilla: '/browsers-logo/other.png',
+  samsung: '/browsers-logo/other.png',
+};
+
 function BrowserIcon({ name }: { name: string }) {
-  const b = name.toLowerCase();
-  if (b === 'chrome') return (
-    <svg width="22" height="22" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="12" fill="#4285F4"/>
-      <path d="M12,12 L12,0.6 A11.4,11.4 0 0 1 22.3,6.3 Z" fill="#EA4335"/>
-      <path d="M12,12 L22.3,6.3 A11.4,11.4 0 0 1 22.3,17.7 Z" fill="#FBBC05"/>
-      <path d="M12,12 L22.3,17.7 A11.4,11.4 0 0 1 1.7,17.7 Z" fill="#34A853"/>
-      <path d="M12,12 L1.7,6.3 A11.4,11.4 0 0 1 12,0.6 Z" fill="#EA4335"/>
-      <circle cx="12" cy="12" r="5.2" fill="white"/>
-      <circle cx="12" cy="12" r="4.5" fill="#4285F4"/>
-    </svg>
-  );
-  if (b === 'safari') return (
-    <svg width="22" height="22" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="12" fill="#1C84F1"/>
-      <circle cx="12" cy="12" r="10.5" fill="white"/>
-      <circle cx="12" cy="12" r="9.5" fill="#1C84F1"/>
-      <line x1="12" y1="3.5" x2="12" y2="20.5" stroke="rgba(255,255,255,.25)" strokeWidth=".7"/>
-      <line x1="3.5" y1="12" x2="20.5" y2="12" stroke="rgba(255,255,255,.25)" strokeWidth=".7"/>
-      <polygon points="12,5 10.5,12.2 12,11.2 13.5,12.2" fill="white"/>
-      <polygon points="12,19 13.5,11.8 12,12.8 10.5,11.8" fill="#FF3B30"/>
-    </svg>
-  );
-  if (b === 'firefox' || b === 'mozilla') return (
-    <svg width="22" height="22" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="12" fill="#FF7139"/>
-      <circle cx="12" cy="12" r="8" fill="#FF980E"/>
-      <circle cx="12" cy="12" r="5" fill="#FF7139"/>
-      <circle cx="12" cy="12" r="2.5" fill="#FF980E"/>
-    </svg>
-  );
-  if (b === 'edge') return (
-    <svg width="22" height="22" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="12" fill="#0078D4"/>
-      <text x="12" y="17" textAnchor="middle" fill="white" fontSize="13" fontWeight="bold" fontFamily="sans-serif">e</text>
-    </svg>
-  );
-  if (b === 'samsung') return (
-    <svg width="22" height="22" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="12" fill="#1428A0"/>
-      <text x="12" y="16.5" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="sans-serif">S</text>
-    </svg>
-  );
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="12" fill="#94A3B8"/>
-      <circle cx="12" cy="12" r="5.5" fill="white" fillOpacity=".5"/>
-    </svg>
-  );
+  const key = name.toLowerCase();
+  const src = BROWSER_LOGO[key] ?? BROWSER_LOGO['other']!;
+  return <img src={src} alt={name} width={22} height={22} style={{ borderRadius: '50%', objectFit: 'contain', display: 'block', flexShrink: 0 }} />;
 }
 
 function BrowserChart({
