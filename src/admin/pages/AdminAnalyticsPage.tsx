@@ -548,6 +548,132 @@ function BrowserChart({
   );
 }
 
+/* ── Bar Chart ───────────────────────────────────────────────── */
+
+function BarChart({
+  data, color = '#6366f1', label = 'Count',
+}: {
+  data:   DayCount[];
+  color?: string;
+  label?: string;
+}) {
+  const containerRef  = useRef<HTMLDivElement>(null);
+  const svgRef        = useRef<SVGSVGElement>(null);
+  const [tip, setTip] = useState<TooltipState | null>(null);
+
+  const W = 800; const H = 220;
+  const PAD = { top: 16, right: 16, bottom: 32, left: 44 };
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+
+  const max     = Math.max(...data.map(d => d.count), 1);
+  const niceMax = Math.ceil(max / 5) * 5 || 5;
+
+  const n         = data.length || 1;
+  const slotW     = cW / n;
+  const gap       = Math.max(1, Math.round(slotW * 0.2));
+  const barW      = Math.max(2, slotW - gap);
+  const showEvery = n <= 7 ? 1 : n <= 30 ? 5 : 10;
+
+  const bars = data.map((d, i) => {
+    const x  = PAD.left + i * slotW + gap / 2;
+    const bH = Math.max(2, (d.count / niceMax) * cH);
+    const y  = PAD.top + cH - bH;
+    return { ...d, x, y, bH, cx: x + barW / 2 };
+  });
+
+  const findIdx = useCallback((clientX: number) => {
+    const svg = svgRef.current;
+    if (!svg) return -1;
+    const rect = svg.getBoundingClientRect();
+    const svgX = ((clientX - rect.left) / rect.width) * W;
+    return Math.max(0, Math.min(n - 1, Math.floor((svgX - PAD.left) / slotW)));
+  }, [n, slotW]);
+
+  const showTip = useCallback((clientX: number, _clientY: number) => {
+    const svg = svgRef.current;
+    const container = containerRef.current;
+    if (!svg || !container || data.length === 0) return;
+    const idx = findIdx(clientX);
+    const b   = bars[idx];
+    if (!b) return;
+    const svgRect = svg.getBoundingClientRect();
+    const ctnRect = container.getBoundingClientRect();
+    const pxX = ((b.cx / W) * svgRect.width) + (svgRect.left - ctnRect.left);
+    const pxY = ((b.y / H) * svgRect.height) + (svgRect.top - ctnRect.top);
+    const flip = pxX > ctnRect.width * 0.65;
+    setTip({ index: idx, pxLeft: pxX, pxTop: pxY, flip });
+  }, [data, bars, findIdx]);
+
+  const onPointerMove  = useCallback((e: React.PointerEvent<SVGSVGElement>) => showTip(e.clientX, e.clientY), [showTip]);
+  const onPointerLeave = useCallback(() => setTip(null), []);
+  const onPointerDown  = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+    if (e.pointerType !== 'mouse') showTip(e.clientX, e.clientY);
+  }, [showTip]);
+
+  if (data.length === 0) return (
+    <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--adm-muted)', fontSize: 13 }}>
+      No data for this period
+    </div>
+  );
+
+  const tipD = tip != null ? data[tip.index] : null;
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative', userSelect: 'none' }}>
+      <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`}
+        style={{ width: '100%', height: 'auto', overflow: 'visible', cursor: 'crosshair' }}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        onPointerDown={onPointerDown}
+      >
+        {/* Y-axis grid + labels */}
+        {Array.from({ length: 6 }, (_, i) => {
+          const frac = i / 5;
+          const y    = PAD.top + frac * cH;
+          const val  = Math.round(niceMax * (1 - frac));
+          return (
+            <g key={i}>
+              <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
+                stroke="#e2e8f0" strokeWidth="1" strokeDasharray={i === 5 ? '0' : '4 3'} />
+              <text x={PAD.left - 8} y={y + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
+                {fmtNum(val)}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Bars */}
+        {bars.map((b, i) => (
+          <rect key={i} x={b.x} y={b.y} width={barW} height={b.bH} rx="3" ry="3"
+            fill={tip?.index === i ? color : `${color}55`}
+          />
+        ))}
+
+        {/* X-axis labels */}
+        {bars.map((b, i) => i % showEvery === 0 && (
+          <text key={i} x={b.cx} y={H - 4} textAnchor="middle" fontSize="10" fill="#94a3b8">
+            {fmtDate(b.date)}
+          </text>
+        ))}
+      </svg>
+
+      {tip != null && tipD && (
+        <div className="an-tip" style={{
+          position:  'absolute',
+          top:       tip.pxTop - 8,
+          ...(tip.flip
+            ? { right: `calc(100% - ${tip.pxLeft}px + 12px)` }
+            : { left: tip.pxLeft + 12 }),
+        }}>
+          <div className="an-tip__date">{tipD.date}</div>
+          <div className="an-tip__val">{label}: <strong>{tipD.count}</strong></div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Device Chart ────────────────────────────────────────────── */
 
 const DEVICES = [
@@ -928,7 +1054,6 @@ export default function AdminAnalyticsPage() {
   const pvByDay     = data ? fillDays(data.pageViews.byDay,    days, 0)    : [];
   const pvPrevByDay = data ? fillDays(data.pageViews.prevByDay, days, days) : [];
   const cByDay      = data ? fillDays(data.contacts.byDay,     days, 0)    : [];
-  const cPrevByDay  = data ? fillDays(data.contacts.prevByDay,  days, days) : [];
 
   const pvChange = data ? calcChange(data.pageViews.period, data.pageViews.prevPeriod) : null;
   const cChange  = data ? calcChange(data.contacts.period,  data.contacts.prevPeriod)  : null;
@@ -1048,7 +1173,7 @@ export default function AdminAnalyticsPage() {
             {loading ? (
               <div style={{ padding: '1rem 0', textAlign: 'center' }}><div className="a-loading" /></div>
             ) : (
-              <AreaChart data={cByDay} prevData={cPrevByDay} color="#10b981" label="Inquiries" />
+              <BarChart data={cByDay} color="#10b981" label="Inquiries" />
             )}
             <div className="an-contact-total">
               <span>{data ? data.contacts.period : '—'} inquiries</span>
