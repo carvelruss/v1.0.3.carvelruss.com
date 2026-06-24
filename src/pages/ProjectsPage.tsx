@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
 import CaseStudiesHero from '../components/public/CaseStudiesHero';
 import CaseStudiesSection from '../components/public/CaseStudiesSection';
+import { usePageMeta } from '../lib/usePageMeta';
 
 export default function ProjectsPage() {
-  useEffect(() => {
-    document.title = 'Case Studies | Carvel Russ';
-  }, []);
+  usePageMeta(
+    'Case Studies | Carvel Russ',
+    'Explore UI/UX design and development case studies by Carvel Russ — real projects with real results.',
+    '/case-studies'
+  );
 
   return (
     <>
