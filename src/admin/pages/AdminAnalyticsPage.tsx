@@ -6,7 +6,8 @@ import { api } from '../../lib/api';
 
 interface DayCount { date: string; count: number }
 
-interface HeatCell { day: number; hour: number; count: number }
+interface HeatCell   { day: number; hour: number; count: number }
+interface DeviceRow  { date: string; device_type: string; count: number }
 
 interface AnalyticsData {
   days: number;
@@ -26,7 +27,8 @@ interface AnalyticsData {
     byDay:      DayCount[];
     prevByDay:  DayCount[];
   };
-  heatmap: HeatCell[];
+  heatmap:     HeatCell[];
+  deviceByDay: DeviceRow[];
 }
 
 /* ── Helpers ─────────────────────────────────────────────────── */
@@ -322,6 +324,134 @@ function StatCard({
         </div>
         {sparkData && <Sparkline data={sparkData} color={color} />}
       </div>
+    </div>
+  );
+}
+
+/* ── Device Chart ────────────────────────────────────────────── */
+
+const DEVICES = [
+  { key: 'mobile',  label: 'Mobile',  color: '#6366f1' },
+  { key: 'desktop', label: 'Desktop', color: '#10b981' },
+  { key: 'tablet',  label: 'Tablet',  color: '#38bdf8' },
+] as const;
+
+function DeviceChart({ data, days, periodLabel }: { data: DeviceRow[]; days: number; periodLabel: string }) {
+  const [tip, setTip] = useState<{ x: number; y: number; dateLabel: string; vals: Record<string, number> } | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  // Build per-device day arrays
+  const series = DEVICES.map(d => {
+    const map = new Map<string, number>();
+    data.filter(r => r.device_type === d.key).forEach(r => map.set(r.date, r.count));
+    return fillDays(
+      Array.from(map.entries()).map(([date, count]) => ({ date, count })),
+      days,
+    );
+  });
+
+  const totals = DEVICES.map((_d, i) =>
+    series[i]!.reduce((s, r) => s + r.count, 0)
+  );
+
+  const allCounts = series.flatMap(s => s.map(r => r.count));
+  const maxVal = Math.max(...allCounts, 1);
+  const W = 500; const H = 180; const PAD_L = 8; const PAD_R = 40; const PAD_T = 10; const PAD_B = 24;
+  const cW = W - PAD_L - PAD_R;
+  const cH = H - PAD_T - PAD_B;
+  const n = series[0]!.length;
+
+  const xPos = (i: number) => PAD_L + (i / Math.max(n - 1, 1)) * cW;
+  const yPos = (v: number) => PAD_T + (1 - v / maxVal) * cH;
+
+  const linePath = (pts: DayCount[]) =>
+    pts.map((d, i) => `${i === 0 ? 'M' : 'L'}${xPos(i).toFixed(1)},${yPos(d.count).toFixed(1)}`).join(' ');
+
+  // Y-axis ticks (4 steps)
+  const yTicks = [0, 0.25, 0.5, 0.75, 1].map(r => Math.round(r * maxVal));
+
+  // X-axis labels (first, middle, last)
+  const xLabels = n < 2 ? [] : [0, Math.floor((n - 1) / 2), n - 1].map(i => ({
+    i, label: fmtDate(series[0]![i]!.date),
+  }));
+
+  const handlePointer = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const relX = (e.clientX - rect.left) / rect.width * W;
+    const idx = Math.max(0, Math.min(n - 1, Math.round((relX - PAD_L) / cW * (n - 1))));
+    const vals: Record<string, number> = {};
+    DEVICES.forEach((d, di) => { vals[d.key] = series[di]![idx]!.count; });
+    setTip({ x: e.clientX, y: e.clientY, dateLabel: fmtDate(series[0]![idx]!.date), vals });
+  }, [series, n, cW]);
+
+  return (
+    <div className="a-card dvc-card">
+      <div className="dvc-head">
+        <div className="dvc-title">Active Users by Device</div>
+        <div className="dvc-sub">{periodLabel}</div>
+      </div>
+
+      <div className="dvc-legend">
+        {DEVICES.map((d, i) => (
+          <div key={d.key} className="dvc-legend-item">
+            <span className="dvc-dot" style={{ background: d.color }} />
+            <span className="dvc-legend-label">{d.label}</span>
+            <span className="dvc-legend-val">{totals[i]!.toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="dvc-chart-wrap">
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="none"
+          className="dvc-svg"
+          onPointerMove={handlePointer}
+          onPointerLeave={() => setTip(null)}
+        >
+          {/* Y grid lines */}
+          {yTicks.map(v => (
+            <line key={v} x1={PAD_L} x2={W - PAD_R} y1={yPos(v)} y2={yPos(v)}
+              stroke="#e2e8f0" strokeWidth="1" />
+          ))}
+
+          {/* Lines */}
+          {DEVICES.map((d, i) => (
+            <path key={d.key} d={linePath(series[i]!)} fill="none"
+              stroke={d.color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+          ))}
+
+          {/* Y-axis labels */}
+          {yTicks.map(v => (
+            <text key={v} x={W - PAD_R + 4} y={yPos(v) + 4}
+              fontSize="9" fill="#94a3b8" textAnchor="start">
+              {v >= 1000 ? Math.round(v / 1000) + 'k' : v}
+            </text>
+          ))}
+
+          {/* X-axis labels */}
+          {xLabels.map(({ i, label }) => (
+            <text key={i} x={xPos(i)} y={H - 4}
+              fontSize="9" fill="#94a3b8" textAnchor={i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}>
+              {label}
+            </text>
+          ))}
+        </svg>
+      </div>
+
+      {tip && (
+        <div className="hm-tooltip" style={{ left: tip.x + 14, top: tip.y + 14 }}>
+          <strong>{tip.dateLabel}</strong>
+          {DEVICES.map(d => (
+            <span key={d.key} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: d.color, flexShrink: 0 }} />
+              {d.label}: {tip.vals[d.key]!.toLocaleString()}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -694,6 +824,13 @@ export default function AdminAnalyticsPage() {
               )}
             </div>
           </div>
+
+          {/* Device breakdown */}
+          {loading ? (
+            <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
+          ) : (
+            <DeviceChart data={data?.deviceByDay ?? []} days={days} periodLabel={periodLabel} />
+          )}
         </div>
 
       </div>

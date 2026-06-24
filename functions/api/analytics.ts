@@ -2,8 +2,9 @@
 
 import { type Env, json, err, isAdmin } from '../_helpers';
 
-interface DayCount { date: string; count: number }
-interface HeatCell { day: number; hour: number; count: number }
+interface DayCount  { date: string; count: number }
+interface HeatCell  { day: number; hour: number; count: number }
+interface DeviceRow { date: string; device_type: string; count: number }
 
 // GET /api/analytics?days=30 — admin only
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
@@ -18,7 +19,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     const [
       pvTotal, pvPeriod, pvPrev, pvByDay, pvPrevByDay, pvTopPages, pvUnique,
       cTotal, cPeriod, cPrev, cByDay, cPrevByDay,
-      heatmap,
+      heatmap, deviceByDay,
     ] = await Promise.all([
       env.DB.prepare('SELECT COUNT(*) as n FROM page_views').first<{ n: number }>(),
       env.DB.prepare("SELECT COUNT(*) as n FROM page_views WHERE created_at >= datetime('now', ?)").bind(since).first<{ n: number }>(),
@@ -33,6 +34,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       env.DB.prepare("SELECT date(created_at) as date, COUNT(*) as count FROM inquiries WHERE created_at >= datetime('now', ?) GROUP BY date(created_at) ORDER BY date ASC").bind(since).all<DayCount>(),
       env.DB.prepare("SELECT date(created_at) as date, COUNT(*) as count FROM inquiries WHERE created_at >= datetime('now', ?) AND created_at < datetime('now', ?) GROUP BY date(created_at) ORDER BY date ASC").bind(prev, since).all<DayCount>(),
       env.DB.prepare("SELECT CAST(strftime('%w', created_at) AS INTEGER) as day, CAST(strftime('%H', created_at) AS INTEGER) as hour, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) GROUP BY day, hour").bind(since).all<HeatCell>(),
+      env.DB.prepare("SELECT date(created_at) as date, device_type, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) GROUP BY date(created_at), device_type ORDER BY date ASC").bind(since).all<DeviceRow>(),
     ]);
 
     return json({
@@ -53,7 +55,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
         byDay:        cByDay.results      ?? [],
         prevByDay:    cPrevByDay.results  ?? [],
       },
-      heatmap: heatmap.results ?? [],
+      heatmap:     heatmap.results     ?? [],
+      deviceByDay: deviceByDay.results ?? [],
     });
   } catch {
     return err('Failed to fetch analytics', 500);
