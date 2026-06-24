@@ -4,3 +4,4 @@ dist/
 .env.local
 .wrangler/
 *.log
+calm-aegis-500412-h2-43de97a4291f.json
