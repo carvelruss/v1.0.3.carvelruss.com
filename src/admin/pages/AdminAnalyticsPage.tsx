@@ -380,6 +380,7 @@ const BROWSER_LOGO: Record<string, string> = {
   safari:  '/browsers-logo/safari.png',
   edge:    '/browsers-logo/edge.png',
   brave:   '/browsers-logo/brave.png',
+  opera:   '/browsers-logo/opera.png',
   other:   '/browsers-logo/other.png',
   firefox: '/browsers-logo/other.png',
   mozilla: '/browsers-logo/other.png',
