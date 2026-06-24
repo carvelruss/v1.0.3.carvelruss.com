@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { api } from '../../lib/api';
 
@@ -14,6 +14,7 @@ interface AnalyticsData {
     prevPeriod: number;
     unique:     number;
     byDay:      DayCount[];
+    prevByDay:  DayCount[];
     topPages:   { path: string; count: number }[];
   };
   contacts: {
@@ -21,18 +22,19 @@ interface AnalyticsData {
     period:     number;
     prevPeriod: number;
     byDay:      DayCount[];
+    prevByDay:  DayCount[];
   };
 }
 
 /* ── Helpers ─────────────────────────────────────────────────── */
 
-function fillDays(data: DayCount[], days: number): DayCount[] {
+function fillDays(data: DayCount[], days: number, offsetDays = 0): DayCount[] {
   const map = new Map(data.map(d => [d.date, d.count]));
   const out: DayCount[] = [];
   const now = new Date();
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(now);
-    d.setDate(d.getDate() - i);
+    d.setDate(d.getDate() - i - offsetDays);
     const key = d.toISOString().split('T')[0];
     out.push({ date: key, count: map.get(key) ?? 0 });
   }
@@ -45,10 +47,8 @@ function fmtNum(n: number): string {
   return n.toString();
 }
 
-function fmtDate(iso: string, short = false) {
-  return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', short
-    ? { month: 'short', day: 'numeric' }
-    : { month: 'short', day: 'numeric' });
+function fmtDate(iso: string) {
+  return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 function calcChange(cur: number, prev: number): number | null {
@@ -56,7 +56,7 @@ function calcChange(cur: number, prev: number): number | null {
   return Math.round(((cur - prev) / prev) * 100);
 }
 
-/* ── Sparkline (mini SVG line) ───────────────────────────────── */
+/* ── Sparkline ───────────────────────────────────────────────── */
 
 function Sparkline({ data, color }: { data: DayCount[]; color: string }) {
   if (data.length < 2) return null;
@@ -66,94 +66,230 @@ function Sparkline({ data, color }: { data: DayCount[]; color: string }) {
     (i / (data.length - 1)) * W,
     H - (d.count / max) * H,
   ]);
-  const path = pts.map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+  const path = pts.map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x!.toFixed(1)},${y!.toFixed(1)}`).join(' ');
   const area = `${path} L${W},${H} L0,${H} Z`;
+  const id = `sg-${color.replace(/[^a-z0-9]/gi, '')}`;
   return (
-    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ overflow: 'visible' }}>
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ overflow: 'visible', flexShrink: 0 }}>
       <defs>
-        <linearGradient id={`sg-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.25" />
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d={area} fill={`url(#sg-${color.replace('#', '')})`} />
+      <path d={area} fill={`url(#${id})`} />
       <path d={path} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   );
 }
 
-/* ── Area Line Chart ─────────────────────────────────────────── */
+/* ── Area Chart with interactive tooltip ────────────────────── */
 
-function AreaChart({ data, color = '#6366f1' }: { data: DayCount[]; color?: string }) {
+interface TooltipState {
+  index: number;
+  pxLeft: number;
+  pxTop: number;
+  flip: boolean;
+}
+
+function AreaChart({
+  data, prevData, color = '#6366f1', label = 'Views',
+}: {
+  data: DayCount[];
+  prevData?: DayCount[];
+  color?: string;
+  label?: string;
+}) {
+  const containerRef  = useRef<HTMLDivElement>(null);
+  const svgRef        = useRef<SVGSVGElement>(null);
+  const [tip, setTip] = useState<TooltipState | null>(null);
+
+  const W = 800; const H = 220;
+  const PAD = { top: 16, right: 16, bottom: 32, left: 44 };
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+
+  const max     = Math.max(...(data.map(d => d.count)), ...(prevData?.map(d => d.count) ?? []), 1);
+  const niceMax = Math.ceil(max / 5) * 5 || 5;
+
+  const pts = data.map((d, i) => ({
+    svgX: PAD.left + (data.length > 1 ? (i / (data.length - 1)) * cW : cW / 2),
+    svgY: PAD.top + cH - (d.count / niceMax) * cH,
+    ...d,
+  }));
+
+  const prevPts = prevData?.map((d, i) => ({
+    svgX: PAD.left + (prevData.length > 1 ? (i / (prevData.length - 1)) * cW : cW / 2),
+    svgY: PAD.top + cH - (d.count / niceMax) * cH,
+    ...d,
+  }));
+
+  const linePath = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.svgX.toFixed(1)},${p.svgY.toFixed(1)}`).join(' ');
+  const areaPath = pts.length
+    ? `${linePath} L${pts[pts.length - 1].svgX.toFixed(1)},${(PAD.top + cH).toFixed(1)} L${pts[0].svgX.toFixed(1)},${(PAD.top + cH).toFixed(1)} Z`
+    : '';
+
+  const prevLinePath = prevPts && prevPts.length
+    ? prevPts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.svgX.toFixed(1)},${p.svgY.toFixed(1)}`).join(' ')
+    : null;
+
+  const showEvery = data.length <= 7 ? 1 : data.length <= 30 ? 5 : 10;
+
+  const getSvgX = useCallback((clientX: number) => {
+    const svg = svgRef.current;
+    if (!svg) return null;
+    const rect = svg.getBoundingClientRect();
+    const ratioX = (clientX - rect.left) / rect.width;
+    return ratioX * W;
+  }, []);
+
+  const findIndex = useCallback((svgX: number) => {
+    if (data.length === 0) return -1;
+    const fraction = (svgX - PAD.left) / cW;
+    return Math.max(0, Math.min(data.length - 1, Math.round(fraction * (data.length - 1))));
+  }, [data.length, cW]);
+
+  const showTip = useCallback((clientX: number, _clientY: number) => {
+    const svg = svgRef.current;
+    const container = containerRef.current;
+    if (!svg || !container || data.length === 0) return;
+
+    const svgX = getSvgX(clientX);
+    if (svgX === null) return;
+    const idx = findIndex(svgX);
+    const svgRect = svg.getBoundingClientRect();
+    const ctnRect = container.getBoundingClientRect();
+
+    // Convert hovered point SVG coords → pixel coords relative to container
+    const pt = pts[idx];
+    const pxX = ((pt.svgX / W) * svgRect.width) + (svgRect.left - ctnRect.left);
+    const pxY = ((pt.svgY / H) * svgRect.height) + (svgRect.top - ctnRect.top);
+
+    const flip = pxX > ctnRect.width * 0.65;
+    setTip({ index: idx, pxLeft: pxX, pxTop: pxY, flip });
+  }, [data, pts, getSvgX, findIndex]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+    showTip(e.clientX, e.clientY);
+  }, [showTip]);
+
+  const onPointerLeave = useCallback(() => setTip(null), []);
+
+  const onPointerDown = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+    if (e.pointerType !== 'mouse') showTip(e.clientX, e.clientY);
+  }, [showTip]);
+
   if (data.length === 0) return (
     <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--adm-muted)', fontSize: 13 }}>
       No data for this period
     </div>
   );
 
-  const W = 800; const H = 220;
-  const PAD = { top: 16, right: 16, bottom: 32, left: 44 };
-  const cW = W - PAD.left - PAD.right;
-  const cH = H - PAD.top - PAD.bottom;
-  const max = Math.max(...data.map(d => d.count), 1);
-  const niceMax = Math.ceil(max / 5) * 5 || 5;
-
-  const pts = data.map((d, i) => ({
-    x: PAD.left + (data.length > 1 ? (i / (data.length - 1)) * cW : cW / 2),
-    y: PAD.top + cH - (d.count / niceMax) * cH,
-    ...d,
-  }));
-
-  const linePath = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
-  const areaPath = `${linePath} L${pts[pts.length - 1].x.toFixed(1)},${(PAD.top + cH).toFixed(1)} L${pts[0].x.toFixed(1)},${(PAD.top + cH).toFixed(1)} Z`;
-
-  const yTicks = 5;
-  const showEvery = data.length <= 7 ? 1 : data.length <= 30 ? 5 : 10;
+  const tipPt   = tip != null ? data[tip.index]    : null;
+  const tipPrev = tip != null ? prevData?.[tip.index] : null;
+  const tipChange = tipPt && tipPrev && tipPrev.count > 0
+    ? ((tipPt.count - tipPrev.count) / tipPrev.count * 100)
+    : null;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
-      <defs>
-        <linearGradient id="ac-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.18" />
-          <stop offset="100%" stopColor={color} stopOpacity="0.01" />
-        </linearGradient>
-      </defs>
+    <div ref={containerRef} style={{ position: 'relative', userSelect: 'none' }}>
+      <svg
+        ref={svgRef}
+        viewBox={`0 0 ${W} ${H}`}
+        style={{ width: '100%', height: 'auto', overflow: 'visible', cursor: 'crosshair' }}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        onPointerDown={onPointerDown}
+      >
+        <defs>
+          <linearGradient id={`ac-${label}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.18" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.01" />
+          </linearGradient>
+        </defs>
 
-      {/* Y-axis grid + labels */}
-      {Array.from({ length: yTicks + 1 }, (_, i) => {
-        const frac = i / yTicks;
-        const y = PAD.top + frac * cH;
-        const val = Math.round(niceMax * (1 - frac));
-        return (
-          <g key={i}>
-            <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
-              stroke="#e2e8f0" strokeWidth="1" strokeDasharray={i === yTicks ? '0' : '4 3'} />
-            <text x={PAD.left - 8} y={y + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
-              {fmtNum(val)}
-            </text>
-          </g>
-        );
-      })}
+        {/* Y-axis grid + labels */}
+        {Array.from({ length: 6 }, (_, i) => {
+          const frac = i / 5;
+          const y = PAD.top + frac * cH;
+          const val = Math.round(niceMax * (1 - frac));
+          return (
+            <g key={i}>
+              <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
+                stroke="#e2e8f0" strokeWidth="1" strokeDasharray={i === 5 ? '0' : '4 3'} />
+              <text x={PAD.left - 8} y={y + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
+                {fmtNum(val)}
+              </text>
+            </g>
+          );
+        })}
 
-      {/* Area + line */}
-      <path d={areaPath} fill="url(#ac-grad)" />
-      <path d={linePath} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+        {/* Previous period ghost line */}
+        {prevLinePath && (
+          <path d={prevLinePath} fill="none" stroke={color} strokeWidth="1.5"
+            strokeDasharray="4 3" strokeLinejoin="round" opacity="0.35" />
+        )}
 
-      {/* Data dots */}
-      {pts.map(p => (
-        <circle key={p.date} cx={p.x} cy={p.y} r="3" fill={color}
-          style={{ cursor: 'pointer' }}>
-          <title>{fmtDate(p.date)}: {p.count.toLocaleString()}</title>
-        </circle>
-      ))}
+        {/* Area fill + current line */}
+        <path d={areaPath} fill={`url(#ac-${label})`} />
+        <path d={linePath} fill="none" stroke={color} strokeWidth="2"
+          strokeLinejoin="round" strokeLinecap="round" />
 
-      {/* X-axis labels */}
-      {pts.filter((_, i) => i % showEvery === 0 || i === pts.length - 1).map(p => (
-        <text key={p.date} x={p.x} y={H - 4} textAnchor="middle" fontSize="10" fill="#94a3b8">
-          {fmtDate(p.date, true)}
-        </text>
-      ))}
-    </svg>
+        {/* X-axis labels */}
+        {pts.filter((_, i) => i % showEvery === 0 || i === pts.length - 1).map(p => (
+          <text key={p.date} x={p.svgX} y={H - 4} textAnchor="middle" fontSize="10" fill="#94a3b8">
+            {fmtDate(p.date)}
+          </text>
+        ))}
+
+        {/* Crosshair + active dot */}
+        {tip != null && pts[tip.index] && (() => {
+          const p = pts[tip.index];
+          return (
+            <g>
+              <line x1={p.svgX} y1={PAD.top} x2={p.svgX} y2={PAD.top + cH}
+                stroke={color} strokeWidth="1" strokeDasharray="4 3" opacity="0.6" />
+              <circle cx={p.svgX} cy={p.svgY} r="5" fill={color} stroke="#fff" strokeWidth="2" />
+              {prevPts?.[tip.index] && (
+                <circle cx={prevPts[tip.index].svgX} cy={prevPts[tip.index].svgY}
+                  r="4" fill="none" stroke={color} strokeWidth="1.5" opacity="0.5" />
+              )}
+            </g>
+          );
+        })()}
+      </svg>
+
+      {/* HTML Tooltip */}
+      {tip != null && tipPt && (
+        <div
+          className="an-tooltip"
+          style={{
+            left:      tip.flip ? 'auto' : tip.pxLeft + 14,
+            right:     tip.flip ? `calc(100% - ${tip.pxLeft - 14}px)` : 'auto',
+            top:       Math.max(0, tip.pxTop - 56),
+          }}
+        >
+          <div className="an-tooltip__dates">
+            {fmtDate(tipPt.date)}
+            {tipPrev && <span className="an-tooltip__vs">vs {fmtDate(tipPrev.date)}</span>}
+          </div>
+          <div className="an-tooltip__row">
+            <span className="an-tooltip__label">{label}:</span>
+            <strong className="an-tooltip__val">{tipPt.count.toLocaleString()}</strong>
+            {tipChange != null && (
+              <span className={`an-tooltip__chg ${tipChange >= 0 ? 'up' : 'down'}`}>
+                {tipChange >= 0 ? '▲' : '▼'} {Math.abs(tipChange).toFixed(1)}%
+              </span>
+            )}
+          </div>
+          {tipPrev && (
+            <div className="an-tooltip__prev">
+              Prev: {tipPrev.count.toLocaleString()}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -165,9 +301,7 @@ function StatCard({
   label: string; value: string; change?: number | null;
   sub?: string; sparkData?: DayCount[]; color?: string;
 }) {
-  const up   = change != null && change >= 0;
-  const sign = change != null ? (up ? '+' : '') : '';
-
+  const up = change != null && change >= 0;
   return (
     <div className="an-stat">
       <div className="an-stat__top">
@@ -177,7 +311,7 @@ function StatCard({
           {change != null ? (
             <div className={`an-stat__change ${up ? 'an-stat__change--up' : 'an-stat__change--down'}`}>
               <span className="an-stat__arrow">{up ? '▲' : '▼'}</span>
-              {sign}{Math.abs(change)}%
+              {up ? '+' : ''}{change}%
             </div>
           ) : sub ? (
             <div className="an-stat__sub">{sub}</div>
@@ -222,8 +356,10 @@ export default function AdminAnalyticsPage() {
       .finally(() => setLoading(false));
   }, [days]);
 
-  const pvByDay = data ? fillDays(data.pageViews.byDay, days) : [];
-  const cByDay  = data ? fillDays(data.contacts.byDay,  days) : [];
+  const pvByDay     = data ? fillDays(data.pageViews.byDay,    days, 0)    : [];
+  const pvPrevByDay = data ? fillDays(data.pageViews.prevByDay, days, days) : [];
+  const cByDay      = data ? fillDays(data.contacts.byDay,     days, 0)    : [];
+  const cPrevByDay  = data ? fillDays(data.contacts.prevByDay,  days, days) : [];
 
   const pvChange = data ? calcChange(data.pageViews.period, data.pageViews.prevPeriod) : null;
   const cChange  = data ? calcChange(data.contacts.period,  data.contacts.prevPeriod)  : null;
@@ -238,49 +374,24 @@ export default function AdminAnalyticsPage() {
 
       {/* ── Stat cards ── */}
       <div className="an-stat-grid">
-        <StatCard
-          label="Page Views"
-          value={data ? fmtNum(data.pageViews.period) : '—'}
-          change={pvChange}
-          sparkData={pvByDay}
-          color="#6366f1"
-        />
-        <StatCard
-          label="Unique Pages"
-          value={data ? fmtNum(data.pageViews.unique) : '—'}
-          sub="distinct paths visited"
-          color="#0ea5e9"
-        />
-        <StatCard
-          label="Inquiries"
-          value={data ? fmtNum(data.contacts.period) : '—'}
-          change={cChange}
-          sparkData={cByDay}
-          color="#10b981"
-        />
-        <StatCard
-          label="Avg Views / Day"
-          value={data ? fmtNum(avgDay) : '—'}
-          sub={`over ${days} days`}
-          color="#f59e0b"
-        />
+        <StatCard label="Page Views"    value={data ? fmtNum(data.pageViews.period) : '—'} change={pvChange} sparkData={pvByDay}  color="#6366f1" />
+        <StatCard label="Unique Pages"  value={data ? fmtNum(data.pageViews.unique) : '—'} sub="distinct paths visited" color="#0ea5e9" />
+        <StatCard label="Inquiries"     value={data ? fmtNum(data.contacts.period)  : '—'} change={cChange}  sparkData={cByDay}   color="#10b981" />
+        <StatCard label="Avg Views/Day" value={data ? fmtNum(avgDay)                : '—'} sub={`over ${days} days`}   color="#f59e0b" />
       </div>
 
       {/* ── Main body ── */}
       <div className="an-body">
 
-        {/* Left: chart + top pages */}
         <div className="an-main">
 
-          {/* Chart card */}
+          {/* Visitors chart */}
           <div className="a-card an-chart-card">
             <div className="an-chart-head">
               <div>
                 <div className="an-chart-title">Visitors Overview</div>
-                <div className="an-chart-sub">Page views per day</div>
+                <div className="an-chart-sub">Page views per day — dashed line is the previous period</div>
               </div>
-
-              {/* Period dropdown */}
               <div className="an-period-wrap">
                 <button className="an-period-btn" onClick={() => setOpen(o => !o)}>
                   {periodLabel}
@@ -301,13 +412,12 @@ export default function AdminAnalyticsPage() {
                 )}
               </div>
             </div>
-
             {loading ? (
               <div style={{ height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div className="a-loading" />
               </div>
             ) : (
-              <AreaChart data={pvByDay} color="#6366f1" />
+              <AreaChart data={pvByDay} prevData={pvPrevByDay} color="#6366f1" label="Views" />
             )}
           </div>
 
@@ -317,22 +427,13 @@ export default function AdminAnalyticsPage() {
               <span className="an-section-title">Top Pages</span>
               <span className="an-section-sub">{periodLabel}</span>
             </div>
-
             {loading ? (
               <div style={{ padding: '1.5rem 0', textAlign: 'center' }}><div className="a-loading" /></div>
             ) : !data || data.pageViews.topPages.length === 0 ? (
-              <div style={{ padding: '1.5rem 0', textAlign: 'center', color: 'var(--adm-muted)', fontSize: 13 }}>
-                No page views recorded yet
-              </div>
+              <div style={{ padding: '1.5rem 0', textAlign: 'center', color: 'var(--adm-muted)', fontSize: 13 }}>No page views recorded yet</div>
             ) : (
               <table className="an-pages-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Page</th>
-                    <th style={{ textAlign: 'right' }}>Views</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>#</th><th>Page</th><th style={{ textAlign: 'right' }}>Views</th></tr></thead>
                 <tbody>
                   {data.pageViews.topPages.map((p, i) => {
                     const pct = Math.round((p.count / (data.pageViews.topPages[0]?.count ?? 1)) * 100);
@@ -341,9 +442,7 @@ export default function AdminAnalyticsPage() {
                         <td className="an-pages-rank">{i + 1}</td>
                         <td>
                           <div className="an-pages-path">{p.path || '/'}</div>
-                          <div className="an-pages-bar">
-                            <div className="an-pages-bar-fill" style={{ width: `${pct}%` }} />
-                          </div>
+                          <div className="an-pages-bar"><div className="an-pages-bar-fill" style={{ width: `${pct}%` }} /></div>
                         </td>
                         <td className="an-pages-count">{p.count.toLocaleString()}</td>
                       </tr>
@@ -357,8 +456,6 @@ export default function AdminAnalyticsPage() {
 
         {/* Right sidebar */}
         <div className="an-sidebar">
-
-          {/* Summary card */}
           <div className="a-card an-summary">
             <div className="an-section-head">
               <span className="an-section-title">Summary</span>
@@ -384,19 +481,16 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
 
-          {/* Contacts chart */}
           <div className="a-card">
             <div className="an-section-head">
               <span className="an-section-title">Inquiries</span>
               <span className="an-section-sub">{periodLabel}</span>
             </div>
-
             {loading ? (
               <div style={{ padding: '1rem 0', textAlign: 'center' }}><div className="a-loading" /></div>
             ) : (
-              <AreaChart data={cByDay} color="#10b981" />
+              <AreaChart data={cByDay} prevData={cPrevByDay} color="#10b981" label="Inquiries" />
             )}
-
             <div className="an-contact-total">
               <span>{data ? data.contacts.period : '—'} inquiries</span>
               {cChange != null && (
@@ -407,10 +501,9 @@ export default function AdminAnalyticsPage() {
               )}
             </div>
           </div>
-
         </div>
-      </div>
 
+      </div>
     </AdminLayout>
   );
 }
