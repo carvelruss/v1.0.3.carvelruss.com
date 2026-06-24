@@ -2723,7 +2723,7 @@
   background: var(--adm-bg); overflow: hidden;
   transition: border-color .15s;
 }
-.tp-search-wrap:focus-within { border-color: var(--adm-accent); }
+.tp-search-wrap:focus-within { border-color: var(--adm-border-2); }
 .tp-search {
   border: none; background: none;
   padding: 7px 10px; font-size: 13px; color: var(--adm-text);
