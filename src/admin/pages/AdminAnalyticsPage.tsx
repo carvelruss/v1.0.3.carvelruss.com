@@ -479,11 +479,10 @@ function BrowserIcon({ name }: { name: string }) {
 }
 
 function BrowserChart({
-  current, previous, periodLabel,
+  current, previous,
 }: {
-  current:     { browser: string; count: number }[];
-  previous:    { browser: string; count: number }[];
-  periodLabel: string;
+  current:  { browser: string; count: number }[];
+  previous: { browser: string; count: number }[];
 }) {
   const total   = current.reduce((s, b) => s + b.count, 0) || 1;
   const prevMap = new Map(previous.map(b => [b.browser, b.count]));
@@ -544,14 +543,6 @@ function BrowserChart({
             </div>
           );
         })}
-      </div>
-
-      <div className="bc-footer">
-        <span className="bc-footer__period">
-          {periodLabel}
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </span>
-        <a href="/admin/analytics" className="bc-footer__link">Browser Overview ›</a>
       </div>
     </div>
   );
@@ -962,7 +953,7 @@ export default function AdminAnalyticsPage() {
       {!loading && data && (
         <div className="an-sessions-row">
           <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
-          <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} periodLabel={periodLabel} />
+          <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} />
         </div>
       )}
 
