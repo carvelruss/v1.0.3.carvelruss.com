@@ -18,7 +18,8 @@ const sessionSubquery = (window: string) =>
 
 const sessionSubqueryPrev = (since: string, prev: string) =>
   `SELECT session_id, COUNT(*) as page_count,
-     CAST(strftime('%s', MAX(created_at)) - strftime('%s', MIN(created_at)) AS INTEGER) as dur
+     CAST(strftime('%s', MAX(created_at)) - strftime('%s', MIN(created_at)) AS INTEGER) as dur,
+     MIN(created_at) as min_created
    FROM page_views
    WHERE session_id IS NOT NULL AND created_at >= datetime('now', '${prev}') AND created_at < datetime('now', '${since}')
    GROUP BY session_id`;
