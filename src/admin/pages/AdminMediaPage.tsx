@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '../../lib/api';
 import AdminLayout from '../components/AdminLayout';
+import { useConfirm } from '../components/ConfirmModal';
 import type { MediaAsset } from '../../types';
 
 function formatBytes(bytes?: number | null): string {
@@ -11,6 +12,7 @@ function formatBytes(bytes?: number | null): string {
 }
 
 export default function AdminMediaPage() {
+  const { confirm, modal } = useConfirm();
   const [assets, setAssets]       = useState<MediaAsset[]>([]);
   const [filtered, setFiltered]   = useState<MediaAsset[]>([]);
   const [loading, setLoading]     = useState(true);
@@ -64,7 +66,7 @@ export default function AdminMediaPage() {
   const handleDelete = async (id: number) => {
     const asset = assets.find(a => a.id === id);
     if (!asset) return;
-    if (!window.confirm(`Delete "${asset.file_name}"? This will remove it from storage.`)) return;
+    if (!await confirm({ title: 'Delete file?', message: `Delete "${asset.file_name}"? This will remove it from storage.` })) return;
     try {
       await api.deleteMedia(id);
       setSuccess(`"${asset.file_name}" deleted.`);
@@ -88,6 +90,7 @@ export default function AdminMediaPage() {
         </button>
       }
     >
+      {modal}
       <input
         ref={fileInputRef}
         type="file"

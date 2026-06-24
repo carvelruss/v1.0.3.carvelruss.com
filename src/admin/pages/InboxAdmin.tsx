@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
 import AdminLayout from '../components/AdminLayout';
+import { useConfirm } from '../components/ConfirmModal';
 import type { Inquiry } from '../../types';
 
 type InquiryStatus = 'unread' | 'read' | 'replied' | 'archived';
@@ -97,6 +98,7 @@ function exportCSV(rows: Inquiry[]) {
 
 export default function InboxAdmin() {
   const navigate = useNavigate();
+  const { confirm, modal } = useConfirm();
 
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading]     = useState(true);
@@ -147,7 +149,7 @@ export default function InboxAdmin() {
   useEffect(() => { setPage(1); }, [search, statusFilter, projectFilter]);
 
   const handleDelete = async (inq: Inquiry) => {
-    if (!window.confirm(`Delete message from "${inq.name}"? This cannot be undone.`)) return;
+    if (!await confirm({ title: 'Delete message?', message: `Delete message from "${inq.name}"? This cannot be undone.` })) return;
     try {
       await api.deleteInquiry(inq.id);
       load();
@@ -163,6 +165,7 @@ export default function InboxAdmin() {
 
   return (
     <AdminLayout pageTitle="Inquiries" unreadInquiries={unreadCount}>
+      {modal}
       {error && (
         <div className="a-alert a-alert--error" role="alert"
           style={{ marginBottom: 16 }} onClick={() => setError('')}>

@@ -2462,3 +2462,68 @@
   line-height: 1.5;
 }
 .a-badge::before { display: none; }
+
+/* ── Confirm modal ─────────────────────────────────────────── */
+.adm-confirm-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(15,23,42,.45);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+  animation: adm-overlay-in .15s ease;
+}
+@keyframes adm-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.adm-confirm {
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-r-md);
+  box-shadow: 0 20px 60px rgba(15,23,42,.18), 0 4px 16px rgba(15,23,42,.1);
+  padding: 28px 28px 24px;
+  width: 100%; max-width: 400px; margin: 16px;
+  animation: adm-modal-in .18s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes adm-modal-in {
+  from { opacity: 0; transform: scale(.94) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+.adm-confirm__icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--adm-danger-soft);
+  color: var(--adm-danger);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.adm-confirm__title {
+  font-size: 16px; font-weight: 700;
+  color: var(--adm-text); margin: 0 0 8px;
+}
+.adm-confirm__message {
+  font-size: 14px; color: var(--adm-muted);
+  line-height: 1.6; margin: 0 0 24px;
+}
+.adm-confirm__actions {
+  display: flex; justify-content: flex-end; gap: 10px;
+}
+.adm-confirm__btn {
+  padding: 9px 20px; border-radius: var(--adm-r);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  border: 1.5px solid transparent;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.adm-confirm__btn--cancel {
+  background: var(--adm-surface);
+  border-color: var(--adm-border);
+  color: var(--adm-text-2);
+}
+.adm-confirm__btn--cancel:hover {
+  background: var(--adm-surface-3);
+  border-color: var(--adm-border-2);
+}
+.adm-confirm__btn--confirm {
+  background: var(--adm-danger);
+  color: #fff;
+}
+.adm-confirm__btn--confirm:hover { background: #b91c1c; }

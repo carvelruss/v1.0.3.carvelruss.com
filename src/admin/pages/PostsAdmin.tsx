@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
 import AdminLayout from '../components/AdminLayout';
+import { useConfirm } from '../components/ConfirmModal';
 import type { Post } from '../../types';
 
 const PAGE_SIZE = 10;
@@ -60,6 +61,7 @@ const ChevronIcon = () => (
 
 export default function PostsAdmin() {
   const navigate = useNavigate();
+  const { confirm, modal } = useConfirm();
 
   const [posts, setPosts]       = useState<Post[]>([]);
   const [loading, setLoading]   = useState(true);
@@ -108,7 +110,7 @@ export default function PostsAdmin() {
   const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handleDelete = async (post: Post) => {
-    if (!window.confirm(`Delete "${post.title}"? This cannot be undone.`)) return;
+    if (!await confirm({ title: 'Delete post?', message: `Delete "${post.title}"? This cannot be undone.` })) return;
     setError('');
     try {
       await api.deletePost(post.slug);
@@ -147,6 +149,7 @@ export default function PostsAdmin() {
         </div>
       }
     >
+      {modal}
       {error   && <div className="a-alert a-alert--error"   role="alert"   style={{ marginBottom: 16, cursor: 'pointer' }} onClick={() => setError('')}>{error}</div>}
       {success && <div className="a-alert a-alert--success" role="status"  style={{ marginBottom: 16, cursor: 'pointer' }} onClick={() => setSuccess('')}>{success}</div>}
 

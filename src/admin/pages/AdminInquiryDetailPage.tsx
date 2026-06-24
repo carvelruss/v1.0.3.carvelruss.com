@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
+import { useConfirm } from '../components/ConfirmModal';
 import { api } from '../../lib/api';
 import type { Inquiry } from '../../types';
 
@@ -29,6 +30,7 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
 export default function AdminInquiryDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { confirm, modal } = useConfirm();
 
   const [inquiry, setInquiry] = useState<Inquiry | null>(null);
   const [loading, setLoading] = useState(true);
@@ -77,7 +79,7 @@ export default function AdminInquiryDetailPage() {
 
   const deleteInquiry = async () => {
     if (!inquiry) return;
-    if (!window.confirm(`Delete message from "${inquiry.name}"? This cannot be undone.`)) return;
+    if (!await confirm({ title: 'Delete message?', message: `Delete message from "${inquiry.name}"? This cannot be undone.` })) return;
     setUpdating(true);
     setError('');
     try {
@@ -93,6 +95,7 @@ export default function AdminInquiryDetailPage() {
 
   return (
     <AdminLayout pageTitle="Inquiry Detail">
+      {modal}
       {/* Alerts */}
       {error   && (
         <div className="a-alert a-alert--error" role="alert" style={{ marginBottom: 16 }} onClick={() => setError('')}>

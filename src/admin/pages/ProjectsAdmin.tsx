@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
 import AdminLayout from '../components/AdminLayout';
+import { useConfirm } from '../components/ConfirmModal';
 import type { Project } from '../../types';
 
 const PAGE_SIZE = 10;
@@ -15,6 +16,7 @@ function formatDate(raw?: string | null): string {
 
 export default function ProjectsAdmin() {
   const navigate = useNavigate();
+  const { confirm, modal } = useConfirm();
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ export default function ProjectsAdmin() {
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handleDelete = async (p: Project) => {
-    if (!window.confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
+    if (!await confirm({ title: 'Delete case study?', message: `Delete "${p.title}"? This cannot be undone.` })) return;
     setError('');
     try {
       await api.deleteProject(p.id);
@@ -92,6 +94,7 @@ export default function ProjectsAdmin() {
         </button>
       }
     >
+      {modal}
       {error && (
         <div
           className="a-alert a-alert--error"
