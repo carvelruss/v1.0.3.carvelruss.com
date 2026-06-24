@@ -638,7 +638,7 @@ function BarChart({
       {tip != null && tipD && (
         <div className="an-tip" style={{
           position:  'absolute',
-          top:       tip.pxTop - 8,
+          top:       Math.max(4, tip.pxTop - 48),
           ...(tip.flip
             ? { right: `calc(100% - ${tip.pxLeft}px + 12px)` }
             : { left: tip.pxLeft + 12 }),

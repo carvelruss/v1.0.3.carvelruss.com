@@ -2648,7 +2648,7 @@
 @media (max-width: 860px) { .an-bottom-row { grid-template-columns: 1fr; } }
 
 /* ── Inquiries / Analytics Card ──────────────────────────────── */
-.an-inq-card { padding: 20px 20px 0; overflow: hidden; }
+.an-inq-card { padding: 20px 20px 0; }
 
 .an-inq-head {
   display: flex; align-items: flex-start; justify-content: space-between;
