@@ -58,7 +58,12 @@ export default function AdminInquiryDetailPage() {
         return r.json() as Promise<{ inquiry?: Inquiry } | Inquiry>;
       })
       .then((data) => {
-        setInquiry(('inquiry' in data && data.inquiry) ? data.inquiry : (data as Inquiry));
+        const inq = ('inquiry' in data && data.inquiry) ? data.inquiry : (data as Inquiry);
+        setInquiry(inq);
+        if (inq.status === 'unread') {
+          api.updateInquiryStatus(inq.id, 'read').catch(() => {});
+          setInquiry(prev => prev ? { ...prev, status: 'read', is_read: 1 } : prev);
+        }
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : 'Failed to load inquiry.'))
       .finally(() => setLoading(false));
