@@ -630,6 +630,14 @@
   transition: border-color .12s, color .12s;
 }
 .ep-avatar-btn:hover { border-color: var(--ep-accent); color: var(--ep-accent); }
+.ep-avatar-btn--remove {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ep-danger);
+  padding-left: 0;
+  font-weight: 500;
+}
+.ep-avatar-btn--remove:hover { border-color: transparent; color: #b91c1c; text-decoration: underline; }
 
 .ep-avatar--upload {
   cursor: pointer;

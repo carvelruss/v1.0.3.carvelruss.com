@@ -649,8 +649,7 @@ export default function PostForm() {
             {form.author_avatar && (
               <button
                 type="button"
-                className="ep-avatar-btn"
-                style={{ color: 'var(--ep-danger)', borderColor: 'var(--ep-danger)' }}
+                className="ep-avatar-btn ep-avatar-btn--remove"
                 onClick={() => set('author_avatar', '')}
               >
                 Remove
