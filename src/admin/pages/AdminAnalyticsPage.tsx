@@ -646,36 +646,37 @@ function DeviceChart({ data, days, periodLabel }: { data: DeviceRow[]; days: num
     series[i]!.reduce((s, r) => s + r.count, 0)
   );
 
-  const allCounts = series.flatMap(s => s.map(r => r.count));
-  const maxVal = Math.max(...allCounts, 1);
+  const n = series[0]!.length;
   const W = 500; const H = 180; const PAD_L = 8; const PAD_R = 40; const PAD_T = 10; const PAD_B = 24;
   const cW = W - PAD_L - PAD_R;
   const cH = H - PAD_T - PAD_B;
-  const n = series[0]!.length;
 
-  const xPos = (i: number) => PAD_L + (i / Math.max(n - 1, 1)) * cW;
-  const yPos = (v: number) => PAD_T + (1 - v / maxVal) * cH;
+  // Stacked bar layout
+  const stackTotals = Array.from({ length: n }, (_, i) =>
+    DEVICES.reduce((sum, _, di) => sum + (series[di]![i]?.count ?? 0), 0)
+  );
+  const maxStackVal = Math.max(...stackTotals, 1);
+  const slotW = cW / Math.max(n, 1);
+  const barW  = Math.max(2, slotW * 0.65);
+  const barX  = (i: number) => PAD_L + i * slotW + (slotW - barW) / 2;
+  const yBottom = PAD_T + cH;
+  const segH  = (v: number) => (v / maxStackVal) * cH;
+  const yPos  = (v: number) => PAD_T + (1 - v / maxStackVal) * cH;
 
-  const linePath = (pts: DayCount[]) =>
-    pts.map((d, i) => `${i === 0 ? 'M' : 'L'}${xPos(i).toFixed(1)},${yPos(d.count).toFixed(1)}`).join(' ');
-
-  // Y-axis ticks (4 steps)
-  const yTicks = [0, 0.25, 0.5, 0.75, 1].map(r => Math.round(r * maxVal));
-
-  // X-axis labels (first, middle, last)
+  const yTicks  = [0, 0.25, 0.5, 0.75, 1].map(r => Math.round(r * maxStackVal));
   const xLabels = n < 2 ? [] : [0, Math.floor((n - 1) / 2), n - 1].map(i => ({
-    i, label: fmtDate(series[0]![i]!.date),
+    i, label: fmtDate(series[0]![i]!.date), x: barX(i) + barW / 2,
   }));
 
   const handlePointer = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
     const rect = svgRef.current?.getBoundingClientRect();
     if (!rect) return;
     const relX = (e.clientX - rect.left) / rect.width * W;
-    const idx = Math.max(0, Math.min(n - 1, Math.round((relX - PAD_L) / cW * (n - 1))));
+    const idx = Math.max(0, Math.min(n - 1, Math.floor((relX - PAD_L) / slotW)));
     const vals: Record<string, number> = {};
-    DEVICES.forEach((d, di) => { vals[d.key] = series[di]![idx]!.count; });
+    DEVICES.forEach((d, di) => { vals[d.key] = series[di]![idx]?.count ?? 0; });
     setTip({ x: e.clientX, y: e.clientY, dateLabel: fmtDate(series[0]![idx]!.date), vals });
-  }, [series, n, cW]);
+  }, [series, n, slotW]);
 
   return (
     <div className="a-card dvc-card">
@@ -709,11 +710,29 @@ function DeviceChart({ data, days, periodLabel }: { data: DeviceRow[]; days: num
               stroke="#e2e8f0" strokeWidth="1" />
           ))}
 
-          {/* Lines */}
-          {DEVICES.map((d, i) => (
-            <path key={d.key} d={linePath(series[i]!)} fill="none"
-              stroke={d.color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-          ))}
+          {/* Stacked bars */}
+          {Array.from({ length: n }, (_, i) => {
+            let yAcc = yBottom;
+            const x = barX(i);
+            const topDi = DEVICES.reduce((top, _, di) =>
+              (series[di]![i]?.count ?? 0) > 0 ? di : top, -1);
+            return (
+              <g key={i}>
+                {DEVICES.map((d, di) => {
+                  const count = series[di]![i]?.count ?? 0;
+                  const h = segH(count);
+                  const y = yAcc - h;
+                  yAcc = y;
+                  if (count === 0) return null;
+                  return (
+                    <rect key={d.key} x={x} y={y} width={barW} height={h}
+                      fill={d.color}
+                      rx={di === topDi ? 2 : 0} ry={di === topDi ? 2 : 0} />
+                  );
+                })}
+              </g>
+            );
+          })}
 
           {/* Y-axis labels */}
           {yTicks.map(v => (
@@ -724,8 +743,8 @@ function DeviceChart({ data, days, periodLabel }: { data: DeviceRow[]; days: num
           ))}
 
           {/* X-axis labels */}
-          {xLabels.map(({ i, label }) => (
-            <text key={i} x={xPos(i)} y={H - 4}
+          {xLabels.map(({ i, label, x }) => (
+            <text key={i} x={x} y={H - 4}
               fontSize="9" fill="#94a3b8" textAnchor={i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}>
               {label}
             </text>
