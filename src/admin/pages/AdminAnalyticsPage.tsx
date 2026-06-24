@@ -754,7 +754,7 @@ function DeviceChart({ data, days, periodLabel }: { data: DeviceRow[]; days: num
 
 /* ── Activity Heatmap ────────────────────────────────────────── */
 
-const HM_COLORS = ['#eef2ff', '#c7d2fe', '#818cf8', '#4f46e5', '#3730a3'];
+const HM_COLORS = ['#e8edf7', '#b8caee', '#6b8fd4', '#1a4a9e', '#0D215A'];
 
 function ActivityHeatmap({ data, periodLabel }: { data: HeatCell[]; periodLabel: string }) {
   const [tip, setTip] = useState<{ dayIdx: number; hour: number; count: number; x: number; y: number } | null>(null);
