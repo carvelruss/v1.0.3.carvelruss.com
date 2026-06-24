@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { trackPageView, trackEvent } from './lib/track';
+import { initVitals } from './lib/vitals';
 
 function PageTracker() {
   const location = useLocation();
@@ -166,6 +167,8 @@ function CaseStudyLayout() {
 }
 
 export default function App() {
+  useEffect(() => { initVitals(); }, []);
+
   return (
     <BrowserRouter>
       <RevealObserver />

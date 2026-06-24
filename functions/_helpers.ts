@@ -21,6 +21,8 @@ export interface Env {
   JWT_SECRET: string;
   TURNSTILE_SECRET: string;
   RESEND_API_KEY?: string;
+  GSC_SERVICE_ACCOUNT?: string;
+  GSC_SITE_URL?: string;
 }
 
 export function json(data: unknown, status = 200): Response {

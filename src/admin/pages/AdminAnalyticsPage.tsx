@@ -64,6 +64,37 @@ interface AnalyticsData {
     byPage:   { source_page: string; count: number }[];
     bySource: { source: string; count: number }[];
   };
+  cwv: {
+    byMetric: {
+      metric:    string;
+      total:     number;
+      avg_value: number;
+      good_pct:  number;
+      ni_pct:    number;
+      poor_pct:  number;
+    }[];
+  };
+}
+
+interface GscRow {
+  query?:      string;
+  page?:       string;
+  clicks:      number;
+  impressions: number;
+  ctr:         number;
+  position:    number;
+}
+interface IndexingRow {
+  url:        string;
+  verdict:    string;
+  lastCrawl?: string;
+}
+interface GscData {
+  configured: boolean;
+  keywords?:  GscRow[];
+  topPages?:  GscRow[];
+  indexing?:  IndexingRow[];
+  error?:     string;
 }
 
 type DashTab = 'overview' | 'traffic' | 'engagement' | 'portfolio' | 'leads' | 'seo';
@@ -1503,36 +1534,244 @@ function InquirySourceCard({ byPage, bySource, loading }: {
   );
 }
 
-/* ── Placeholder section ─────────────────────────────────────── */
+/* ── Phase 3: SEO Components ─────────────────────────────────── */
 
-function PlaceholderSection({ title, subtitle, items, phase }: {
-  title: string; subtitle: string;
-  items: { title: string; desc: string }[];
-  phase: number;
+const CWV_META: Record<string, { label: string; unit: string; desc: string }> = {
+  LCP:  { label: 'Largest Contentful Paint', unit: 'ms',  desc: 'Loading performance' },
+  CLS:  { label: 'Cumulative Layout Shift',  unit: '',    desc: 'Visual stability' },
+  INP:  { label: 'Interaction to Next Paint',unit: 'ms',  desc: 'Interactivity' },
+  FCP:  { label: 'First Contentful Paint',   unit: 'ms',  desc: 'Initial render time' },
+  TTFB: { label: 'Time to First Byte',       unit: 'ms',  desc: 'Server response speed' },
+};
+const CWV_ORDER = ['LCP', 'CLS', 'INP', 'FCP', 'TTFB'];
+
+function formatCwvValue(metric: string, avg: number): string {
+  if (metric === 'CLS') return avg.toFixed(3);
+  return `${Math.round(avg)}ms`;
+}
+
+function cwvOverallRating(good: number, ni: number): 'good' | 'needs-improvement' | 'poor' {
+  if (good >= 75)       return 'good';
+  if (good + ni >= 50)  return 'needs-improvement';
+  return 'poor';
+}
+
+function CoreWebVitalsCard({
+  byMetric, loading,
+}: {
+  byMetric: AnalyticsData['cwv']['byMetric'];
+  loading:  boolean;
 }) {
+  const map = Object.fromEntries(byMetric.map(r => [r.metric, r]));
+  const noData = byMetric.length === 0;
+
   return (
-    <div className="an-ph-section">
-      <div className="an-ph-header">
+    <div className="a-card an-cwv-card">
+      <div className="an-cwv-head">
         <div>
-          <div className="an-ph-title">{title}</div>
-          <div className="an-ph-subtitle">{subtitle}</div>
+          <div className="an-cwv-title">Core Web Vitals</div>
+          <div className="an-cwv-sub">Real user metrics — collected from actual visitors</div>
         </div>
-        <span className="an-ph-badge">Phase {phase}</span>
-      </div>
-      <div className="an-ph-grid">
-        {items.map(item => (
-          <div key={item.title} className="a-card an-ph-card">
-            <div className="an-ph-card__icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-            </div>
-            <div className="an-ph-card__title">{item.title}</div>
-            <div className="an-ph-card__desc">{item.desc}</div>
+        {!loading && !noData && (
+          <div className="an-cwv-legend">
+            <span className="an-cwv-dot an-cwv-dot--good" />Good
+            <span className="an-cwv-dot an-cwv-dot--ni" />Needs work
+            <span className="an-cwv-dot an-cwv-dot--poor" />Poor
           </div>
-        ))}
+        )}
       </div>
+
+      {loading ? (
+        <div style={{ height: 120 }} />
+      ) : noData ? (
+        <div className="an-cwv-empty">
+          <div className="an-cwv-empty-icon">📊</div>
+          <div className="an-cwv-empty-text">Collecting data from real visitors…</div>
+          <div className="an-cwv-empty-hint">Metrics are captured automatically as users browse. Check back after a few visits.</div>
+        </div>
+      ) : (
+        <div className="an-cwv-grid">
+          {CWV_ORDER.map(key => {
+            const row  = map[key];
+            const meta = CWV_META[key];
+            if (!row || !meta) return null;
+            const rating = cwvOverallRating(row.good_pct, row.ni_pct);
+            return (
+              <div key={key} className={`an-cwv-tile an-cwv-tile--${rating}`}>
+                <div className="an-cwv-tile-top">
+                  <span className="an-cwv-metric">{key}</span>
+                  <span className={`an-cwv-badge an-cwv-badge--${rating}`}>
+                    {rating === 'needs-improvement' ? 'Needs work' : rating.charAt(0).toUpperCase() + rating.slice(1)}
+                  </span>
+                </div>
+                <div className="an-cwv-value">{formatCwvValue(key, row.avg_value)}</div>
+                <div className="an-cwv-label-text">{meta.desc}</div>
+                <div className="an-cwv-bar-row">
+                  <div className="an-cwv-bar-seg an-cwv-bar-seg--good"  style={{ width: `${row.good_pct}%` }} />
+                  <div className="an-cwv-bar-seg an-cwv-bar-seg--ni"    style={{ width: `${row.ni_pct}%` }} />
+                  <div className="an-cwv-bar-seg an-cwv-bar-seg--poor"  style={{ width: `${row.poor_pct}%` }} />
+                </div>
+                <div className="an-cwv-bar-labels">
+                  {row.good_pct > 5  && <span>{Math.round(row.good_pct)}%</span>}
+                  {row.ni_pct   > 5  && <span>{Math.round(row.ni_pct)}%</span>}
+                  {row.poor_pct > 5  && <span>{Math.round(row.poor_pct)}%</span>}
+                </div>
+                <div className="an-cwv-sample">{row.total.toLocaleString()} samples</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GscConnectionCard() {
+  return (
+    <div className="a-card an-gsc-connect">
+      <div className="an-gsc-connect-head">
+        <svg className="an-gsc-connect-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="currentColor" opacity="0.2"/>
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/>
+          <path d="M12 8v4l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+        <div>
+          <div className="an-gsc-connect-title">Connect Google Search Console</div>
+          <div className="an-gsc-connect-sub">Enable keyword rankings and indexing status</div>
+        </div>
+      </div>
+      <ol className="an-gsc-steps">
+        <li className="an-gsc-step">
+          <span className="an-gsc-step-num">1</span>
+          <div>
+            <strong>Create a Google Cloud project</strong> and enable the <em>Search Console API</em> in APIs &amp; Services.
+          </div>
+        </li>
+        <li className="an-gsc-step">
+          <span className="an-gsc-step-num">2</span>
+          <div>
+            Under <em>IAM &amp; Admin → Service Accounts</em>, create a service account and download the JSON key file.
+          </div>
+        </li>
+        <li className="an-gsc-step">
+          <span className="an-gsc-step-num">3</span>
+          <div>
+            In <em>Google Search Console</em>, go to <strong>Settings → Users and permissions</strong> and add the service account email as a <strong>Full user</strong>.
+          </div>
+        </li>
+        <li className="an-gsc-step">
+          <span className="an-gsc-step-num">4</span>
+          <div>
+            Set two Cloudflare secrets from your terminal:
+            <pre className="an-gsc-code">{'# Paste the full contents of the downloaded JSON key\nwrangler secret put GSC_SERVICE_ACCOUNT\n\n# Your exact site URL as it appears in GSC\n# e.g. https://carvelruss.com/ or sc-domain:carvelruss.com\nwrangler secret put GSC_SITE_URL'}</pre>
+          </div>
+        </li>
+        <li className="an-gsc-step">
+          <span className="an-gsc-step-num">5</span>
+          <div>
+            <strong>Redeploy</strong> your Cloudflare Pages project — the SEO tab will populate on next load.
+          </div>
+        </li>
+      </ol>
+    </div>
+  );
+}
+
+function KeywordRankingsCard({ keywords, loading }: { keywords: GscRow[]; loading: boolean }) {
+  function posColor(pos: number): string {
+    if (pos <= 3)  return '#16a34a';
+    if (pos <= 10) return '#ca8a04';
+    if (pos <= 20) return '#ea580c';
+    return '#dc2626';
+  }
+
+  return (
+    <div className="a-card an-kw-card">
+      <div className="an-kw-head">
+        <div className="an-kw-title">Keyword Rankings</div>
+        <div className="an-kw-sub">Top search queries — sorted by clicks</div>
+      </div>
+      {loading ? (
+        <div style={{ height: 100 }} />
+      ) : keywords.length === 0 ? (
+        <div className="an-kw-empty">No keyword data available for this period.</div>
+      ) : (
+        <div className="an-kw-table-wrap">
+          <table className="an-kw-table">
+            <thead>
+              <tr>
+                <th className="an-kw-th an-kw-th--query">Query</th>
+                <th className="an-kw-th">Clicks</th>
+                <th className="an-kw-th">Impr.</th>
+                <th className="an-kw-th">CTR</th>
+                <th className="an-kw-th">Position</th>
+              </tr>
+            </thead>
+            <tbody>
+              {keywords.map((row, i) => (
+                <tr key={i} className="an-kw-tr">
+                  <td className="an-kw-td an-kw-td--query">{row.query ?? '—'}</td>
+                  <td className="an-kw-td an-kw-td--num">{row.clicks.toLocaleString()}</td>
+                  <td className="an-kw-td an-kw-td--num">{row.impressions.toLocaleString()}</td>
+                  <td className="an-kw-td an-kw-td--num">{(row.ctr * 100).toFixed(1)}%</td>
+                  <td className="an-kw-td an-kw-td--num">
+                    <span className="an-kw-pos" style={{ color: posColor(row.position) }}>
+                      {row.position.toFixed(1)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function IndexingStatusCard({ indexing, loading }: { indexing: IndexingRow[]; loading: boolean }) {
+  function verdictInfo(v: string): { label: string; cls: string } {
+    if (v === 'PASS')    return { label: 'Indexed',      cls: 'good' };
+    if (v === 'FAIL')    return { label: 'Not indexed',  cls: 'poor' };
+    if (v === 'NEUTRAL') return { label: 'Excluded',     cls: 'ni'   };
+    return                      { label: 'Unknown',      cls: 'muted' };
+  }
+
+  function fmtDate(iso?: string): string {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function pathFrom(url: string): string {
+    try { return new URL(url).pathname || '/'; }
+    catch { return url; }
+  }
+
+  return (
+    <div className="a-card an-idx-card">
+      <div className="an-idx-head">
+        <div className="an-idx-title">Indexing Status</div>
+        <div className="an-idx-sub">Google's view of your key pages</div>
+      </div>
+      {loading ? (
+        <div style={{ height: 80 }} />
+      ) : (
+        <div className="an-idx-list">
+          {indexing.map((row, i) => {
+            const { label, cls } = verdictInfo(row.verdict);
+            return (
+              <div key={i} className="an-idx-item">
+                <div className="an-idx-item-left">
+                  <span className="an-idx-path">{pathFrom(row.url)}</span>
+                  <span className="an-idx-crawl">Last crawl: {fmtDate(row.lastCrawl)}</span>
+                </div>
+                <span className={`an-idx-badge an-idx-badge--${cls}`}>{label}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -1553,9 +1792,28 @@ export default function AdminAnalyticsPage() {
   const [days,      setDays]      = useState(30);
   const [open,      setOpen]      = useState(false);
   const [activeTab, setActiveTab] = useState<DashTab>('overview');
-  const [data,      setData]      = useState<AnalyticsData | null>(null);
-  const [loading,   setLoading]   = useState(true);
-  const [error,     setError]     = useState('');
+  const [data,       setData]       = useState<AnalyticsData | null>(null);
+  const [loading,    setLoading]    = useState(true);
+  const [error,      setError]      = useState('');
+  const [gscData,    setGscData]    = useState<GscData | null>(null);
+  const [gscLoading, setGscLoading] = useState(false);
+  const [gscError,   setGscError]   = useState('');
+
+  useEffect(() => {
+    if (activeTab !== 'seo') return;
+    setGscLoading(true); setGscError('');
+    const token = api.getToken();
+    fetch(`/api/gsc?days=${days}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+      .then(r => {
+        if (r.status === 401) { api.clearToken(); window.location.href = '/admin/login'; throw new Error('Session expired'); }
+        return r.json() as Promise<GscData>;
+      })
+      .then(setGscData)
+      .catch((e: unknown) => setGscError(e instanceof Error ? e.message : 'Failed to load GSC data'))
+      .finally(() => setGscLoading(false));
+  }, [activeTab, days]);
 
   useEffect(() => {
     setLoading(true); setError('');
@@ -1801,17 +2059,37 @@ export default function AdminAnalyticsPage() {
 
       {/* ══════════════ SEO ══════════════ */}
       {activeTab === 'seo' && (
-        <PlaceholderSection
-          title="SEO Performance"
-          subtitle="Understand how your portfolio ranks in Google and which keywords drive organic traffic."
-          phase={3}
-          items={[
-            { title: 'Google Search Console', desc: 'Connect GSC to see impressions, clicks, average position, and CTR for your top keywords.' },
-            { title: 'Keyword Rankings', desc: 'Track which search queries bring visitors to your case studies and blog posts.' },
-            { title: 'Core Web Vitals', desc: 'Monitor LCP, CLS, and FID scores that directly impact your Google ranking.' },
-            { title: 'Indexing Status', desc: 'See which pages are indexed by Google and flag any crawl errors.' },
-          ]}
-        />
+        <>
+          <CoreWebVitalsCard
+            byMetric={data?.cwv.byMetric ?? []}
+            loading={loading}
+          />
+
+          {gscError && (
+            <div className="a-alert a-alert--error" style={{ marginBottom: 12 }}>{gscError}</div>
+          )}
+
+          {!gscLoading && gscData?.configured === false && (
+            <GscConnectionCard />
+          )}
+
+          {(gscLoading || gscData?.configured) && (
+            <div className="an-seo-gsc-row">
+              <KeywordRankingsCard
+                keywords={gscData?.keywords ?? []}
+                loading={gscLoading}
+              />
+              <IndexingStatusCard
+                indexing={gscData?.indexing ?? []}
+                loading={gscLoading}
+              />
+            </div>
+          )}
+
+          {gscData?.error && (
+            <div className="a-alert a-alert--error" style={{ marginTop: 12 }}>{gscData.error}</div>
+          )}
+        </>
       )}
 
     </AdminLayout>

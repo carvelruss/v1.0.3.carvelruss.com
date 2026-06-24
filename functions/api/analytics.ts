@@ -112,6 +112,21 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       `).bind(since).all<{ source: string; count: number }>().catch(() => ({ results: [] as { source: string; count: number }[] })),
     ]);
 
+    // Phase 3: Core Web Vitals aggregation
+    interface CwvAgg { metric: string; total: number; avg_value: number; good_pct: number; ni_pct: number; poor_pct: number }
+    const cwvRows = await env.DB.prepare(`
+      SELECT
+        metric,
+        COUNT(*) as total,
+        AVG(value) as avg_value,
+        ROUND(AVG(CASE WHEN rating = 'good'             THEN 100.0 ELSE 0 END), 1) as good_pct,
+        ROUND(AVG(CASE WHEN rating = 'needs-improvement' THEN 100.0 ELSE 0 END), 1) as ni_pct,
+        ROUND(AVG(CASE WHEN rating = 'poor'             THEN 100.0 ELSE 0 END), 1) as poor_pct
+      FROM cwv_events
+      WHERE created_at >= datetime('now', ?)
+      GROUP BY metric
+    `).bind(since).all<CwvAgg>().catch(() => ({ results: [] as CwvAgg[] }));
+
     const [topCountries, newVis, returningVis] = await Promise.all([
       env.DB.prepare(`
         SELECT country, COUNT(*) as count FROM page_views
@@ -194,6 +209,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       inquiryAttribution: {
         byPage:   inqByPage.results   ?? [],
         bySource: inqBySource.results ?? [],
+      },
+      cwv: {
+        byMetric: cwvRows.results ?? [],
       },
     });
   } catch {
