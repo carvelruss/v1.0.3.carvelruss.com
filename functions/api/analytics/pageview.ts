@@ -11,17 +11,18 @@ function detectDevice(ua: string): 'mobile' | 'tablet' | 'desktop' {
 // POST /api/analytics/pageview — public, no auth
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   try {
-    const body = await request.json<{ path?: string }>();
-    const path = String(body.path ?? '').slice(0, 255).trim();
+    const body = await request.json<{ path?: string; session_id?: string }>();
+    const path      = String(body.path ?? '').slice(0, 255).trim();
     if (!path) return err('path required');
 
     const country    = request.headers.get('CF-IPCountry') ?? null;
     const ua         = request.headers.get('User-Agent') ?? '';
     const deviceType = detectDevice(ua);
+    const sessionId  = String(body.session_id ?? '').slice(0, 64) || null;
 
     await env.DB.prepare(
-      'INSERT INTO page_views (path, country, device_type) VALUES (?, ?, ?)',
-    ).bind(path, country, deviceType).run();
+      'INSERT INTO page_views (path, country, device_type, session_id) VALUES (?, ?, ?, ?)',
+    ).bind(path, country, deviceType, sessionId).run();
 
     return json({ ok: true });
   } catch {

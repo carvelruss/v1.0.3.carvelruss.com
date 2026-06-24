@@ -2915,3 +2915,51 @@
   width: 100%; height: 180px;
   display: block; overflow: visible;
 }
+
+/* ── Sessions Chart ───────────────────────────────────────────── */
+.sc-card { padding: 0; overflow: hidden; }
+
+.sc-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--adm-border);
+}
+.sc-tab {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 16px 20px; border: none; background: none;
+  cursor: pointer; text-align: left; font-family: inherit;
+  border-bottom: 3px solid transparent;
+  transition: background .15s, border-color .15s;
+  position: relative;
+}
+.sc-tab:not(:last-child)::after {
+  content: ''; position: absolute; right: 0; top: 20%; bottom: 20%;
+  width: 1px; background: var(--adm-border);
+}
+.sc-tab:hover { background: var(--adm-surface-2); }
+.sc-tab--active { border-bottom-color: var(--adm-accent); }
+
+.sc-tab__label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--adm-muted);
+}
+.sc-tab__value {
+  font-size: 22px; font-weight: 700; color: var(--adm-text);
+  line-height: 1.1;
+}
+.sc-tab__change {
+  font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 3px;
+}
+.sc-tab__change--up   { color: var(--adm-success); }
+.sc-tab__change--down { color: var(--adm-danger); }
+
+.sc-chart { padding: 8px 20px 0; }
+
+.sc-footer {
+  padding: 8px 20px 14px;
+}
+.sc-footer__sub { font-size: 11px; color: var(--adm-muted); }
+
+@media (max-width: 700px) {
+  .sc-tabs { grid-template-columns: repeat(2, 1fr); }
+}

@@ -29,6 +29,18 @@ interface AnalyticsData {
   };
   heatmap:     HeatCell[];
   deviceByDay: DeviceRow[];
+  sessions: {
+    period:          number;
+    prevPeriod:      number;
+    bounceRate:      number;
+    prevBounceRate:  number;
+    avgDuration:     number;
+    prevAvgDuration: number;
+    byDay:           DayCount[];
+    prevByDay:       DayCount[];
+    bounceByDay:     DayCount[];
+    durationByDay:   DayCount[];
+  };
 }
 
 /* ── Helpers ─────────────────────────────────────────────────── */
@@ -323,6 +335,84 @@ function StatCard({
           ) : null}
         </div>
         {sparkData && <Sparkline data={sparkData} color={color} />}
+      </div>
+    </div>
+  );
+}
+
+/* ── Helpers ─────────────────────────────────────────────────── */
+
+function fmtDuration(s: number): string {
+  if (s <= 0) return '0s';
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  if (m === 0) return `${sec}s`;
+  return `${m}m ${String(sec).padStart(2, '0')}s`;
+}
+
+/* ── Sessions Chart ──────────────────────────────────────────── */
+
+type SessionTab = 'users' | 'sessions' | 'bounce' | 'duration';
+
+interface SessionsData {
+  period: number; prevPeriod: number;
+  bounceRate: number; prevBounceRate: number;
+  avgDuration: number; prevAvgDuration: number;
+  byDay: DayCount[]; prevByDay: DayCount[];
+  bounceByDay: DayCount[]; durationByDay: DayCount[];
+}
+
+function SessionsChart({ data, days, periodLabel }: { data: SessionsData; days: number; periodLabel: string }) {
+  const [tab, setTab] = useState<SessionTab>('users');
+
+  const pvChange  = calcChange(data.period,     data.prevPeriod);
+  const brChange  = data.prevBounceRate  > 0 ? Math.round(((data.bounceRate - data.prevBounceRate) / data.prevBounceRate) * 100) : null;
+  const durChange = calcChange(data.avgDuration, data.prevAvgDuration);
+
+  const chartData: Record<SessionTab, { cur: DayCount[]; prev: DayCount[]; label: string; color: string; fmt: (v: number) => string }> = {
+    users:    { cur: fillDays(data.byDay, days),       prev: fillDays(data.prevByDay, days, days),   label: 'Users',            color: '#6366f1', fmt: v => v.toLocaleString() },
+    sessions: { cur: fillDays(data.byDay, days),       prev: fillDays(data.prevByDay, days, days),   label: 'Sessions',         color: '#6366f1', fmt: v => v.toLocaleString() },
+    bounce:   { cur: fillDays(data.bounceByDay, days), prev: fillDays(data.bounceByDay, days, days), label: 'Bounce Rate',      color: '#f59e0b', fmt: v => v.toFixed(1) + '%' },
+    duration: { cur: fillDays(data.durationByDay, days), prev: fillDays(data.durationByDay, days, days), label: 'Session Duration', color: '#10b981', fmt: fmtDuration },
+  };
+
+  const active = chartData[tab];
+
+  const TABS: { key: SessionTab; label: string; value: string; change: number | null; down?: boolean }[] = [
+    { key: 'users',    label: 'Users',            value: fmtNum(data.period),                change: pvChange },
+    { key: 'sessions', label: 'Sessions',         value: fmtNum(data.period),                change: pvChange },
+    { key: 'bounce',   label: 'Bounce Rate',      value: data.bounceRate.toFixed(1) + '%',   change: brChange, down: (brChange ?? 0) < 0 },
+    { key: 'duration', label: 'Session Duration', value: fmtDuration(data.avgDuration),      change: durChange },
+  ];
+
+  return (
+    <div className="a-card sc-card">
+      {/* Metric tabs */}
+      <div className="sc-tabs">
+        {TABS.map(t => (
+          <button
+            key={t.key}
+            className={`sc-tab${tab === t.key ? ' sc-tab--active' : ''}`}
+            onClick={() => setTab(t.key)}
+          >
+            <span className="sc-tab__label">{t.label}</span>
+            <span className="sc-tab__value">{t.value}</span>
+            {t.change != null && (
+              <span className={`sc-tab__change ${t.change >= 0 ? 'sc-tab__change--up' : 'sc-tab__change--down'}`}>
+                {t.change >= 0 ? '▲' : '▼'} {Math.abs(t.change)}%
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Chart */}
+      <div className="sc-chart">
+        <AreaChart data={active.cur} prevData={active.prev} color={active.color} label={active.label} />
+      </div>
+
+      <div className="sc-footer">
+        <span className="sc-footer__sub">{periodLabel} · dashed line is previous period</span>
       </div>
     </div>
   );
@@ -728,6 +818,11 @@ export default function AdminAnalyticsPage() {
         <StatCard label="Inquiries"     value={data ? fmtNum(data.contacts.period)  : '—'} change={cChange}  sparkData={cByDay}   color="#10b981" />
         <StatCard label="Avg Views/Day" value={data ? fmtNum(avgDay)                : '—'} sub={`over ${days} days`}   color="#f59e0b" />
       </div>
+
+      {/* ── Sessions overview ── */}
+      {!loading && data?.sessions && (
+        <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
+      )}
 
       {/* ── Main body ── */}
       <div className="an-body">

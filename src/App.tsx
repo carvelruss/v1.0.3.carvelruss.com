@@ -1,6 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 
+function getSessionId(): string {
+  let sid = sessionStorage.getItem('_sid');
+  if (!sid) {
+    sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    sessionStorage.setItem('_sid', sid);
+  }
+  return sid;
+}
+
 function PageTracker() {
   const location = useLocation();
   useEffect(() => {
@@ -9,7 +18,7 @@ function PageTracker() {
     fetch('/api/analytics/pageview', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: location.pathname }),
+      body: JSON.stringify({ path: location.pathname, session_id: getSessionId() }),
     }).catch(() => {});
   }, [location.pathname]);
   return null;
