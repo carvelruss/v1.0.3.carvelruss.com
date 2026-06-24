@@ -149,6 +149,46 @@ function SeoPreview({ title, slug, desc }: { title: string; slug: string; desc: 
   );
 }
 
+/* ── Calendar time input ────────────────────────────────────────────────────── */
+function CalendarTimeInput({ value = '12:00', onChange }: { value?: string; onChange?: (v: string) => void }) {
+  const [hStr, mStr] = value.split(':');
+  const hour24 = parseInt(hStr ?? '12', 10);
+  const minute  = parseInt(mStr  ?? '0',  10);
+  const period  = hour24 >= 12 ? 'PM' : 'AM';
+  const hour12  = hour24 % 12 || 12;
+
+  const emit = (h12: number, min: number, p: string) => {
+    let h24 = h12 % 12;
+    if (p === 'PM') h24 += 12;
+    onChange?.(`${String(h24).padStart(2, '0')}:${String(min).padStart(2, '0')}`);
+  };
+
+  return (
+    <div className="a-cal-time">
+      <span className="a-cal-time__label">TIME</span>
+      <select className="a-cal-time__sel" value={hour12}
+        onChange={e => emit(Number(e.target.value), minute, period)}>
+        {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
+          <option key={h} value={h}>{String(h).padStart(2, '0')}</option>
+        ))}
+      </select>
+      <span className="a-cal-time__colon">:</span>
+      <select className="a-cal-time__sel" value={minute}
+        onChange={e => emit(hour12, Number(e.target.value), period)}>
+        {[0, 15, 30, 45].map(m => (
+          <option key={m} value={m}>{String(m).padStart(2, '0')}</option>
+        ))}
+      </select>
+      <div className="a-cal-time__ampm">
+        <button type="button" className={`a-cal-ampm-btn${period === 'AM' ? ' active' : ''}`}
+          onClick={() => emit(hour12, minute, 'AM')}>AM</button>
+        <button type="button" className={`a-cal-ampm-btn${period === 'PM' ? ' active' : ''}`}
+          onClick={() => emit(hour12, minute, 'PM')}>PM</button>
+      </div>
+    </div>
+  );
+}
+
 /* ── Main component ─────────────────────────────────────────────────────────── */
 export default function PostForm() {
   const navigate  = useNavigate();
@@ -174,6 +214,7 @@ export default function PostForm() {
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarUploadErr, setAvatarUploadErr] = useState('');
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const dpRef = useRef<DatePicker>(null);
   const toastRef = useRef(0);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -481,18 +522,38 @@ export default function PostForm() {
           <div className="ep-field">
             <label className="ep-label" htmlFor="ps-pub-date">Publish date</label>
             <DatePicker
+              ref={dpRef}
               id="ps-pub-date"
               selected={form.published_at ? new Date(form.published_at) : null}
               onChange={(date: Date | null) =>
                 set('published_at', date ? date.toISOString() : null)
               }
-              showTimeSelect timeFormat="h:mm aa" timeIntervals={15}
+              showTimeInput
+              customTimeInput={<CalendarTimeInput />}
+              timeInputLabel=""
               dateFormat="MMM d, yyyy · h:mm aa"
               placeholderText="Set date & time…"
-              isClearable
+              shouldCloseOnSelect={false}
               wrapperClassName="ep-datepicker-wrap a-datepicker-wrap"
               popperClassName="a-datepicker-popper"
-            />
+            >
+              <div className="a-cal-footer">
+                <div className="a-cal-footer__actions">
+                  <button type="button" className="a-cal-footer__link"
+                    onClick={() => { set('published_at', new Date().toISOString()); (dpRef.current as any)?.setOpen(false); }}>
+                    Today
+                  </button>
+                  <button type="button" className="a-cal-footer__link"
+                    onClick={() => { set('published_at', null); (dpRef.current as any)?.setOpen(false); }}>
+                    Clear
+                  </button>
+                </div>
+                <button type="button" className="a-cal-footer__set"
+                  onClick={() => (dpRef.current as any)?.setOpen(false)}>
+                  Set date &amp; time
+                </button>
+              </div>
+            </DatePicker>
           </div>
           <div className="ep-row-2">
             <div className="ep-field">
