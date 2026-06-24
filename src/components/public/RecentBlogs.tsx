@@ -242,22 +242,15 @@ export default function RecentBlogs() {
   useEffect(() => {
     fetch('/api/posts')
       .then(r => r.json())
-      .then((data: Post[]) =>
-        setPosts(
-          data
-            .filter(p => p.status === 'published')
-            .slice(0, 3),
-        ),
-      )
+      .then((data: Post[]) => setPosts(Array.isArray(data) ? data.slice(0, 3) : []))
       .catch(() => setPosts([]));
   }, []);
 
   const loading  = posts === null;
-  const hasPosts = !loading && posts.length > 0;
+  const hasPosts = !loading && posts!.length > 0;
 
-  /* Map live posts over static placeholders when available */
   const displayBlogs: RecentBlog[] = hasPosts
-    ? posts.map((p, i) => ({
+    ? posts!.map((p, i) => ({
         title:         p.title,
         category:      p.category ?? 'Design',
         excerpt:       p.excerpt ?? p.meta_description ?? '',
@@ -266,7 +259,7 @@ export default function RecentBlogs() {
         thumbnailType: STATIC_BLOGS[i % STATIC_BLOGS.length].thumbnailType,
         coverImage:    p.og_image,
       }))
-    : STATIC_BLOGS;
+    : [];
 
   return (
     <section className="rb" aria-labelledby="rb-title">
@@ -295,13 +288,13 @@ export default function RecentBlogs() {
             <SkeletonCard />
             <SkeletonCard />
           </div>
-        ) : (
+        ) : hasPosts ? (
           <div className="rb__grid">
             {displayBlogs.map(blog => (
               <BlogCard key={blog.slug} blog={blog} />
             ))}
           </div>
-        )}
+        ) : null}
 
       </div>
     </section>
