@@ -112,21 +112,21 @@ export default function Footer() {
                 </li>
               </ul>
 
-              <div className="footer-socials" role="list" aria-label="Social media links">
+              <ul className="footer-socials" aria-label="Social media links">
                 {SOCIAL_LINKS.map(({ label, icon: Icon, href }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    className="footer-social-link"
-                    aria-label={label}
-                    target="_blank"
-                    rel="noreferrer"
-                    role="listitem"
-                  >
-                    <Icon size={16} aria-hidden="true" />
-                  </a>
+                  <li key={label}>
+                    <a
+                      href={href}
+                      className="footer-social-link"
+                      aria-label={label}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Icon size={16} aria-hidden="true" />
+                    </a>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
 
           </div>{/* end .footer-main */}

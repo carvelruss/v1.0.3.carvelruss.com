@@ -240,6 +240,9 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 4px;
+  list-style: none;
+  padding: 0;
+  margin-left: 0;
 }
 
 .footer-social-link {
