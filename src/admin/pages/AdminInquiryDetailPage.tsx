@@ -7,7 +7,7 @@ import type { Inquiry } from '../../types';
 type InquiryStatus = 'unread' | 'read' | 'replied' | 'archived';
 
 function formatDate(d: string) {
-  return new Date(d).toLocaleDateString('en-US', {
+  return new Date(d).toLocaleString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
