@@ -152,7 +152,7 @@ export default function ProjectsAdmin() {
               Loading…
             </div>
           ) : (
-            <table className="a-table" aria-label="Case studies list">
+            <table className="a-table a-table--projects" aria-label="Case studies list">
               <thead>
                 <tr>
                   <th>TITLE</th>

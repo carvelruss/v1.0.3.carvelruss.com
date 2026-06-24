@@ -219,7 +219,7 @@ export default function PostsAdmin() {
           {loading ? (
             <div className="a-loading" style={{ padding: '40px 24px', textAlign: 'center' }}>Loading…</div>
           ) : (
-            <table className="a-table" aria-label="Blog posts list">
+            <table className="a-table a-table--posts" aria-label="Blog posts list">
               <thead>
                 <tr>
                   <th>TITLE</th>

@@ -1284,6 +1284,65 @@
 @media (max-width: 575.98px) {
   .a-form-two-col { grid-template-columns: 1fr; }
   .adm-stats-grid { grid-template-columns: 1fr 1fr; }
+  /* Hide "View site" so the page title has room to breathe */
+  .admin-topbar__portal-link { display: none; }
+}
+
+/* ── Mobile: table → stacked card list ─────────────────────── */
+@media (max-width: 640px) {
+  /* Outer flush card becomes transparent container */
+  .a-card--flush { overflow: visible; background: transparent; border-color: transparent; box-shadow: none; }
+
+  /* Strip the table wrapper chrome */
+  .a-table-wrap { overflow-x: visible; border: none; border-radius: 0; background: transparent; }
+
+  /* Flatten table to block flow */
+  .a-table,
+  .a-table tbody { display: block; }
+  .a-table thead  { display: none; }
+
+  /* Each row becomes its own card */
+  .a-table tbody tr {
+    display: block;
+    position: relative;
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-r-sm);
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    background: var(--adm-surface);
+  }
+  .a-table tbody tr:hover { background: var(--adm-surface-2); }
+  .a-table tbody tr:last-child { margin-bottom: 0; border-bottom: 1px solid var(--adm-border); }
+  .a-table td { display: block; padding: 0; border: none; }
+
+  /* ── Projects: TITLE, TYPE, STATUS, FEATURED, DATE, ACTIONS ── */
+  .a-table--projects td:nth-child(1) { padding-right: 88px; margin-bottom: 3px; }
+  .a-table--projects td:nth-child(2) { font-size: 12.5px; margin-bottom: 8px; }
+  .a-table--projects td:nth-child(3) { position: absolute; top: 12px; right: 14px; }
+  .a-table--projects td:nth-child(4),
+  .a-table--projects td:nth-child(5) { display: none; }
+  .a-table--projects td:nth-child(6) .a-table__actions { justify-content: flex-end; }
+
+  /* ── Posts: TITLE, SLUG, CATEGORY, STATUS, PUBLISHED, ACTIONS ── */
+  .a-table--posts td:nth-child(1) { padding-right: 88px; margin-bottom: 3px; }
+  .a-table--posts td:nth-child(2) { display: none; }
+  .a-table--posts td:nth-child(3) { font-size: 12.5px; margin-bottom: 8px; }
+  .a-table--posts td:nth-child(4) { position: absolute; top: 12px; right: 14px; }
+  .a-table--posts td:nth-child(5) { display: none; }
+  .a-table--posts td:nth-child(6) .a-table__actions { justify-content: flex-end; }
+
+  /* ── Inquiries: NAME, PROJECT TYPE, STATUS, DATE, ACTIONS ── */
+  .a-table--inquiries td:nth-child(1) { padding-right: 88px; margin-bottom: 3px; }
+  .a-table--inquiries td:nth-child(2) { font-size: 12.5px; margin-bottom: 8px; }
+  .a-table--inquiries td:nth-child(3) { position: absolute; top: 12px; right: 14px; }
+  .a-table--inquiries td:nth-child(4) { display: none; }
+  .a-table--inquiries td:nth-child(5) .a-table__actions { justify-content: flex-end; }
+
+  /* Empty-state row spans correctly */
+  .a-table td[colspan] { padding: 0; }
+
+  /* Pagination inside the now-transparent card */
+  .a-pagination { background: var(--adm-surface); border: 1px solid var(--adm-border); border-radius: var(--adm-r-sm); margin-top: 10px; }
 }
 
 /* ── 23. RICH EDITOR ─────────────────────────────────────────── */

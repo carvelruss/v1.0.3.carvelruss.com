@@ -238,7 +238,7 @@ export default function InboxAdmin() {
               </p>
             </div>
           ) : (
-            <table className="a-table" aria-label="Inquiries list">
+            <table className="a-table a-table--inquiries" aria-label="Inquiries list">
               <thead>
                 <tr>
                   <th>Name</th>
