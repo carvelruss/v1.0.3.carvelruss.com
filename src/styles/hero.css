@@ -915,6 +915,8 @@
 
 /* Small mobile (< 576px) */
 @media (max-width: 575px) {
+  .hs__title { font-size: 28px; }
+
   .hs__actions {
     flex-direction: row;
     align-items: center;
