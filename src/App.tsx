@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, lazy, Suspense } from 'react';
 import { trackPageView, trackEvent } from './lib/track';
 import { initVitals } from './lib/vitals';
 
@@ -76,98 +76,28 @@ import './styles/public.css';
 import './styles/webStudio.css';
 import './styles/main.scss';
 
-import Header   from './components/layout/Header';
-import Footer from './components/layout/Footer';
-
-import ProjectsPage    from './pages/ProjectsPage';
-import CaseStudyDetail from './pages/CaseStudyDetail';
-import BlogList        from './pages/BlogList';
-import BlogSingle      from './pages/BlogSingle';
-import ThankYou        from './pages/ThankYou';
-import ContactPage     from './pages/ContactPage';
-import SkillsPage      from './pages/SkillsPage';
-import AdminApp        from './admin/AdminApp';
-import WebStudioLanding from './pages/WebStudioLanding';
+import Header            from './components/layout/Header';
+import Footer            from './components/layout/Footer';
+import WebStudioLanding  from './pages/WebStudioLanding';
 import ScrollToTopButton from './components/ScrollToTopButton';
 
-function ProjectsLayout() {
-  return (
-    <div className="ws-page">
-      <Header />
-      <main id="main-content" tabIndex={-1}>
-        <ProjectsPage />
-      </main>
-      <Footer />
-    </div>
-  );
-}
+// All non-homepage routes are lazy — they're never needed for the initial LCP paint.
+// AdminApp especially: it imports TipTap + react-datepicker that no public visitor needs.
+const ProjectsPage    = lazy(() => import('./pages/ProjectsPage'));
+const CaseStudyDetail = lazy(() => import('./pages/CaseStudyDetail'));
+const BlogList        = lazy(() => import('./pages/BlogList'));
+const BlogSingle      = lazy(() => import('./pages/BlogSingle'));
+const ThankYou        = lazy(() => import('./pages/ThankYou'));
+const ContactPage     = lazy(() => import('./pages/ContactPage'));
+const SkillsPage      = lazy(() => import('./pages/SkillsPage'));
+const AdminApp        = lazy(() => import('./admin/AdminApp'));
 
-function BlogListLayout() {
+function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="ws-page">
       <Header />
       <main id="main-content" tabIndex={-1}>
-        <BlogList />
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-function BlogPostLayout() {
-  return (
-    <div className="ws-page">
-      <Header />
-      <main id="main-content" tabIndex={-1}>
-        <BlogSingle />
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-function SkillsLayout() {
-  return (
-    <div className="ws-page">
-      <Header />
-      <main id="main-content" tabIndex={-1}>
-        <SkillsPage />
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-function ContactLayout() {
-  return (
-    <div className="ws-page">
-      <Header />
-      <main id="main-content" tabIndex={-1}>
-        <ContactPage />
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-function ThankYouLayout() {
-  return (
-    <div className="ws-page">
-      <Header />
-      <main id="main-content" tabIndex={-1}>
-        <ThankYou />
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-function CaseStudyLayout() {
-  return (
-    <div className="ws-page">
-      <Header />
-      <main id="main-content" tabIndex={-1}>
-        <CaseStudyDetail />
+        <Suspense fallback={null}>{children}</Suspense>
       </main>
       <Footer />
     </div>
@@ -185,16 +115,16 @@ export default function App() {
       <ScrollToTopButton />
       <Routes>
         <Route path="/"                      element={<WebStudioLanding />} />
-        <Route path="/case-studies"          element={<ProjectsLayout />} />
-        <Route path="/case-studies/:slug"    element={<CaseStudyLayout />} />
-        <Route path="/blog"                  element={<BlogListLayout />} />
-        <Route path="/blog/:slug"            element={<BlogPostLayout />} />
-        <Route path="/blogs"                 element={<BlogListLayout />} />
-        <Route path="/blogs/:slug"           element={<BlogPostLayout />} />
-        <Route path="/skills"                element={<SkillsLayout />} />
-        <Route path="/contact"               element={<ContactLayout />} />
-        <Route path="/thank-you"             element={<ThankYouLayout />} />
-        <Route path="/admin/*"               element={<AdminApp />} />
+        <Route path="/case-studies"          element={<PageShell><ProjectsPage /></PageShell>} />
+        <Route path="/case-studies/:slug"    element={<PageShell><CaseStudyDetail /></PageShell>} />
+        <Route path="/blog"                  element={<PageShell><BlogList /></PageShell>} />
+        <Route path="/blog/:slug"            element={<PageShell><BlogSingle /></PageShell>} />
+        <Route path="/blogs"                 element={<PageShell><BlogList /></PageShell>} />
+        <Route path="/blogs/:slug"           element={<PageShell><BlogSingle /></PageShell>} />
+        <Route path="/skills"                element={<PageShell><SkillsPage /></PageShell>} />
+        <Route path="/contact"               element={<PageShell><ContactPage /></PageShell>} />
+        <Route path="/thank-you"             element={<PageShell><ThankYou /></PageShell>} />
+        <Route path="/admin/*"               element={<Suspense fallback={null}><AdminApp /></Suspense>} />
         <Route path="*"                      element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
