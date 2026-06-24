@@ -689,8 +689,16 @@
 }
 
 /* Featured star */
-.a-star { color: var(--adm-warning); font-size: .9rem; }
-.a-star--off { color: var(--adm-border-2); font-size: .9rem; }
+.a-star {
+  background: none; border: none; padding: 4px; cursor: pointer;
+  font-size: 1.1rem; color: var(--adm-warning);
+  line-height: 1; border-radius: 6px;
+  transition: transform .12s, color .12s, background .12s;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.a-star:hover { transform: scale(1.2); background: var(--adm-warning-soft); }
+.a-star--off { color: var(--adm-border-2); }
+.a-star--off:hover { color: var(--adm-warning); }
 
 /* ── 15. TABLE TOOLBAR ──────────────────────────────────────── */
 .a-toolbar {

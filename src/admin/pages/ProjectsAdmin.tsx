@@ -158,7 +158,7 @@ export default function ProjectsAdmin() {
                   <th>TITLE</th>
                   <th>TYPE</th>
                   <th>STATUS</th>
-                  <th>FEATURED</th>
+                  <th style={{ textAlign: 'center' }}>FEATURED</th>
                   <th>DATE</th>
                   <th>ACTIONS</th>
                 </tr>
@@ -211,13 +211,12 @@ export default function ProjectsAdmin() {
                       </td>
 
                       {/* Featured star */}
-                      <td>
+                      <td style={{ textAlign: 'center' }}>
                         <button
                           className={p.featured === 1 ? 'a-star' : 'a-star a-star--off'}
                           onClick={() => handleToggleFeatured(p)}
                           aria-label={p.featured === 1 ? `Unfeature ${p.title}` : `Feature ${p.title}`}
                           title={p.featured === 1 ? 'Click to unfeature' : 'Click to feature'}
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                         >
                           &#9733;
                         </button>
