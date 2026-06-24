@@ -2069,3 +2069,30 @@ p { margin: 0; }
 .pf-prose a { color: var(--pf-primary); }
 .pf-prose code { background: var(--pf-bg-alt); border-radius: 4px; padding: .125rem .375rem; font-family: var(--pf-font-mono); font-size: .875em; }
 .pf-prose pre { background: var(--pf-text); color: #f8fafc; border-radius: var(--pf-r); padding: 1.25rem; overflow-x: auto; margin-block: 1.5rem; }
+
+/* ── Scroll-to-top button ────────────────────────────────────── */
+.stt-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--pf-primary, #0f1e45);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(15,30,69,.25);
+  transition: background .15s, transform .15s, opacity .2s;
+  animation: stt-in .2s cubic-bezier(.34,1.56,.64,1);
+}
+.stt-btn:hover { background: var(--pf-primary-dark, #1a3270); transform: translateY(-2px); }
+.stt-btn:active { transform: scale(.94); }
+@keyframes stt-in {
+  from { opacity: 0; transform: translateY(10px) scale(.85); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}

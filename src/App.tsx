@@ -59,6 +59,7 @@ import ContactPage     from './pages/ContactPage';
 import SkillsPage      from './pages/SkillsPage';
 import AdminApp        from './admin/AdminApp';
 import WebStudioLanding from './pages/WebStudioLanding';
+import ScrollToTopButton from './components/ScrollToTopButton';
 
 function ProjectsLayout() {
   return (
@@ -149,6 +150,7 @@ export default function App() {
     <BrowserRouter>
       <RevealObserver />
       <PageTracker />
+      <ScrollToTopButton />
       <Routes>
         <Route path="/"                      element={<WebStudioLanding />} />
         <Route path="/case-studies"          element={<ProjectsLayout />} />
