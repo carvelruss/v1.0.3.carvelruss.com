@@ -3130,7 +3130,7 @@
 }
 .bc-svg { width: 172px; height: 172px; }
 
-.bc-list { border-top: 1px solid var(--adm-border); margin-top: 4px; }
+.bc-list { border-top: 1px solid var(--adm-border); margin-top: 16px; }
 .bc-row {
   display: flex; align-items: center;
   padding: 10px 0; border-bottom: 1px solid var(--adm-border);
