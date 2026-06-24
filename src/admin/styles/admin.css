@@ -1312,8 +1312,16 @@
     width: 100%;
     height: 40px;
   }
+  /* Plain selects (not in wrapper) fill their grid cell */
+  .a-toolbar .a-filter-select { width: 100%; height: 40px; }
   .a-filter-select { height: 40px; }
-  .a-filter-icon-btn { display: none; } /* non-functional on mobile */
+  .a-filter-icon-btn { display: none; }
+
+  /* Standalone buttons in toolbar (e.g. Export) span full width */
+  .a-toolbar > .a-btn { grid-column: 1 / -1; width: 100%; justify-content: center; }
+
+  /* Recent item excerpt: remove hard max-width so text doesn't clip */
+  .a-recent-item__sub { max-width: none; }
 
   /* Outer flush card becomes transparent container */
   .a-card--flush { overflow: visible; background: transparent; border-color: transparent; box-shadow: none; }
@@ -1368,6 +1376,41 @@
 
   /* Pagination inside the now-transparent card */
   .a-pagination { background: var(--adm-surface); border: 1px solid var(--adm-border); border-radius: var(--adm-r-sm); margin-top: 10px; }
+}
+
+/* ── Mobile: Case Study section editor ───────────────────────── */
+@media (max-width: 640px) {
+  /* Stack nav on top as a horizontal scroll strip */
+  .cs-editor {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+  }
+  .cs-editor__nav {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--adm-border);
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0;
+    scrollbar-width: none;
+  }
+  .cs-editor__nav::-webkit-scrollbar { display: none; }
+  .cs-editor__nav-item {
+    flex-shrink: 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    padding: 8px 12px;
+  }
+  .cs-editor__nav-item.is-active {
+    background: transparent;
+    color: var(--adm-primary-text);
+    font-weight: 600;
+    border-bottom-color: var(--adm-primary);
+  }
+  .cs-editor__panel { min-height: 220px; }
+  .cs-editor__textarea { min-height: 180px; }
 }
 
 /* ── 23. RICH EDITOR ─────────────────────────────────────────── */

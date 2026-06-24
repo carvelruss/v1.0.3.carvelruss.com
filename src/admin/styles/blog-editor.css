@@ -1005,3 +1005,11 @@
   .ep-save-indicator { display: none; }
   .ep-btn--sm { padding: 5px 8px; font-size: 12px; }
 }
+
+/* ≤ 480px: drop status chip + squeeze to essentials only */
+@media (max-width: 480px) {
+  .ep-topbar-actions .ep-status-chip { display: none; }
+  .ep-topbar-title { font-size: 13px; }
+  /* Layout: 1fr for content, sidebar becomes full-width below */
+  .ep-layout { gap: 12px; padding: 0; }
+}
