@@ -16,6 +16,7 @@ type SkillGroup = {
 type Tool = {
   name: string;
   category: string;
+  description: string;
 };
 
 /* ── Data ─────────────────────────────────────────────────────── */
@@ -90,18 +91,18 @@ const SKILL_GROUPS: SkillGroup[] = [
 ];
 
 const TOOLS: Tool[] = [
-  { name: 'Figma',          category: 'Design'      },
-  { name: 'Adobe XD',       category: 'Design'      },
-  { name: 'Photoshop',      category: 'Design'      },
-  { name: 'Illustrator',    category: 'Design'      },
-  { name: 'FigJam',         category: 'Collaboration'},
-  { name: 'Notion',         category: 'Productivity' },
-  { name: 'React',          category: 'Development' },
-  { name: 'TypeScript',     category: 'Development' },
-  { name: 'Vite',           category: 'Development' },
-  { name: 'Bootstrap',      category: 'Development' },
-  { name: 'Git / GitHub',   category: 'Development' },
-  { name: 'Cloudflare',     category: 'Infrastructure'},
+  { name: 'Figma',        category: 'Design',         description: 'Primary UI design tool for components, auto-layout, variants, and design systems.' },
+  { name: 'Adobe XD',     category: 'Design',         description: 'Legacy project work and cross-team handoffs when client workflows require it.' },
+  { name: 'Photoshop',    category: 'Design',         description: 'Photo editing, image compositing, and pixel-level asset preparation for web.' },
+  { name: 'Illustrator',  category: 'Design',         description: 'Vector graphics, icon creation, and scalable brand asset production.' },
+  { name: 'FigJam',       category: 'Collaboration',  description: 'Collaborative whiteboarding for brainstorming, user flows, and workshop facilitation.' },
+  { name: 'Notion',       category: 'Productivity',   description: 'Project wikis, design briefs, and client onboarding docs to keep stakeholders aligned.' },
+  { name: 'React',        category: 'Development',    description: 'Primary framework for UI builds — hooks, context, and performance optimisation.' },
+  { name: 'TypeScript',   category: 'Development',    description: 'Strict typing for safer refactoring and self-documenting codebases.' },
+  { name: 'Vite',         category: 'Development',    description: 'Lightning-fast dev server and optimised production builds for every project.' },
+  { name: 'Bootstrap',    category: 'Development',    description: 'Rapid responsive layouts extended with custom SCSS and design-system tokens.' },
+  { name: 'Git / GitHub', category: 'Development',    description: 'Feature branching, pull-request reviews, and conventional commits for clean history.' },
+  { name: 'Cloudflare',   category: 'Infrastructure', description: 'Edge deployments, global CDN, custom domains, and serverless API routes via Workers.' },
 ];
 
 /* ── Skill group card ─────────────────────────────────────────── */
@@ -170,6 +171,7 @@ export default function SkillsSection() {
               <div key={tool.name} className="sks-tool">
                 <span className="sks-tool__name">{tool.name}</span>
                 <span className="sks-tool__cat">{tool.category}</span>
+                <p className="sks-tool__desc">{tool.description}</p>
               </div>
             ))}
           </div>

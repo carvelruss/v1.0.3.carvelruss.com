@@ -202,11 +202,11 @@
 .sks-tool {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   background: var(--sks-bg-soft);
   border: 1px solid var(--sks-border);
   border-radius: 12px;
-  padding: 12px 18px;
+  padding: 14px 18px;
   transition: border-color 0.2s ease, background 0.2s ease;
   cursor: default;
 }
@@ -229,6 +229,13 @@
   color: var(--sks-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.sks-tool__desc {
+  font-size: 11.5px;
+  color: var(--sks-muted);
+  line-height: 1.5;
+  margin: 4px 0 0;
 }
 
 /* ── 8. CTA STRIP ─────────────────────────────────────────────── */
