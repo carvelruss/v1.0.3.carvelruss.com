@@ -1256,14 +1256,30 @@ function TrafficSourcesCard({ sources, loading }: {
   sources: { source: string; count: number }[];
   loading: boolean;
 }) {
+  const [hovered, setHovered] = useState<SourceCat | null>(null);
+
   const cats: Record<SourceCat, number> = { Direct: 0, Organic: 0, Social: 0, Referral: 0 };
   for (const s of sources) cats[categorizeSrc(s.source)] += s.count;
-  const total    = Object.values(cats).reduce((a, b) => a + b, 0) || 1;
+  const rawTotal = Object.values(cats).reduce((a, b) => a + b, 0);
+  const total    = rawTotal || 1;
   const catOrder = (['Organic','Direct','Social','Referral'] as SourceCat[]);
 
   const topReferrals = sources
     .filter(s => s.source && !SEARCH_ENGINES.has(s.source) && !SOCIAL_NETWORKS.has(s.source))
     .slice(0, 5);
+
+  // Donut geometry
+  const R = 66; const CX = 90; const CY = 90;
+  const CIRC = 2 * Math.PI * R;
+  let cumLen = 0;
+  const segments = catOrder.map(cat => {
+    const count = cats[cat];
+    const pct   = count / total;
+    const len   = rawTotal > 0 ? Math.max(0, pct * CIRC - 3) : 0;
+    const seg   = { cat, count, pct, color: CAT_COLOR[cat]!, len, offset: cumLen };
+    cumLen += pct * CIRC;
+    return seg;
+  });
 
   return (
     <div className="a-card an-src-card">
@@ -1272,39 +1288,76 @@ function TrafficSourcesCard({ sources, loading }: {
         <div className="an-src-sub">Where your visitors come from</div>
       </div>
       {loading ? (
-        <div style={{ height: 100 }} />
+        <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="a-loading" />
+        </div>
       ) : (
-        <>
-          <div className="an-src-cats">
+        <div className="an-src-body">
+          {/* Legend */}
+          <div className="an-src-legend">
             {catOrder.map(cat => {
-              const pct = Math.round((cats[cat] / total) * 100);
+              const pct = rawTotal > 0 ? ((cats[cat] / rawTotal) * 100).toFixed(1) : '0.0';
               return (
-                <div key={cat} className="an-src-cat">
-                  <div className="an-src-cat__row">
-                    <span className="an-src-cat__dot" style={{ background: CAT_COLOR[cat] }} />
-                    <span className="an-src-cat__label">{cat}</span>
-                    <span className="an-src-cat__pct">{pct}%</span>
-                    <span className="an-src-cat__count">{fmtNum(cats[cat])}</span>
-                  </div>
-                  <div className="an-src-bar-track">
-                    <div className="an-src-bar-fill" style={{ width: `${pct}%`, background: CAT_COLOR[cat] }} />
-                  </div>
+                <div
+                  key={cat}
+                  className={`an-src-leg-row${hovered && hovered !== cat ? ' an-src-leg-row--dim' : ''}`}
+                  onMouseEnter={() => setHovered(cat)}
+                  onMouseLeave={() => setHovered(null)}
+                >
+                  <span className="an-src-leg-dot" style={{ background: CAT_COLOR[cat] }} />
+                  <span className="an-src-leg-label">{cat}</span>
+                  <span className="an-src-leg-pct">{pct}%</span>
+                  <span className="an-src-leg-count">{fmtNum(cats[cat])}</span>
                 </div>
               );
             })}
+            {topReferrals.length > 0 && (
+              <div className="an-src-refs">
+                <div className="an-src-refs-label">Top Referrals</div>
+                {topReferrals.map(r => (
+                  <div key={r.source} className="an-src-ref-row">
+                    <span className="an-src-ref-host">{r.source}</span>
+                    <span className="an-src-ref-count">{fmtNum(r.count)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          {topReferrals.length > 0 && (
-            <div className="an-src-referrals">
-              <div className="an-src-ref-label">Top Referrals</div>
-              {topReferrals.map(r => (
-                <div key={r.source} className="an-src-ref-row">
-                  <span className="an-src-ref-host">{r.source}</span>
-                  <span className="an-src-ref-count">{fmtNum(r.count)}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </>
+
+          {/* Donut */}
+          <div className="an-src-donut-wrap">
+            <svg viewBox="0 0 180 180" className="an-src-svg">
+              <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f1f5f9" strokeWidth="20" />
+              {rawTotal > 0 ? segments.map((seg, i) => (
+                <circle
+                  key={i}
+                  cx={CX} cy={CY} r={R}
+                  fill="none"
+                  stroke={seg.color}
+                  strokeWidth={hovered === seg.cat ? 24 : 20}
+                  strokeDasharray={`${seg.len} ${CIRC - seg.len}`}
+                  strokeDashoffset={-seg.offset}
+                  transform={`rotate(-90 ${CX} ${CY})`}
+                  style={{ cursor: 'pointer', opacity: hovered && hovered !== seg.cat ? 0.35 : 1, transition: 'stroke-width 0.15s, opacity 0.15s' }}
+                  onMouseEnter={() => setHovered(seg.cat)}
+                  onMouseLeave={() => setHovered(null)}
+                />
+              )) : null}
+              {/* Center label */}
+              {hovered ? (
+                <>
+                  <text x={CX} y={CY - 6} textAnchor="middle" fontSize="13" fontWeight="700" fill="#0f172a">{((cats[hovered] / rawTotal) * 100).toFixed(1)}%</text>
+                  <text x={CX} y={CY + 10} textAnchor="middle" fontSize="9.5" fill="#94a3b8">{hovered}</text>
+                </>
+              ) : (
+                <>
+                  <text x={CX} y={CY - 6} textAnchor="middle" fontSize="18" fontWeight="700" fill="#0f172a">{fmtNum(rawTotal)}</text>
+                  <text x={CX} y={CY + 10} textAnchor="middle" fontSize="9.5" fill="#94a3b8">Total Visits</text>
+                </>
+              )}
+            </svg>
+          </div>
+        </div>
       )}
     </div>
   );
