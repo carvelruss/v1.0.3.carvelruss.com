@@ -138,6 +138,8 @@ export default function Contact() {
           budget_range:  (fd.get('budget_range') as string) || undefined,
           timeline:      (fd.get('timeline')     as string) || undefined,
           turnstileToken,
+          source_page: window.location.pathname,
+          referrer:    document.referrer || null,
         }),
       });
       const data = await res.json() as { success?: boolean; error?: string };

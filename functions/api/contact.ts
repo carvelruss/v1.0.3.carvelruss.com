@@ -19,9 +19,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       budget_range?: string;
       timeline?: string;
       turnstileToken?: string;
+      source_page?: string;
+      referrer?: string;
     }>();
 
-    const { name, email, subject, message, project_type, budget_range, timeline, turnstileToken } = body;
+    const { name, email, subject, message, project_type, budget_range, timeline, turnstileToken, source_page, referrer } = body;
 
     // Basic field validation
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
@@ -51,9 +53,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
     // Store in D1 with all extended fields
     const ip = request.headers.get('CF-Connecting-IP') ?? request.headers.get('X-Forwarded-For');
+    const srcPage  = source_page ? String(source_page).slice(0, 255) : null;
+    const srcRef   = referrer    ? String(referrer).slice(0, 255)    : null;
     await env.DB.prepare(
-      `INSERT INTO inquiries (name, email, subject, message, project_type, budget_range, timeline, ip_address, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'unread')`,
+      `INSERT INTO inquiries (name, email, subject, message, project_type, budget_range, timeline, ip_address, status, source_page, referrer)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'unread', ?, ?)`,
     )
       .bind(
         name.trim(),
@@ -64,6 +68,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         budget_range?.trim() ?? null,
         timeline?.trim() ?? null,
         ip,
+        srcPage,
+        srcRef,
       )
       .run();
 

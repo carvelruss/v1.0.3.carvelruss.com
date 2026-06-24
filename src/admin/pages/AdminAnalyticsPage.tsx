@@ -60,6 +60,10 @@ interface AnalyticsData {
     formFunnel:  { event_type: string; count: number }[];
     scrollDepth: { value: number; count: number }[];
   };
+  inquiryAttribution: {
+    byPage:   { source_page: string; count: number }[];
+    bySource: { source: string; count: number }[];
+  };
 }
 
 type DashTab = 'overview' | 'traffic' | 'engagement' | 'portfolio' | 'leads' | 'seo';
@@ -1403,6 +1407,102 @@ function ScrollDepthCard({ depths, loading }: {
   );
 }
 
+/* ── Inquiry Source Attribution ──────────────────────────────── */
+
+function InquirySourceCard({ byPage, bySource, loading }: {
+  byPage:   { source_page: string; count: number }[];
+  bySource: { source: string; count: number }[];
+  loading: boolean;
+}) {
+  const [view, setView] = useState<'page' | 'source'>('page');
+
+  const pageMax   = Math.max(...byPage.map(r => r.count),   1);
+  const sourceMax = Math.max(...bySource.map(r => r.count), 1);
+
+  const pageLabelMap: Record<string, string> = {
+    '/':             'Home',
+    '/contact':      'Contact Page',
+    '/case-studies': 'Case Studies',
+    '/skills':       'Skills Page',
+    '/blog':         'Blog',
+    '/blogs':        'Blog',
+  };
+
+  return (
+    <div className="a-card an-inqsrc-card">
+      <div className="an-inqsrc-head">
+        <div>
+          <div className="an-inqsrc-title">Inquiry Source Attribution</div>
+          <div className="an-inqsrc-sub">Where your inquiries come from</div>
+        </div>
+        <div className="an-inqsrc-toggle">
+          <button
+            className={`an-inqsrc-toggle-btn${view === 'page' ? ' active' : ''}`}
+            onClick={() => setView('page')}
+          >By Page</button>
+          <button
+            className={`an-inqsrc-toggle-btn${view === 'source' ? ' active' : ''}`}
+            onClick={() => setView('source')}
+          >By Source</button>
+        </div>
+      </div>
+
+      {loading ? (
+        <div style={{ height: 80 }} />
+      ) : view === 'page' ? (
+        byPage.length === 0 ? (
+          <div className="an-inqsrc-empty">No attribution data yet. Inquiries submitted after this update will be tracked.</div>
+        ) : (
+          <div className="an-inqsrc-list">
+            {byPage.map((r, i) => {
+              const label = pageLabelMap[r.source_page] ?? r.source_page;
+              return (
+                <div key={r.source_page} className="an-inqsrc-item">
+                  <span className="an-inqsrc-rank">#{i + 1}</span>
+                  <div className="an-inqsrc-info">
+                    <span className="an-inqsrc-label" title={r.source_page}>{label}</span>
+                    <div className="an-inqsrc-bar-track">
+                      <div className="an-inqsrc-bar-fill" style={{ width: `${Math.round((r.count / pageMax) * 100)}%` }} />
+                    </div>
+                  </div>
+                  <span className="an-inqsrc-count">{r.count}</span>
+                </div>
+              );
+            })}
+          </div>
+        )
+      ) : (
+        bySource.length === 0 ? (
+          <div className="an-inqsrc-empty">No attribution data yet. Inquiries submitted after this update will be tracked.</div>
+        ) : (
+          <div className="an-inqsrc-list">
+            {bySource.map((r, i) => {
+              const label = r.source ? (COUNTRY_NAMES[r.source] ? r.source : r.source) : 'Direct';
+              const cat   = categorizeSrc(r.source);
+              return (
+                <div key={r.source || 'direct'} className="an-inqsrc-item">
+                  <span className="an-inqsrc-rank">#{i + 1}</span>
+                  <div className="an-inqsrc-info">
+                    <div className="an-inqsrc-source-row">
+                      <span className="an-inqsrc-cat-dot" style={{ background: CAT_COLOR[cat] }} />
+                      <span className="an-inqsrc-label">{label || 'Direct'}</span>
+                      <span className="an-inqsrc-cat-badge">{cat}</span>
+                    </div>
+                    <div className="an-inqsrc-bar-track">
+                      <div className="an-inqsrc-bar-fill" style={{ width: `${Math.round((r.count / sourceMax) * 100)}%`, background: CAT_COLOR[cat] }} />
+                    </div>
+                  </div>
+                  <span className="an-inqsrc-count">{r.count}</span>
+                </div>
+              );
+            })}
+          </div>
+        )
+      )}
+    </div>
+  );
+}
+
 /* ── Placeholder section ─────────────────────────────────────── */
 
 function PlaceholderSection({ title, subtitle, items, phase }: {
@@ -1689,6 +1789,11 @@ export default function AdminAnalyticsPage() {
           </div>
           <CtaPerformanceCard
             clicks={data?.events.ctaClicks ?? []}
+            loading={loading}
+          />
+          <InquirySourceCard
+            byPage={data?.inquiryAttribution.byPage ?? []}
+            bySource={data?.inquiryAttribution.bySource ?? []}
             loading={loading}
           />
         </>

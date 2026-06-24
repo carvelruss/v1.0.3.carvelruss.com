@@ -74,7 +74,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       env.DB.prepare("SELECT browser, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) AND created_at < datetime('now', ?) GROUP BY browser ORDER BY count DESC LIMIT 6").bind(prev, since).all<BrowserRow>(),
     ]);
 
-    // Phase 2: traffic sources + CTA events (wrapped so missing column/table doesn't 500 the overview)
+    // Phase 2: traffic sources + CTA events
     const [trafficSources, ctaRows, formRows, scrollRows] = await Promise.all([
       env.DB.prepare(`
         SELECT COALESCE(referrer, '') as source, COUNT(*) as count
@@ -96,6 +96,20 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
         WHERE event_type = 'scroll_depth' AND created_at >= datetime('now', ?)
         GROUP BY value ORDER BY value ASC
       `).bind(since).all<{ value: number; count: number }>().catch(() => ({ results: [] as { value: number; count: number }[] })),
+    ]);
+
+    // Phase 2: inquiry source attribution
+    const [inqByPage, inqBySource] = await Promise.all([
+      env.DB.prepare(`
+        SELECT source_page, COUNT(*) as count FROM inquiries
+        WHERE source_page IS NOT NULL AND created_at >= datetime('now', ?)
+        GROUP BY source_page ORDER BY count DESC LIMIT 10
+      `).bind(since).all<{ source_page: string; count: number }>().catch(() => ({ results: [] as { source_page: string; count: number }[] })),
+      env.DB.prepare(`
+        SELECT COALESCE(referrer, '') as source, COUNT(*) as count FROM inquiries
+        WHERE created_at >= datetime('now', ?)
+        GROUP BY COALESCE(referrer, '') ORDER BY count DESC LIMIT 10
+      `).bind(since).all<{ source: string; count: number }>().catch(() => ({ results: [] as { source: string; count: number }[] })),
     ]);
 
     const [topCountries, newVis, returningVis] = await Promise.all([
@@ -173,9 +187,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
         sources: trafficSources.results ?? [],
       },
       events: {
-        ctaClicks:   ctaRows.results   ?? [],
-        formFunnel:  formRows.results  ?? [],
+        ctaClicks:   ctaRows.results    ?? [],
+        formFunnel:  formRows.results   ?? [],
         scrollDepth: scrollRows.results ?? [],
+      },
+      inquiryAttribution: {
+        byPage:   inqByPage.results   ?? [],
+        bySource: inqBySource.results ?? [],
       },
     });
   } catch {
