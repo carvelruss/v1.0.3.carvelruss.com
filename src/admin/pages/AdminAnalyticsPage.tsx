@@ -608,7 +608,7 @@ function BarChart({
             ? { right: `calc(100% - ${tip.pxLeft}px + 12px)` }
             : { left: tip.pxLeft + 12 }),
         }}>
-          <div className="an-tip__date">{tipD.date}</div>
+          <div className="an-tip__date">{fmtDate(tipD.date)}</div>
           <div className="an-tip__val">{label}: <strong>{tipD.count}</strong></div>
         </div>
       )}

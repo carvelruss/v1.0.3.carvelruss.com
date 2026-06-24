@@ -2814,6 +2814,23 @@
   font-size: 11px; color: var(--adm-muted); margin-top: 4px;
 }
 
+/* ── Bar Chart Tooltip ───────────────────────────────────────── */
+.an-tip {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(15,23,42,.14);
+  padding: 8px 12px;
+  white-space: nowrap;
+  animation: an-tip-in .1s ease;
+}
+.an-tip__date { font-size: 11px; color: var(--adm-muted); margin-bottom: 4px; }
+.an-tip__val  { font-size: 13px; color: var(--adm-text); }
+.an-tip__val strong { font-weight: 700; }
+
 /* ── Top Pages Table ─────────────────────────────────────────── */
 .tp-card { padding: 0 !important; overflow: hidden; display: flex; flex-direction: column; }
 .tp-head {
