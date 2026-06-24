@@ -3591,3 +3591,25 @@
 .an-idx-badge--ni   { background: #fef9c3; color: #a16207; }
 .an-idx-badge--poor { background: #fee2e2; color: #b91c1c; }
 .an-idx-badge--muted{ background: var(--adm-surface-2); color: var(--adm-muted); }
+
+/* ── GSC Overview Card ───────────────────────────────────────── */
+.an-gsc-ov-card  { padding: 20px; }
+.an-gsc-ov-head  { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.an-gsc-ov-title { font-size: 14px; font-weight: 700; color: var(--adm-text); }
+.an-gsc-ov-sub   { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
+.an-gsc-ov-logo  { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; }
+
+.an-gsc-ov-kpis  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+@media (max-width: 700px) { .an-gsc-ov-kpis { grid-template-columns: repeat(2, 1fr); } }
+
+.an-gsc-ov-kpi      { background: var(--adm-surface-2); border-radius: 8px; padding: 12px 14px; }
+.an-gsc-ov-kpi-val  { font-size: 20px; font-weight: 800; color: var(--adm-text); }
+.an-gsc-ov-kpi-lbl  { font-size: 11px; color: var(--adm-muted); margin-top: 2px; }
+
+.an-gsc-ov-pages-title { font-size: 12px; font-weight: 600; color: var(--adm-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .04em; }
+.an-gsc-ov-pages       { display: flex; flex-direction: column; gap: 8px; }
+.an-gsc-ov-page-row    { display: flex; align-items: center; gap: 10px; }
+.an-gsc-ov-page-path   { font-size: 12.5px; font-weight: 500; color: var(--adm-text); width: 160px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.an-gsc-ov-page-bar-track { flex: 1; height: 5px; background: var(--adm-surface-2); border-radius: 3px; overflow: hidden; }
+.an-gsc-ov-page-bar    { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #4285F4 0%, #1a4a9e 100%); transition: width .4s; }
+.an-gsc-ov-page-clicks { font-size: 12px; font-weight: 700; color: var(--adm-text); min-width: 24px; text-align: right; }

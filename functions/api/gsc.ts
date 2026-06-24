@@ -115,7 +115,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     const siteEnc = encodeURIComponent(gscSiteUrl);
     const baseUrl = `https://searchconsole.googleapis.com/webmasters/v3/sites/${siteEnc}/searchAnalytics/query`;
 
-    const [kwRes, pgRes] = await Promise.all([
+    const [totalsRes, kwRes, pgRes] = await Promise.all([
+      fetch(baseUrl, {
+        method: 'POST',
+        headers: auth,
+        body: JSON.stringify({ startDate: start, endDate: end, rowLimit: 1 }),
+      }),
       fetch(baseUrl, {
         method: 'POST',
         headers: auth,
@@ -143,11 +148,21 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       return json({ configured: true, error: `GSC API error (${kwRes.status}): ${errBody.slice(0, 200)}` });
     }
 
-    const kwData = await kwRes.json()  as { rows?: { keys: string[]; clicks: number; impressions: number; ctr: number; position: number }[] };
-    const pgData = await pgRes.json()  as { rows?: { keys: string[]; clicks: number; impressions: number; ctr: number; position: number }[] };
+    type GscApiRow = { keys?: string[]; clicks: number; impressions: number; ctr: number; position: number };
+    const totalsData = await totalsRes.json() as { rows?: GscApiRow[] };
+    const kwData     = await kwRes.json()     as { rows?: GscApiRow[] };
+    const pgData     = await pgRes.json()     as { rows?: GscApiRow[] };
+
+    const t = totalsData.rows?.[0];
+    const totals = {
+      clicks:      t?.clicks      ?? 0,
+      impressions: t?.impressions ?? 0,
+      ctr:         t?.ctr         ?? 0,
+      position:    t?.position    ?? 0,
+    };
 
     const keywords: GscRow[] = (kwData.rows ?? []).map(r => ({
-      query:       r.keys[0],
+      query:       r.keys?.[0],
       clicks:      r.clicks,
       impressions: r.impressions,
       ctr:         r.ctr,
@@ -155,7 +170,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     }));
 
     const topPages: GscRow[] = (pgData.rows ?? []).map(r => ({
-      page:        r.keys[0],
+      page:        r.keys?.[0],
       clicks:      r.clicks,
       impressions: r.impressions,
       ctr:         r.ctr,
@@ -195,7 +210,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       }),
     );
 
-    return json({ configured: true, keywords, topPages, indexing: inspections });
+    return json({ configured: true, totals, keywords, topPages, indexing: inspections });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Unknown error';
     return json({ configured: true, error: msg });

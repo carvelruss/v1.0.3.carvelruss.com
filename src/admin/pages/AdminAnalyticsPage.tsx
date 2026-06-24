@@ -89,8 +89,15 @@ interface IndexingRow {
   verdict:    string;
   lastCrawl?: string;
 }
+interface GscTotals {
+  clicks:      number;
+  impressions: number;
+  ctr:         number;
+  position:    number;
+}
 interface GscData {
   configured: boolean;
+  totals?:    GscTotals;
   keywords?:  GscRow[];
   topPages?:  GscRow[];
   indexing?:  IndexingRow[];
@@ -1626,6 +1633,74 @@ function CoreWebVitalsCard({
   );
 }
 
+function GscOverviewCard({ totals, topPages, loading }: {
+  totals:   GscTotals;
+  topPages: GscRow[];
+  loading:  boolean;
+}) {
+  const kpis = [
+    { label: 'Total Clicks',      value: totals.clicks.toLocaleString() },
+    { label: 'Impressions',       value: totals.impressions.toLocaleString() },
+    { label: 'Avg CTR',           value: `${(totals.ctr * 100).toFixed(1)}%` },
+    { label: 'Avg Position',      value: totals.position > 0 ? totals.position.toFixed(1) : '—' },
+  ];
+
+  function pathFrom(url: string): string {
+    try { return new URL(url).pathname || '/'; } catch { return url; }
+  }
+
+  const pageMax = Math.max(...topPages.map(r => r.clicks), 1);
+
+  return (
+    <div className="a-card an-gsc-ov-card">
+      <div className="an-gsc-ov-head">
+        <div>
+          <div className="an-gsc-ov-title">Google Search Console</div>
+          <div className="an-gsc-ov-sub">Organic search performance — data reflects a 4-day delay</div>
+        </div>
+        <svg className="an-gsc-ov-logo" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+          <path d="M96 20C54.3 20 20 54.3 20 96s34.3 76 76 76 76-34.3 76-76S137.7 20 96 20z" fill="#4285F4"/>
+          <path d="M96 20C54.3 20 20 54.3 20 96h76V20z" fill="#EA4335"/>
+          <path d="M96 172c41.7 0 76-34.3 76-76H96v76z" fill="#34A853"/>
+          <path d="M20 96c0 41.7 34.3 76 76 76V96H20z" fill="#FBBC05"/>
+        </svg>
+      </div>
+
+      {loading ? (
+        <div style={{ height: 80 }} />
+      ) : (
+        <>
+          <div className="an-gsc-ov-kpis">
+            {kpis.map(k => (
+              <div key={k.label} className="an-gsc-ov-kpi">
+                <div className="an-gsc-ov-kpi-val">{k.value}</div>
+                <div className="an-gsc-ov-kpi-lbl">{k.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {topPages.length > 0 && (
+            <>
+              <div className="an-gsc-ov-pages-title">Top Pages by Clicks</div>
+              <div className="an-gsc-ov-pages">
+                {topPages.map((r, i) => (
+                  <div key={i} className="an-gsc-ov-page-row">
+                    <span className="an-gsc-ov-page-path" title={r.page}>{pathFrom(r.page ?? '')}</span>
+                    <div className="an-gsc-ov-page-bar-track">
+                      <div className="an-gsc-ov-page-bar" style={{ width: `${Math.round((r.clicks / pageMax) * 100)}%` }} />
+                    </div>
+                    <span className="an-gsc-ov-page-clicks">{r.clicks}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 function GscConnectionCard() {
   return (
     <div className="a-card an-gsc-connect">
@@ -2071,6 +2146,14 @@ export default function AdminAnalyticsPage() {
 
           {!gscLoading && gscData?.configured === false && (
             <GscConnectionCard />
+          )}
+
+          {(gscLoading || gscData?.configured) && (
+            <GscOverviewCard
+              totals={gscData?.totals ?? { clicks: 0, impressions: 0, ctr: 0, position: 0 }}
+              topPages={gscData?.topPages ?? []}
+              loading={gscLoading}
+            />
           )}
 
           {(gscLoading || gscData?.configured) && (
