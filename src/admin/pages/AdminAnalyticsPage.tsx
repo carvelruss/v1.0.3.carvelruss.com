@@ -2129,14 +2129,14 @@ export default function AdminAnalyticsPage() {
 
       {/* ══════════════ SEO ══════════════ */}
       {activeTab === 'seo' && (
-        <>
+        <div className="an-seo-tab">
           <CoreWebVitalsCard
             byMetric={data?.cwv.byMetric ?? []}
             loading={loading}
           />
 
           {gscError && (
-            <div className="a-alert a-alert--error" style={{ marginBottom: 12 }}>{gscError}</div>
+            <div className="a-alert a-alert--error">{gscError}</div>
           )}
 
           {!gscLoading && gscData?.configured === false && (
@@ -2165,9 +2165,9 @@ export default function AdminAnalyticsPage() {
           )}
 
           {gscData?.error && (
-            <div className="a-alert a-alert--error" style={{ marginTop: 12 }}>{gscData.error}</div>
+            <div className="a-alert a-alert--error">{gscData.error}</div>
           )}
-        </>
+        </div>
       )}
 
     </AdminLayout>

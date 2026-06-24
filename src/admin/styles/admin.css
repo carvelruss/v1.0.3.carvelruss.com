@@ -3485,7 +3485,7 @@
                         background: var(--adm-surface-2); border-radius: 4px; padding: 1px 5px; margin-left: auto; }
 
 /* ── Phase 3: Core Web Vitals ────────────────────────────────── */
-.an-cwv-card  { padding: 20px; }
+.an-cwv-card  {}
 .an-cwv-head  { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
 .an-cwv-title { font-size: 14px; font-weight: 700; color: var(--adm-text); }
 .an-cwv-sub   { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
@@ -3527,7 +3527,7 @@
 .an-cwv-sample     { font-size: 10.5px; color: var(--adm-muted); }
 
 /* ── Phase 3: GSC Connection Card ───────────────────────────── */
-.an-gsc-connect      { padding: 20px; }
+.an-gsc-connect      {}
 .an-gsc-connect-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
 .an-gsc-connect-icon { width: 32px; height: 32px; color: #1a4a9e; flex-shrink: 0; margin-top: 2px; }
 .an-gsc-connect-title{ font-size: 14px; font-weight: 700; color: var(--adm-text); }
@@ -3553,7 +3553,7 @@
 @media (max-width: 900px) { .an-seo-gsc-row { grid-template-columns: 1fr; } }
 
 /* ── Phase 3: Keyword Rankings ───────────────────────────────── */
-.an-kw-card { padding: 20px; }
+.an-kw-card {}
 .an-kw-head { margin-bottom: 14px; }
 .an-kw-title{ font-size: 14px; font-weight: 700; color: var(--adm-text); }
 .an-kw-sub  { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
@@ -3572,7 +3572,7 @@
 .an-kw-pos        { font-weight: 700; }
 
 /* ── Phase 3: Indexing Status ────────────────────────────────── */
-.an-idx-card { padding: 20px; }
+.an-idx-card {}
 .an-idx-head { margin-bottom: 14px; }
 .an-idx-title{ font-size: 14px; font-weight: 700; color: var(--adm-text); }
 .an-idx-sub  { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
@@ -3593,7 +3593,7 @@
 .an-idx-badge--muted{ background: var(--adm-surface-2); color: var(--adm-muted); }
 
 /* ── GSC Overview Card ───────────────────────────────────────── */
-.an-gsc-ov-card  { padding: 20px; }
+.an-gsc-ov-card  {}
 .an-gsc-ov-head  { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
 .an-gsc-ov-title { font-size: 14px; font-weight: 700; color: var(--adm-text); }
 .an-gsc-ov-sub   { font-size: 12px; color: var(--adm-muted); margin-top: 2px; }
@@ -3613,3 +3613,6 @@
 .an-gsc-ov-page-bar-track { flex: 1; height: 5px; background: var(--adm-surface-2); border-radius: 3px; overflow: hidden; }
 .an-gsc-ov-page-bar    { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #4285F4 0%, #1a4a9e 100%); transition: width .4s; }
 .an-gsc-ov-page-clicks { font-size: 12px; font-weight: 700; color: var(--adm-text); min-width: 24px; text-align: right; }
+
+/* ── SEO tab wrapper ─────────────────────────────────────────── */
+.an-seo-tab { display: flex; flex-direction: column; gap: 16px; }
