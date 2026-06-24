@@ -2703,7 +2703,7 @@
 }
 
 /* Body layout */
-.an-body { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
+.an-body { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
 @media (max-width: 1024px) { .an-body { grid-template-columns: 1fr; } }
 
 .an-main { display: flex; flex-direction: column; gap: 16px; }
