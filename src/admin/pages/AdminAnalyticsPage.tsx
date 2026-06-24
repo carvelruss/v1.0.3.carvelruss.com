@@ -1132,33 +1132,6 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
 
-        {/* Right sidebar: summary only */}
-        <div className="an-sidebar">
-          <div className="a-card an-summary">
-            <div className="an-section-head">
-              <span className="an-section-title">Summary</span>
-              <span className="an-section-sub">All time</span>
-            </div>
-            <div className="an-summary-rows">
-              <div className="an-sum-row">
-                <span className="an-sum-label">Total Page Views</span>
-                <span className="an-sum-val">{data ? fmtNum(data.pageViews.total) : '—'}</span>
-              </div>
-              <div className="an-sum-row">
-                <span className="an-sum-label">Total Inquiries</span>
-                <span className="an-sum-val">{data ? fmtNum(data.contacts.total) : '—'}</span>
-              </div>
-              <div className="an-sum-row">
-                <span className="an-sum-label">Conversion Rate</span>
-                <span className="an-sum-val">
-                  {data && data.pageViews.total > 0
-                    ? ((data.contacts.total / data.pageViews.total) * 100).toFixed(2) + '%'
-                    : '—'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
 
