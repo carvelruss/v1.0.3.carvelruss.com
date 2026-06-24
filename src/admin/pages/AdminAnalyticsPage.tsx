@@ -1030,9 +1030,10 @@ export default function AdminAnalyticsPage() {
       .finally(() => setLoading(false));
   }, [days]);
 
-  const cByDay      = data ? fillDays(data.contacts.byDay, days, 0) : [];
+  const pvByDay     = data ? fillDays(data.pageViews.byDay, days, 0) : [];
+  const pvChange    = data ? calcChange(data.pageViews.period, data.pageViews.prevPeriod) : null;
+  const avgDay      = data && days > 0 ? Math.round(data.pageViews.period / days) : 0;
   const periodLabel = PERIODS.find(p => p.days === days)?.label ?? `Last ${days} days`;
-  const avgPerDay   = data && days > 0 ? (data.contacts.period / days).toFixed(1) : '0.0';
 
   return (
     <AdminLayout pageTitle="Analytics">
@@ -1065,25 +1066,49 @@ export default function AdminAnalyticsPage() {
       {/* ── Bottom row: Inquiries card + Browser chart ── */}
       <div className="an-bottom-row">
 
-        {/* Inquiries card */}
+        {/* Analytics card */}
         <div className="a-card an-inq-card">
+          {/* Header */}
           <div className="an-inq-head">
-            <span className="an-inq-title">Inquiries · {periodLabel}</span>
-            <a href="/admin/inquiries" className="an-inq-action">Moderate ↗</a>
+            <div>
+              <div className="an-inq-title">Portfolio Analytics</div>
+              <div className="an-inq-subtitle">Views over the last {days} days · time-series trends</div>
+            </div>
+            {pvChange != null && (
+              <span className={`an-inq-badge ${pvChange >= 0 ? 'an-inq-badge--up' : 'an-inq-badge--down'}`}>
+                {pvChange >= 0 ? '↑' : '↓'} {Math.abs(pvChange)}%
+              </span>
+            )}
           </div>
-          <div className="an-inq-meta">
-            <span className="an-inq-count">{data ? data.contacts.period : '—'}</span>
-            <span className="an-inq-sub">
-              {data ? `inquiries · avg ${avgPerDay}/day` : 'inquiries'}
-            </span>
-          </div>
+
+          {/* Bar chart */}
           {loading ? (
             <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div className="a-loading" />
             </div>
           ) : (
-            <BarChart data={cByDay} color={CHART_COLOR} label="Inquiries" gradient simplifyAxis noYAxis />
+            <BarChart data={pvByDay} color={CHART_COLOR} label="Views" gradient noYAxis />
           )}
+
+          {/* 4-stat footer */}
+          <div className="an-inq-stats">
+            <div className="an-inq-stat">
+              <div className="an-inq-stat__label">Total Views</div>
+              <div className="an-inq-stat__value">{data ? fmtNum(data.pageViews.period) : '—'}</div>
+            </div>
+            <div className="an-inq-stat">
+              <div className="an-inq-stat__label">Total Inquiries</div>
+              <div className="an-inq-stat__value">{data ? data.contacts.period : '—'}</div>
+            </div>
+            <div className="an-inq-stat">
+              <div className="an-inq-stat__label">Unique Pages</div>
+              <div className="an-inq-stat__value">{data ? data.pageViews.unique : '—'}</div>
+            </div>
+            <div className="an-inq-stat">
+              <div className="an-inq-stat__label">Avg Views/Day</div>
+              <div className="an-inq-stat__value">{data ? fmtNum(avgDay) : '—'}</div>
+            </div>
+          </div>
         </div>
 
         {/* Browser chart */}
