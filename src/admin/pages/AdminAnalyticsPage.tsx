@@ -1658,12 +1658,7 @@ function GscOverviewCard({ totals, topPages, loading }: {
           <div className="an-gsc-ov-title">Google Search Console</div>
           <div className="an-gsc-ov-sub">Organic search performance — data reflects a 4-day delay</div>
         </div>
-        <svg className="an-gsc-ov-logo" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
-          <path d="M96 20C54.3 20 20 54.3 20 96s34.3 76 76 76 76-34.3 76-76S137.7 20 96 20z" fill="#4285F4"/>
-          <path d="M96 20C54.3 20 20 54.3 20 96h76V20z" fill="#EA4335"/>
-          <path d="M96 172c41.7 0 76-34.3 76-76H96v76z" fill="#34A853"/>
-          <path d="M20 96c0 41.7 34.3 76 76 76V96H20z" fill="#FBBC05"/>
-        </svg>
+        <img src="/google-logo.svg" alt="Google" className="an-gsc-ov-logo" />
       </div>
 
       {loading ? (
