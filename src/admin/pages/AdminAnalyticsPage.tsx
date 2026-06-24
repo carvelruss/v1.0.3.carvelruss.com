@@ -609,7 +609,11 @@ function BarChart({
             : { left: tip.pxLeft + 12 }),
         }}>
           <div className="an-tip__date">{fmtDate(tipD.date)}</div>
-          <div className="an-tip__val">{label}: <strong>{tipD.count}</strong></div>
+          <div className="an-tip__row">
+            <span className="an-tip__dot" style={{ background: color }} />
+            <span className="an-tip__label">{label}:</span>
+            <strong className="an-tip__val">{tipD.count.toLocaleString()}</strong>
+          </div>
         </div>
       )}
     </div>
