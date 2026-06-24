@@ -429,7 +429,7 @@ function ActivityHeatmap({ data, periodLabel }: { data: HeatCell[]; periodLabel:
 
 /* ── Top Pages Table ─────────────────────────────────────────── */
 
-const TP_PAGE_SIZE = 8;
+const TP_PAGE_SIZE = 7;
 
 function TopPagesTable({
   pages, periodLabel,
