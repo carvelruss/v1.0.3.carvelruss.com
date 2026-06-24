@@ -8,7 +8,10 @@ import type { Inquiry } from '../../types';
 type InquiryStatus = 'unread' | 'read' | 'replied' | 'archived';
 
 function formatDate(d: string) {
-  return new Date(d).toLocaleString('en-US', {
+  // D1/SQLite stores datetimes without a timezone marker (e.g. "2026-06-24 06:40:00").
+  // JS treats that as local time, not UTC — so we normalise to ISO+Z before parsing.
+  const iso = d.endsWith('Z') || d.includes('+') ? d : d.replace(' ', 'T') + 'Z';
+  return new Date(iso).toLocaleString('en-US', {
     timeZone: 'Asia/Manila',
     month: 'long',
     day: 'numeric',
