@@ -85,7 +85,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Portfolio <inquiries@carvelruss.com>',
+          from: 'Inquiry <inquiries@carvelruss.com>',
           to: ['business.carvelruss@gmail.com', 'hello@carvelruss.com'],
           reply_to: email.trim(),
           subject: `New inquiry from ${name.trim()}`,
