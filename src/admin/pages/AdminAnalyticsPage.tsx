@@ -45,7 +45,24 @@ interface AnalyticsData {
     bounceByDay:     DayCount[];
     durationByDay:   DayCount[];
   };
+  geography: {
+    topCountries: { country: string; count: number }[];
+  };
+  audience: {
+    newVisitors:       number;
+    returningVisitors: number;
+  };
 }
+
+type DashTab = 'overview' | 'traffic' | 'engagement' | 'portfolio' | 'leads' | 'seo';
+const DASH_TABS: { key: DashTab; label: string }[] = [
+  { key: 'overview',   label: 'Overview'        },
+  { key: 'traffic',    label: 'Traffic'         },
+  { key: 'engagement', label: 'Engagement'      },
+  { key: 'portfolio',  label: 'Portfolio'       },
+  { key: 'leads',      label: 'Lead Generation' },
+  { key: 'seo',        label: 'SEO'             },
+];
 
 /* ── Helpers ─────────────────────────────────────────────────── */
 
@@ -984,6 +1001,220 @@ function TopPagesTable({
   );
 }
 
+/* ── KPI Card ────────────────────────────────────────────────── */
+
+function KpiCard({ label, value, change, loading }: {
+  label: string; value: string; change: number | null; loading: boolean;
+}) {
+  return (
+    <div className="a-card an-kpi-card">
+      {loading ? <div className="an-kpi-skeleton" /> : (
+        <>
+          <div className="an-kpi-label">{label}</div>
+          <div className="an-kpi-value">{value}</div>
+          {change != null && (
+            <span className={`an-kpi-badge an-kpi-badge--${change >= 0 ? 'up' : 'down'}`}>
+              {change >= 0 ? '↑' : '↓'} {Math.abs(change)}% vs prev
+            </span>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ── Returning vs New ────────────────────────────────────────── */
+
+function ReturnVsNew({ newV, returning, loading }: { newV: number; returning: number; loading: boolean }) {
+  const total  = newV + returning || 1;
+  const newPct = Math.round((newV      / total) * 100);
+  const retPct = Math.round((returning / total) * 100);
+  return (
+    <div className="a-card an-rvn-card">
+      <div className="an-rvn-head">
+        <div className="an-rvn-title">Returning vs New Visitors</div>
+        <div className="an-rvn-sub">Based on session history</div>
+      </div>
+      {loading ? <div style={{ height: 80 }} /> : (
+        <div className="an-rvn-body">
+          {([
+            { label: 'New Visitors',       pct: newPct, count: newV,       color: '#1a4a9e' },
+            { label: 'Returning Visitors', pct: retPct, count: returning,  color: '#10b981' },
+          ] as const).map(r => (
+            <div key={r.label} className="an-rvn-item">
+              <div className="an-rvn-item__row">
+                <span className="an-rvn-item__label">{r.label}</span>
+                <span className="an-rvn-item__pct" style={{ color: r.color }}>{r.pct}%</span>
+              </div>
+              <div className="an-rvn-bar-track">
+                <div className="an-rvn-bar-fill" style={{ width: `${r.pct}%`, background: r.color }} />
+              </div>
+              <div className="an-rvn-item__count">{fmtNum(r.count)} sessions</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Countries Table ─────────────────────────────────────────── */
+
+const COUNTRY_NAMES: Record<string, string> = {
+  AF:'Afghanistan',AL:'Albania',DZ:'Algeria',AR:'Argentina',AU:'Australia',
+  AT:'Austria',BD:'Bangladesh',BE:'Belgium',BR:'Brazil',CA:'Canada',
+  CL:'Chile',CN:'China',CO:'Colombia',CZ:'Czech Republic',DK:'Denmark',
+  EG:'Egypt',FI:'Finland',FR:'France',DE:'Germany',GH:'Ghana',GR:'Greece',
+  HK:'Hong Kong',HU:'Hungary',IN:'India',ID:'Indonesia',IE:'Ireland',
+  IL:'Israel',IT:'Italy',JP:'Japan',JO:'Jordan',KE:'Kenya',
+  KR:'South Korea',KW:'Kuwait',MY:'Malaysia',MX:'Mexico',MA:'Morocco',
+  NL:'Netherlands',NZ:'New Zealand',NG:'Nigeria',NO:'Norway',PK:'Pakistan',
+  PH:'Philippines',PL:'Poland',PT:'Portugal',QA:'Qatar',RO:'Romania',
+  RU:'Russia',SA:'Saudi Arabia',SG:'Singapore',ZA:'South Africa',
+  ES:'Spain',SE:'Sweden',CH:'Switzerland',TW:'Taiwan',TH:'Thailand',
+  TR:'Turkey',UA:'Ukraine',AE:'United Arab Emirates',
+  GB:'United Kingdom',US:'United States',VN:'Vietnam',
+};
+
+function countryFlag(code: string): string {
+  try {
+    return [...code.toUpperCase()].map(c => String.fromCodePoint(c.charCodeAt(0) + 127397)).join('');
+  } catch { return '🌐'; }
+}
+
+function CountriesTable({ countries, totalViews, loading }: {
+  countries: { country: string; count: number }[];
+  totalViews: number;
+  loading: boolean;
+}) {
+  return (
+    <div className="a-card an-geo-card">
+      <div className="an-geo-head">
+        <div className="an-geo-title">Visitor Geography</div>
+        <div className="an-geo-sub">Top countries · current period</div>
+      </div>
+      {loading ? (
+        <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="a-loading" />
+        </div>
+      ) : countries.length === 0 ? (
+        <div className="an-geo-empty">No geography data yet. Cloudflare country headers will populate this automatically.</div>
+      ) : (
+        <table className="an-geo-table">
+          <thead>
+            <tr>
+              <th className="an-geo-th">Country</th>
+              <th className="an-geo-th an-geo-th--r">Visits</th>
+              <th className="an-geo-th an-geo-th--r">Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            {countries.map((c, i) => {
+              const pct = totalViews > 0 ? ((c.count / totalViews) * 100).toFixed(1) : '0';
+              return (
+                <tr key={c.country} className="an-geo-row">
+                  <td className="an-geo-country">
+                    <span className="an-geo-rank">#{i + 1}</span>
+                    <span className="an-geo-flag">{countryFlag(c.country)}</span>
+                    <span className="an-geo-name">{COUNTRY_NAMES[c.country] ?? c.country}</span>
+                  </td>
+                  <td className="an-geo-num">{fmtNum(c.count)}</td>
+                  <td className="an-geo-num">
+                    <div className="an-geo-share">
+                      <span>{pct}%</span>
+                      <div className="an-geo-bar-track">
+                        <div style={{ width: `${pct}%`, background: '#1a4a9e', height: '100%', borderRadius: 2 }} />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+/* ── Project / Blog Performance ──────────────────────────────── */
+
+function slugToTitle(slug: string): string {
+  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+function PerformanceList({ title, subtitle, rows, loading, emptyMsg }: {
+  title: string; subtitle: string;
+  rows: { label: string; path: string; count: number }[];
+  loading: boolean; emptyMsg: string;
+}) {
+  const max = Math.max(...rows.map(r => r.count), 1);
+  return (
+    <div className="a-card an-perf-card">
+      <div className="an-perf-head">
+        <div className="an-perf-title">{title}</div>
+        <div className="an-perf-sub">{subtitle}</div>
+      </div>
+      {loading ? (
+        <div style={{ padding: '2rem', textAlign: 'center' }}><div className="a-loading" /></div>
+      ) : rows.length === 0 ? (
+        <div className="an-perf-empty">{emptyMsg}</div>
+      ) : (
+        <div className="an-perf-list">
+          {rows.map((r, i) => (
+            <div key={r.path} className="an-perf-item">
+              <span className="an-perf-rank">#{i + 1}</span>
+              <div className="an-perf-info">
+                <a className="an-perf-label" href={r.path} target="_blank" rel="noopener noreferrer">
+                  {r.label}
+                </a>
+                <div className="an-perf-bar-track">
+                  <div className="an-perf-bar-fill" style={{ width: `${Math.round((r.count / max) * 100)}%` }} />
+                </div>
+              </div>
+              <span className="an-perf-views">{fmtNum(r.count)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Placeholder section ─────────────────────────────────────── */
+
+function PlaceholderSection({ title, subtitle, items, phase }: {
+  title: string; subtitle: string;
+  items: { title: string; desc: string }[];
+  phase: number;
+}) {
+  return (
+    <div className="an-ph-section">
+      <div className="an-ph-header">
+        <div>
+          <div className="an-ph-title">{title}</div>
+          <div className="an-ph-subtitle">{subtitle}</div>
+        </div>
+        <span className="an-ph-badge">Phase {phase}</span>
+      </div>
+      <div className="an-ph-grid">
+        {items.map(item => (
+          <div key={item.title} className="a-card an-ph-card">
+            <div className="an-ph-card__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <div className="an-ph-card__title">{item.title}</div>
+            <div className="an-ph-card__desc">{item.desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── Period selector ─────────────────────────────────────────── */
 
 const PERIODS = [
@@ -997,11 +1228,12 @@ const PERIODS = [
 const CHART_COLOR = '#1a4a9e';
 
 export default function AdminAnalyticsPage() {
-  const [days, setDays]       = useState(30);
-  const [open, setOpen]       = useState(false);
-  const [data, setData]       = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState('');
+  const [days,      setDays]      = useState(30);
+  const [open,      setOpen]      = useState(false);
+  const [activeTab, setActiveTab] = useState<DashTab>('overview');
+  const [data,      setData]      = useState<AnalyticsData | null>(null);
+  const [loading,   setLoading]   = useState(true);
+  const [error,     setError]     = useState('');
 
   useEffect(() => {
     setLoading(true); setError('');
@@ -1021,104 +1253,160 @@ export default function AdminAnalyticsPage() {
 
   const pvByDay     = data ? fillDays(data.pageViews.byDay, days, 0) : [];
   const pvChange    = data ? calcChange(data.pageViews.period, data.pageViews.prevPeriod) : null;
+  const sessChange  = data ? calcChange(data.sessions.period, data.sessions.prevPeriod)   : null;
+  const inqChange   = data ? calcChange(data.contacts.period, data.contacts.prevPeriod)   : null;
   const avgDay      = data && days > 0 ? Math.round(data.pageViews.period / days) : 0;
   const periodLabel = PERIODS.find(p => p.days === days)?.label ?? `Last ${days} days`;
+
+  const convRate     = data && data.pageViews.period > 0 ? (data.contacts.period / data.pageViews.period) * 100 : 0;
+  const prevConvRate = data && data.pageViews.prevPeriod > 0 ? (data.contacts.prevPeriod / data.pageViews.prevPeriod) * 100 : 0;
+  const convChange   = prevConvRate > 0 ? Math.round(((convRate - prevConvRate) / prevConvRate) * 100) : null;
+
+  const topPages   = data?.pageViews.topPages ?? [];
+  const projectRows = topPages
+    .filter(p => p.path.startsWith('/case-studies/') && p.path.replace('/case-studies/', '').length > 0)
+    .slice(0, 8)
+    .map(p => ({ label: slugToTitle(p.path.replace('/case-studies/', '')), path: p.path, count: p.count }));
+
+  const blogRows = topPages
+    .filter(p => (p.path.startsWith('/blogs/') || p.path.startsWith('/blog/')) && p.path.split('/').length > 2)
+    .slice(0, 8)
+    .map(p => {
+      const slug = p.path.split('/').pop() ?? p.path;
+      return { label: slugToTitle(slug), path: p.path, count: p.count };
+    });
+
+  const PeriodSelector = () => (
+    <div className="an-period-wrap">
+      <button className="an-period-btn" onClick={() => setOpen(o => !o)}>
+        {periodLabel}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+      {open && (
+        <div className="an-period-menu">
+          {PERIODS.map(p => (
+            <button key={p.days} className={`an-period-item${days === p.days ? ' active' : ''}`}
+              onClick={() => { setDays(p.days); setOpen(false); }}>
+              {p.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <AdminLayout pageTitle="Analytics">
 
       {error && <div className="a-alert a-alert--error" style={{ marginBottom: 16 }}>{error}</div>}
 
-      {/* ── Period selector ── */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-        <div className="an-period-wrap">
-          <button className="an-period-btn" onClick={() => setOpen(o => !o)}>
-            {periodLabel}
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-          {open && (
-            <div className="an-period-menu">
-              {PERIODS.map(p => (
-                <button key={p.days} className={`an-period-item${days === p.days ? ' active' : ''}`}
-                  onClick={() => { setDays(p.days); setOpen(false); }}>
-                  {p.label}
-                </button>
-              ))}
-            </div>
-          )}
+      {/* ── Tab navigation ── */}
+      <div className="an-tab-nav">
+        <div className="an-tab-nav__tabs">
+          {DASH_TABS.map(t => (
+            <button key={t.key}
+              className={`an-tab-btn${activeTab === t.key ? ' an-tab-btn--active' : ''}`}
+              onClick={() => setActiveTab(t.key)}
+            >{t.label}</button>
+          ))}
         </div>
+        <PeriodSelector />
       </div>
 
-      {/* ── Bottom row: Inquiries card + Browser chart ── */}
-      <div className="an-bottom-row">
+      {/* ══════════════ OVERVIEW ══════════════ */}
+      {activeTab === 'overview' && (
+        <>
+          {/* KPI row */}
+          <div className="an-kpi-grid">
+            <KpiCard label="Page Views"      value={data ? fmtNum(data.pageViews.period) : '—'} change={pvChange}   loading={loading} />
+            <KpiCard label="Sessions"        value={data ? fmtNum(data.sessions.period)  : '—'} change={sessChange} loading={loading} />
+            <KpiCard label="Inquiries"       value={data ? String(data.contacts.period)  : '—'} change={inqChange}  loading={loading} />
+            <KpiCard label="Conversion Rate" value={data ? convRate.toFixed(2) + '%'     : '—'} change={convChange} loading={loading} />
+          </div>
 
-        {/* Analytics card */}
-        <div className="a-card an-inq-card">
-          {/* Header */}
-          <div className="an-inq-head">
-            <div>
-              <div className="an-inq-title">Portfolio Analytics</div>
-              <div className="an-inq-subtitle">Views over the last {days} days · time-series trends</div>
+          {/* Portfolio Analytics + Browser chart */}
+          <div className="an-bottom-row">
+            <div className="a-card an-inq-card">
+              <div className="an-inq-head">
+                <div>
+                  <div className="an-inq-title">Portfolio Analytics</div>
+                  <div className="an-inq-subtitle">Views over the last {days} days · time-series trends</div>
+                </div>
+                {pvChange != null && (
+                  <span className={`an-inq-badge ${pvChange >= 0 ? 'an-inq-badge--up' : 'an-inq-badge--down'}`}>
+                    {pvChange >= 0 ? '↑' : '↓'} {Math.abs(pvChange)}%
+                  </span>
+                )}
+              </div>
+              {loading ? (
+                <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="a-loading" />
+                </div>
+              ) : (
+                <BarChart data={pvByDay} color={CHART_COLOR} label="Views" gradient noYAxis />
+              )}
+              <div className="an-inq-stats">
+                <div className="an-inq-stat">
+                  <div className="an-inq-stat__label">Total Views</div>
+                  <div className="an-inq-stat__value">{data ? fmtNum(data.pageViews.period) : '—'}</div>
+                </div>
+                <div className="an-inq-stat">
+                  <div className="an-inq-stat__label">Total Inquiries</div>
+                  <div className="an-inq-stat__value">{data ? data.contacts.period : '—'}</div>
+                </div>
+                <div className="an-inq-stat">
+                  <div className="an-inq-stat__label">Unique Pages</div>
+                  <div className="an-inq-stat__value">{data ? data.pageViews.unique : '—'}</div>
+                </div>
+                <div className="an-inq-stat">
+                  <div className="an-inq-stat__label">Avg Views/Day</div>
+                  <div className="an-inq-stat__value">{data ? fmtNum(avgDay) : '—'}</div>
+                </div>
+              </div>
             </div>
-            {pvChange != null && (
-              <span className={`an-inq-badge ${pvChange >= 0 ? 'an-inq-badge--up' : 'an-inq-badge--down'}`}>
-                {pvChange >= 0 ? '↑' : '↓'} {Math.abs(pvChange)}%
-              </span>
+            {!loading && data && (
+              <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} />
             )}
           </div>
 
-          {/* Bar chart */}
-          {loading ? (
-            <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div className="a-loading" />
+          {/* Sessions + Device row */}
+          {!loading && data && (
+            <div className="an-sessions-row">
+              <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
+              <DeviceChart data={data.deviceByDay} days={days} periodLabel={periodLabel} />
             </div>
-          ) : (
-            <BarChart data={pvByDay} color={CHART_COLOR} label="Views" gradient noYAxis />
           )}
+        </>
+      )}
 
-          {/* 4-stat footer */}
-          <div className="an-inq-stats">
-            <div className="an-inq-stat">
-              <div className="an-inq-stat__label">Total Views</div>
-              <div className="an-inq-stat__value">{data ? fmtNum(data.pageViews.period) : '—'}</div>
-            </div>
-            <div className="an-inq-stat">
-              <div className="an-inq-stat__label">Total Inquiries</div>
-              <div className="an-inq-stat__value">{data ? data.contacts.period : '—'}</div>
-            </div>
-            <div className="an-inq-stat">
-              <div className="an-inq-stat__label">Unique Pages</div>
-              <div className="an-inq-stat__value">{data ? data.pageViews.unique : '—'}</div>
-            </div>
-            <div className="an-inq-stat">
-              <div className="an-inq-stat__label">Avg Views/Day</div>
-              <div className="an-inq-stat__value">{data ? fmtNum(avgDay) : '—'}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Browser chart */}
-        {!loading && data && (
-          <BrowserChart current={data.browserStats.current} previous={data.browserStats.previous} />
-        )}
-      </div>
-
-      {/* ── Sessions + Device row ── */}
-      {!loading && data && (
-        <div className="an-sessions-row">
-          <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
-          <DeviceChart data={data.deviceByDay} days={days} periodLabel={periodLabel} />
+      {/* ══════════════ TRAFFIC ══════════════ */}
+      {activeTab === 'traffic' && (
+        <div className="an-traffic-row">
+          <ReturnVsNew
+            newV={data?.audience.newVisitors ?? 0}
+            returning={data?.audience.returningVisitors ?? 0}
+            loading={loading}
+          />
+          <CountriesTable
+            countries={data?.geography.topCountries ?? []}
+            totalViews={data?.pageViews.period ?? 0}
+            loading={loading}
+          />
         </div>
       )}
 
-      {/* ── Main body: heatmap + top pages + summary ── */}
-      <div className="an-body">
-
-        <div className="an-main">
-          <div className="an-heat-pages">
+      {/* ══════════════ ENGAGEMENT ══════════════ */}
+      {activeTab === 'engagement' && (
+        <>
+          {!loading && data ? (
+            <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
+          ) : loading ? (
+            <div className="a-card" style={{ padding: '2rem', textAlign: 'center' }}><div className="a-loading" /></div>
+          ) : null}
+          <div className="an-heat-pages" style={{ marginTop: 0 }}>
             {loading ? (
               <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
             ) : (
@@ -1127,13 +1415,66 @@ export default function AdminAnalyticsPage() {
             {loading ? (
               <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
             ) : (
-              <TopPagesTable pages={data?.pageViews.topPages ?? []} periodLabel={periodLabel} />
+              <TopPagesTable pages={topPages} periodLabel={periodLabel} />
             )}
           </div>
-        </div>
+        </>
+      )}
 
+      {/* ══════════════ PORTFOLIO ══════════════ */}
+      {activeTab === 'portfolio' && (
+        <>
+          <div className="an-perf-row">
+            <PerformanceList
+              title="Project Performance"
+              subtitle="Case studies ranked by views"
+              rows={projectRows}
+              loading={loading}
+              emptyMsg="No case study visits yet. Share your portfolio to see project performance data."
+            />
+            <PerformanceList
+              title="Blog Performance"
+              subtitle="Blog posts ranked by views"
+              rows={blogRows}
+              loading={loading}
+              emptyMsg="No blog post visits yet. Publish blog content to track performance."
+            />
+          </div>
+          {!loading && (
+            <TopPagesTable pages={topPages} periodLabel={periodLabel} />
+          )}
+        </>
+      )}
 
-      </div>
+      {/* ══════════════ LEAD GENERATION ══════════════ */}
+      {activeTab === 'leads' && (
+        <PlaceholderSection
+          title="Lead Generation Analytics"
+          subtitle="Track how visitors engage with your CTAs, contact forms, and conversion funnel."
+          phase={2}
+          items={[
+            { title: 'CTA Click Analytics', desc: 'Track clicks on "Hire Me", "View CV", and other call-to-action buttons across every page.' },
+            { title: 'Contact Form Funnel', desc: 'See how many visitors open the contact form vs. submit it, and where drop-offs happen.' },
+            { title: 'Scroll Depth Tracking', desc: 'Measure how far visitors scroll on your case study and blog pages.' },
+            { title: 'Inquiry Source Attribution', desc: 'Discover which pages and traffic sources generate the most inquiries.' },
+          ]}
+        />
+      )}
+
+      {/* ══════════════ SEO ══════════════ */}
+      {activeTab === 'seo' && (
+        <PlaceholderSection
+          title="SEO Performance"
+          subtitle="Understand how your portfolio ranks in Google and which keywords drive organic traffic."
+          phase={3}
+          items={[
+            { title: 'Google Search Console', desc: 'Connect GSC to see impressions, clicks, average position, and CTR for your top keywords.' },
+            { title: 'Keyword Rankings', desc: 'Track which search queries bring visitors to your case studies and blog posts.' },
+            { title: 'Core Web Vitals', desc: 'Monitor LCP, CLS, and FID scores that directly impact your Google ranking.' },
+            { title: 'Indexing Status', desc: 'See which pages are indexed by Google and flag any crawl errors.' },
+          ]}
+        />
+      )}
 
     </AdminLayout>
   );

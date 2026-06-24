@@ -74,6 +74,34 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       env.DB.prepare("SELECT browser, COUNT(*) as count FROM page_views WHERE created_at >= datetime('now', ?) AND created_at < datetime('now', ?) GROUP BY browser ORDER BY count DESC LIMIT 6").bind(prev, since).all<BrowserRow>(),
     ]);
 
+    const [topCountries, newVis, returningVis] = await Promise.all([
+      env.DB.prepare(`
+        SELECT country, COUNT(*) as count FROM page_views
+        WHERE country IS NOT NULL AND country != ''
+          AND created_at >= datetime('now', ?)
+        GROUP BY country ORDER BY count DESC LIMIT 15
+      `).bind(since).all<{ country: string; count: number }>(),
+      env.DB.prepare(`
+        SELECT COUNT(*) as count FROM (
+          SELECT session_id FROM page_views
+          WHERE session_id IS NOT NULL
+          GROUP BY session_id
+          HAVING MIN(created_at) >= datetime('now', ?)
+        )
+      `).bind(since).first<{ count: number }>(),
+      env.DB.prepare(`
+        SELECT COUNT(DISTINCT session_id) as count FROM page_views
+        WHERE created_at >= datetime('now', ?)
+          AND session_id IS NOT NULL
+          AND session_id NOT IN (
+            SELECT session_id FROM page_views
+            WHERE session_id IS NOT NULL
+            GROUP BY session_id
+            HAVING MIN(created_at) >= datetime('now', ?)
+          )
+      `).bind(since, since).first<{ count: number }>(),
+    ]);
+
     return json({
       days,
       pageViews: {
@@ -109,6 +137,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       browserStats: {
         current:  browserCur.results  ?? [],
         previous: browserPrev.results ?? [],
+      },
+      geography: {
+        topCountries: topCountries.results ?? [],
+      },
+      audience: {
+        newVisitors:       newVis?.count       ?? 0,
+        returningVisitors: returningVis?.count ?? 0,
       },
     });
   } catch {
