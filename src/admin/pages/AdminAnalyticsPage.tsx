@@ -1968,7 +1968,7 @@ export default function AdminAnalyticsPage() {
 
       {/* ══════════════ OVERVIEW ══════════════ */}
       {activeTab === 'overview' && (
-        <>
+        <div className="an-tab-content">
           {/* KPI row */}
           <div className="an-kpi-grid">
             <KpiCard label="Page Views"      value={data ? fmtNum(data.pageViews.period) : '—'} change={pvChange}   loading={loading} />
@@ -2029,12 +2029,12 @@ export default function AdminAnalyticsPage() {
               <DeviceChart data={data.deviceByDay} days={days} periodLabel={periodLabel} />
             </div>
           )}
-        </>
+        </div>
       )}
 
       {/* ══════════════ TRAFFIC ══════════════ */}
       {activeTab === 'traffic' && (
-        <>
+        <div className="an-tab-content">
           <TrafficSourcesCard
             sources={data?.trafficSources.sources ?? []}
             loading={loading}
@@ -2051,18 +2051,18 @@ export default function AdminAnalyticsPage() {
               loading={loading}
             />
           </div>
-        </>
+        </div>
       )}
 
       {/* ══════════════ ENGAGEMENT ══════════════ */}
       {activeTab === 'engagement' && (
-        <>
+        <div className="an-tab-content">
           {!loading && data ? (
             <SessionsChart data={data.sessions} days={days} periodLabel={periodLabel} />
           ) : loading ? (
             <div className="a-card" style={{ padding: '2rem', textAlign: 'center' }}><div className="a-loading" /></div>
           ) : null}
-          <div className="an-heat-pages" style={{ marginTop: 0 }}>
+          <div className="an-heat-pages">
             {loading ? (
               <div className="a-card" style={{ padding: '1.5rem', textAlign: 'center' }}><div className="a-loading" /></div>
             ) : (
@@ -2074,12 +2074,12 @@ export default function AdminAnalyticsPage() {
               <TopPagesTable pages={topPages} periodLabel={periodLabel} />
             )}
           </div>
-        </>
+        </div>
       )}
 
       {/* ══════════════ PORTFOLIO ══════════════ */}
       {activeTab === 'portfolio' && (
-        <>
+        <div className="an-tab-content">
           <div className="an-perf-row">
             <PerformanceList
               title="Project Performance"
@@ -2099,12 +2099,12 @@ export default function AdminAnalyticsPage() {
           {!loading && (
             <TopPagesTable pages={topPages} periodLabel={periodLabel} />
           )}
-        </>
+        </div>
       )}
 
       {/* ══════════════ LEAD GENERATION ══════════════ */}
       {activeTab === 'leads' && (
-        <>
+        <div className="an-tab-content">
           <div className="an-leads-top-row">
             <FormFunnelCard
               funnel={data?.events.formFunnel ?? []}
@@ -2124,12 +2124,12 @@ export default function AdminAnalyticsPage() {
             bySource={data?.inquiryAttribution.bySource ?? []}
             loading={loading}
           />
-        </>
+        </div>
       )}
 
       {/* ══════════════ SEO ══════════════ */}
       {activeTab === 'seo' && (
-        <div className="an-seo-tab">
+        <div className="an-tab-content">
           <CoreWebVitalsCard
             byMetric={data?.cwv.byMetric ?? []}
             loading={loading}
