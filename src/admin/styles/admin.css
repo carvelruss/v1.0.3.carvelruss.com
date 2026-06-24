@@ -2297,6 +2297,18 @@
   color: #fff;
   border-color: rgba(255,255,255,.35);
 }
+@media (max-width: 520px) {
+  .adm-welcome {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px 20px 20px;
+    gap: 14px;
+  }
+  .adm-welcome__text { min-width: unset; width: 100%; }
+  .adm-welcome__greeting { font-size: 1.25rem; }
+  .adm-welcome__sub { white-space: normal; overflow: visible; text-overflow: unset; }
+  .adm-welcome__actions { width: 100%; flex-wrap: wrap; }
+}
 
 /* ── Stat cards ─────────────────────────────────────────────── */
 .adm-stats-grid {
