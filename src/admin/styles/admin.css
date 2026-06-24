@@ -616,6 +616,10 @@
   font-size: .75rem;
   color: var(--adm-muted);
   margin-top: .2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .a-table__actions {
