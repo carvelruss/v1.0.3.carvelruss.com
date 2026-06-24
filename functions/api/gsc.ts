@@ -143,15 +143,18 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       }),
     ]);
 
-    if (!kwRes.ok) {
-      const errBody = await kwRes.text();
-      return json({ configured: true, error: `GSC API error (${kwRes.status}): ${errBody.slice(0, 200)}` });
-    }
-
     type GscApiRow = { keys?: string[]; clicks: number; impressions: number; ctr: number; position: number };
-    const totalsData = await totalsRes.json() as { rows?: GscApiRow[] };
-    const kwData     = await kwRes.json()     as { rows?: GscApiRow[] };
-    const pgData     = await pgRes.json()     as { rows?: GscApiRow[] };
+    const totalsData = await totalsRes.json() as { rows?: GscApiRow[]; error?: { code: number; message: string } };
+    const kwData     = await kwRes.json()     as { rows?: GscApiRow[]; error?: { code: number; message: string } };
+    const pgData     = await pgRes.json()     as { rows?: GscApiRow[]; error?: { code: number; message: string } };
+
+    if (!kwRes.ok) {
+      const code = kwData.error?.code ?? kwRes.status;
+      const hint = code === 400
+        ? 'The site URL may not match your GSC property, or the service account has not been granted access yet. Go to GSC → Settings → Users and permissions and add the service account email as a Full user.'
+        : kwData.error?.message ?? 'Unknown error';
+      return json({ configured: true, error: `GSC error (${code}): ${hint}` });
+    }
 
     const t = totalsData.rows?.[0];
     const totals = {
