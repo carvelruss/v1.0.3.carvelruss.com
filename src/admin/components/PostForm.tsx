@@ -753,13 +753,17 @@ export default function PostForm() {
         <div className="ep-gap">
           <div className="ep-field">
             <label className="ep-label" htmlFor="ps-category">Category</label>
-            <select id="ps-category" className="ep-select"
+            <input
+              id="ps-category" className="ep-input"
+              list="ps-category-list"
               value={form.category ?? ''}
               onChange={e => set('category', e.target.value)}
-            >
-              <option value="">Select a category…</option>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
+              placeholder="Select or type a category…"
+              autoComplete="off"
+            />
+            <datalist id="ps-category-list">
+              {CATEGORIES.map(c => <option key={c} value={c} />)}
+            </datalist>
           </div>
           <div className="ep-field">
             <label className="ep-label" htmlFor="ps-tags">Tags</label>
