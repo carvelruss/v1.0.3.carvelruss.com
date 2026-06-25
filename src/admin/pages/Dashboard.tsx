@@ -128,8 +128,8 @@ function AreaChart({ projects, posts }: { projects: number; posts: number }) {
   const postData = buildGrowth(Math.max(posts, 1));
   const max = Math.max(...projData, ...postData, 5);
 
-  const W = 520, H = 180;
-  const pad = { top: 18, right: 16, bottom: 28, left: 30 };
+  const W = 520, H = 150;
+  const pad = { top: 10, right: 12, bottom: 22, left: 26 };
   const cw = W - pad.left - pad.right;
   const ch = H - pad.top - pad.bottom;
   const n = AREA_MONTHS.length;
@@ -151,54 +151,23 @@ function AreaChart({ projects, posts }: { projects: number; posts: number }) {
     return d;
   }
 
-  function areaPath(points: [number, number][], linePath: string): string {
-    const base = pad.top + ch;
-    return `${linePath} L${points[points.length - 1][0].toFixed(1)},${base} L${points[0][0].toFixed(1)},${base} Z`;
-  }
-
   const projPts = pts(projData);
   const postPts = pts(postData);
   const projLine = smoothLine(projPts);
   const postLine = smoothLine(postPts);
   const yTicks = [0, Math.round(max * 0.5), max];
 
-  // Draw the higher-valued series' fill first (background) so the lower fill stays visible on top
-  const projHigher = projData[projData.length - 1] >= postData[postData.length - 1];
-
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" style={{ width: '100%', height: `${H}px`, display: 'block' }}>
-      <defs>
-        <linearGradient id="ag-proj" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#6366f1" stopOpacity="0.11" />
-          <stop offset="100%" stopColor="#6366f1" stopOpacity="0.01" />
-        </linearGradient>
-        <linearGradient id="ag-post" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#10b981" stopOpacity="0.10" />
-          <stop offset="100%" stopColor="#10b981" stopOpacity="0.01" />
-        </linearGradient>
-      </defs>
-
+    <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" preserveAspectRatio="none" style={{ width: '100%', height: `${H}px`, display: 'block' }}>
       {yTicks.map(tick => {
         const y = pad.top + ch - (tick / max) * ch;
         return (
           <g key={tick}>
             <line x1={pad.left} y1={y} x2={W - pad.right} y2={y} stroke="#e5e7eb" strokeWidth="1" />
-            <text x={pad.left - 5} y={y + 3.5} textAnchor="end" fontSize="9" fill="#94a3b8">{tick}</text>
+            <text x={pad.left - 4} y={y + 3.5} textAnchor="end" fontSize="9" fill="#94a3b8">{tick}</text>
           </g>
         );
       })}
-
-      {projHigher ? (
-        <>
-          <path d={areaPath(projPts, projLine)} fill="url(#ag-proj)" />
-          <path d={areaPath(postPts, postLine)} fill="url(#ag-post)" />
-        </>
-      ) : (
-        <>
-          <path d={areaPath(postPts, postLine)} fill="url(#ag-post)" />
-          <path d={areaPath(projPts, projLine)} fill="url(#ag-proj)" />
-        </>
-      )}
 
       <path d={projLine} fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       <path d={postLine} fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -214,7 +183,7 @@ function AreaChart({ projects, posts }: { projects: number; posts: number }) {
         <text
           key={m}
           x={pad.left + (i / (n - 1)) * cw}
-          y={H - 6}
+          y={H - 5}
           textAnchor="middle"
           fontSize="9"
           fill="#94a3b8"
