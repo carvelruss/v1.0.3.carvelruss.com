@@ -40,6 +40,8 @@ export default defineConfig({
               'active',
               'is-open',
               'is-active',
+              // TipTap adds this to the empty paragraph for placeholder display
+              'is-editor-empty',
             ],
             // Suffix variants built from data values (thumbnailType, status, etc.)
             greedy: [
@@ -53,6 +55,11 @@ export default defineConfig({
               /^ep-collapse__chevron--/,
               /^ep-tool-btn/,
               /^fcs__skeleton/,
+              // react-datepicker injects all class names dynamically at runtime;
+              // PurgeCSS never sees them in source files without this safelist.
+              /^react-datepicker/,
+              // TipTap injects .ProseMirror (and .ProseMirror-focused etc.) dynamically.
+              /^ProseMirror/,
             ],
           },
           keyframes: false,
