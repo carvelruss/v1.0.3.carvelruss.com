@@ -162,15 +162,18 @@ function AreaChart({ projects, posts }: { projects: number; posts: number }) {
   const postLine = smoothLine(postPts);
   const yTicks = [0, Math.round(max * 0.5), max];
 
+  // Draw the higher-valued series' fill first (background) so the lower fill stays visible on top
+  const projHigher = projData[projData.length - 1] >= postData[postData.length - 1];
+
   return (
     <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" style={{ width: '100%', height: `${H}px`, display: 'block' }}>
       <defs>
         <linearGradient id="ag-proj" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#6366f1" stopOpacity="0.2" />
+          <stop offset="0%" stopColor="#6366f1" stopOpacity="0.11" />
           <stop offset="100%" stopColor="#6366f1" stopOpacity="0.01" />
         </linearGradient>
         <linearGradient id="ag-post" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#10b981" stopOpacity="0.18" />
+          <stop offset="0%" stopColor="#10b981" stopOpacity="0.10" />
           <stop offset="100%" stopColor="#10b981" stopOpacity="0.01" />
         </linearGradient>
       </defs>
@@ -185,8 +188,17 @@ function AreaChart({ projects, posts }: { projects: number; posts: number }) {
         );
       })}
 
-      <path d={areaPath(projPts, projLine)} fill="url(#ag-proj)" />
-      <path d={areaPath(postPts, postLine)} fill="url(#ag-post)" />
+      {projHigher ? (
+        <>
+          <path d={areaPath(projPts, projLine)} fill="url(#ag-proj)" />
+          <path d={areaPath(postPts, postLine)} fill="url(#ag-post)" />
+        </>
+      ) : (
+        <>
+          <path d={areaPath(postPts, postLine)} fill="url(#ag-post)" />
+          <path d={areaPath(projPts, projLine)} fill="url(#ag-proj)" />
+        </>
+      )}
 
       <path d={projLine} fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       <path d={postLine} fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
