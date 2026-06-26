@@ -96,6 +96,10 @@
 /* ── Hero ────────────────────────────────────────────────────── */
 .sv-page { background: var(--pf-bg); }
 
+/* Keep all content sections at 1200px to match the header */
+.sv-hero .container,
+.sv-body .container { max-width: 1200px; }
+
 .sv-hero {
   position: relative;
   padding: 5rem 0 4rem;
