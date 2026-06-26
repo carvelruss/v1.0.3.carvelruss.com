@@ -11,7 +11,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
         `SELECT * FROM testimonials ORDER BY created_at DESC`
       ).all()
     : await env.DB.prepare(
-        `SELECT id, full_name, company_name, website_url, message, created_at
+        `SELECT id, full_name, company_name, role, website_url, message, created_at
          FROM testimonials WHERE status = 'approved' ORDER BY created_at DESC`
       ).all();
   return json(rows.results ?? []);
