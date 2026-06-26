@@ -2,6 +2,7 @@ import Header from '../components/layout/Header';
 import HeroSection from '../components/public/HeroSection';
 import FeaturedCaseStudies from '../components/public/FeaturedCaseStudies';
 import RecentBlogs from '../components/public/RecentBlogs';
+import TestimonialsSection from '../components/public/TestimonialsSection';
 import Footer from '../components/layout/Footer';
 import { usePageMeta } from '../lib/usePageMeta';
 
@@ -19,6 +20,7 @@ export default function WebStudioLanding() {
         <HeroSection />
         <FeaturedCaseStudies />
         <RecentBlogs />
+        <TestimonialsSection />
       </main>
       <Footer />
     </div>

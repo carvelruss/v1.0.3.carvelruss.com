@@ -79,7 +79,8 @@ import './styles/main.scss';
 import Header            from './components/layout/Header';
 import Footer            from './components/layout/Footer';
 import WebStudioLanding  from './pages/WebStudioLanding';
-import ScrollToTopButton from './components/ScrollToTopButton';
+import ScrollToTopButton  from './components/ScrollToTopButton';
+import WriteReviewButton  from './components/WriteReviewButton';
 
 // All non-homepage routes are lazy — they're never needed for the initial LCP paint.
 // AdminApp especially: it imports TipTap + react-datepicker that no public visitor needs.
@@ -114,6 +115,7 @@ export default function App() {
       <PageTracker />
       <ScrollTracker />
       <ScrollToTopButton />
+      <WriteReviewButton />
       <Routes>
         <Route path="/"                      element={<WebStudioLanding />} />
         <Route path="/case-studies"          element={<PageShell><ProjectsPage /></PageShell>} />

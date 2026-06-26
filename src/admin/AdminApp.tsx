@@ -36,6 +36,7 @@ const AdminSettingsPage        = lazyChunk(() => import('./pages/AdminSettingsPa
 const AdminCaseStudyFormPage   = lazyChunk(() => import('./pages/AdminCaseStudyFormPage'), 'cs-form');
 const AdminInquiryDetailPage   = lazyChunk(() => import('./pages/AdminInquiryDetailPage'),'inquiry');
 const AdminAnalyticsPage       = lazyChunk(() => import('./pages/AdminAnalyticsPage'),     'analytics');
+const TestimonialsAdmin        = lazyChunk(() => import('./pages/TestimonialsAdmin'),       'testimonials');
 
 class AdminErrorBoundary extends Component<{ children: ReactNode }, { error: string | null }> {
   state = { error: null };
@@ -113,6 +114,9 @@ export default function AdminApp() {
 
           {/* Settings */}
           <Route path="settings"            element={<GS><AdminSettingsPage /></GS>} />
+
+          {/* Testimonials */}
+          <Route path="testimonials"        element={<GS><TestimonialsAdmin /></GS>} />
 
           {/* Analytics */}
           <Route path="analytics"           element={<GS><AdminAnalyticsPage /></GS>} />

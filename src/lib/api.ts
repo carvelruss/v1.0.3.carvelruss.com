@@ -1,4 +1,4 @@
-import type { Project, Post, Inquiry, MediaAsset, SiteSetting, Service } from '../types';
+import type { Project, Post, Inquiry, MediaAsset, SiteSetting, Service, Testimonial } from '../types';
 import { compressImage } from './compressImage';
 
 const TOKEN_KEY = 'portfolio_admin_token';
@@ -156,6 +156,17 @@ class ApiClient {
   }
   updateSettings(settings: Record<string, string>): Promise<{ success: boolean; updated: number }> {
     return this.request('/settings', { method: 'PUT', body: JSON.stringify(settings) });
+  }
+
+  // ── Testimonials ─────────────────────────────────────────────────────────
+  getTestimonials(): Promise<Testimonial[]> {
+    return this.request('/testimonials');
+  }
+  updateTestimonialStatus(id: number, status: 'pending' | 'approved' | 'rejected'): Promise<{ success: boolean; status: string }> {
+    return this.request(`/testimonials/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+  }
+  deleteTestimonial(id: number): Promise<{ success: boolean }> {
+    return this.request(`/testimonials/${id}`, { method: 'DELETE' });
   }
 
   // ── Contact (public) ─────────────────────────────────────────────────────

@@ -102,3 +102,14 @@ export interface SiteSetting {
   setting_value?: string | null;
   updated_at: string;
 }
+
+export interface Testimonial {
+  id: number;
+  full_name: string;
+  company_name: string;
+  website_url: string;
+  message: string;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  updated_at?: string;
+}
