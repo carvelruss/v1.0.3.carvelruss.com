@@ -269,9 +269,7 @@
 /* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .ts { padding: 64px 0 72px; }
-  .ts__head { flex-direction: column; align-items: flex-start; }
-  .ts__avg { align-items: flex-start; }
-  .ts__avg-score { font-size: 38px; }
+  .ts__avg-score { font-size: 36px; }
   .ts__card,
   .ts__skeleton { width: 280px; }
   .ts__marquee-wrap {
