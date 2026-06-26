@@ -27,7 +27,6 @@ function StarRating() {
 }
 
 function TestimonialCard({ t }: { t: Testimonial }) {
-  const domain = t.website_url.replace(/^https?:\/\//, '').replace(/\/$/, '');
   const [expanded, setExpanded] = useState(false);
 
   return (
