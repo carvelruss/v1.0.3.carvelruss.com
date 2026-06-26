@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import '../styles/write-review.css';
 
 interface FormState {
@@ -12,11 +13,15 @@ interface FormState {
 const BLANK: FormState = { full_name: '', company_name: '', role: '', website_url: '', message: '' };
 
 export default function WriteReviewButton() {
-  const [open, setOpen]           = useState(false);
-  const [form, setForm]           = useState<FormState>(BLANK);
+  const { pathname }                = useLocation();
+  const [open, setOpen]             = useState(false);
+  const [form, setForm]             = useState<FormState>(BLANK);
   const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess]     = useState(false);
-  const [error, setError]         = useState('');
+  const [success, setSuccess]       = useState(false);
+  const [error, setError]           = useState('');
+
+  // All hooks above — safe to return early now
+  if (pathname.startsWith('/admin')) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
