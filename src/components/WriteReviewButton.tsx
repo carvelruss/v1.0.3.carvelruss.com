@@ -4,11 +4,12 @@ import '../styles/write-review.css';
 interface FormState {
   full_name: string;
   company_name: string;
+  role: string;
   website_url: string;
   message: string;
 }
 
-const BLANK: FormState = { full_name: '', company_name: '', website_url: '', message: '' };
+const BLANK: FormState = { full_name: '', company_name: '', role: '', website_url: '', message: '' };
 
 export default function WriteReviewButton() {
   const [open, setOpen]           = useState(false);
@@ -130,21 +131,39 @@ export default function WriteReviewButton() {
                     </div>
                   </div>
 
-                  <div className="wr-modal__field">
-                    <label className="wr-modal__label" htmlFor="wr-website">
-                      Website URL <span aria-hidden="true">*</span>
-                    </label>
-                    <input
-                      id="wr-website"
-                      name="website_url"
-                      type="url"
-                      className="wr-modal__input"
-                      placeholder="https://example.com"
-                      value={form.website_url}
-                      onChange={handleChange}
-                      required
-                      autoComplete="url"
-                    />
+                  <div className="wr-modal__row">
+                    <div className="wr-modal__field">
+                      <label className="wr-modal__label" htmlFor="wr-role">
+                        Role <span aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="wr-role"
+                        name="role"
+                        type="text"
+                        className="wr-modal__input"
+                        placeholder="CEO, Designer…"
+                        value={form.role}
+                        onChange={handleChange}
+                        required
+                        autoComplete="organization-title"
+                      />
+                    </div>
+                    <div className="wr-modal__field">
+                      <label className="wr-modal__label" htmlFor="wr-website">
+                        Website URL <span aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="wr-website"
+                        name="website_url"
+                        type="url"
+                        className="wr-modal__input"
+                        placeholder="https://example.com"
+                        value={form.website_url}
+                        onChange={handleChange}
+                        required
+                        autoComplete="url"
+                      />
+                    </div>
                   </div>
 
                   <div className="wr-modal__field">

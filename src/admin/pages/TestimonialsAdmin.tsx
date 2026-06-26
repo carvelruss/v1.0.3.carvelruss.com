@@ -173,7 +173,7 @@ export default function TestimonialsAdmin() {
                   <tr key={t.id}>
                     <td style={{ minWidth: 160 }}>
                       <div className="a-table__title">{t.full_name}</div>
-                      <div className="a-table__sub">{t.company_name}</div>
+                      <div className="a-table__sub">{t.role ? `${t.role} · ` : ''}{t.company_name}</div>
                       <a
                         href={t.website_url}
                         target="_blank"

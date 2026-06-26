@@ -22,14 +22,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const body = await request.json<{
       full_name?: string;
       company_name?: string;
+      role?: string;
       website_url?: string;
       message?: string;
     }>();
 
-    const { full_name, company_name, website_url, message } = body;
+    const { full_name, company_name, role, website_url, message } = body;
 
     if (!full_name?.trim())    return err('Full name is required');
     if (!company_name?.trim()) return err('Company name is required');
+    if (!role?.trim())         return err('Role is required');
     if (!website_url?.trim())  return err('Website URL is required');
     if (!message?.trim())      return err('Testimonial message is required');
 
@@ -39,10 +41,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     try { new URL(normalised); } catch { return err('Please enter a valid website URL'); }
 
     await env.DB.prepare(
-      `INSERT INTO testimonials (full_name, company_name, website_url, message, status)
-       VALUES (?, ?, ?, ?, 'pending')`
+      `INSERT INTO testimonials (full_name, company_name, role, website_url, message, status)
+       VALUES (?, ?, ?, ?, ?, 'pending')`
     )
-      .bind(full_name.trim(), company_name.trim(), normalised, message.trim())
+      .bind(full_name.trim(), company_name.trim(), role.trim(), normalised, message.trim())
       .run();
 
     return json({ success: true });

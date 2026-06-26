@@ -107,6 +107,7 @@ export interface Testimonial {
   id: number;
   full_name: string;
   company_name: string;
+  role: string;
   website_url: string;
   message: string;
   status: 'pending' | 'approved' | 'rejected';
