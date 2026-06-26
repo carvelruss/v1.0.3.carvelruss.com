@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiArrowLeft, FiCheckCircle, FiArrowRight } from 'react-icons/fi';
+import { FiCheckCircle, FiAward, FiShield, FiZap } from 'react-icons/fi';
 import { api } from '../lib/api';
 import type { Service } from '../types';
 import '../styles/service-detail.css';
+
+const FEAT_ICONS = [
+  <FiAward  size={22} aria-hidden="true" />,
+  <FiShield size={22} aria-hidden="true" />,
+  <FiZap    size={22} aria-hidden="true" />,
+];
 
 export default function ServiceDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -42,6 +48,7 @@ export default function ServiceDetail() {
 
   const ctaLabel = service.cta_label || 'Get a Free Quote';
   const ctaHref  = service.cta_url  || '/contact';
+  const isExternal = ctaHref.startsWith('http');
 
   return (
     <div className="sv-page">
@@ -56,8 +63,8 @@ export default function ServiceDetail() {
             <a
               href={ctaHref}
               className="sv-lp-header__cta-btn"
-              target={ctaHref.startsWith('http') ? '_blank' : undefined}
-              rel={ctaHref.startsWith('http') ? 'noopener noreferrer' : undefined}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
             >
               {ctaLabel}
             </a>
@@ -68,53 +75,57 @@ export default function ServiceDetail() {
 
       {/* ── Hero ── */}
       <section className="sv-hero">
+
+        {/* Right-side photo */}
         {service.cover_url && (
-          <div className="sv-hero__bg">
-            <img src={service.cover_url} alt="" aria-hidden="true" />
+          <div className="sv-hero__photo">
+            <img src={service.cover_url} alt={service.title} />
           </div>
         )}
-        <div className="sv-hero__overlay" />
+        <div className="sv-hero__gradient" />
 
-        <div className="container">
+        {/* Content panel */}
+        <div className="sv-hero__wrap">
           <div className="sv-hero__inner">
-            <Link to="/" className="sv-back">
-              <FiArrowLeft size={15} /> Back to Home
-            </Link>
 
-            {service.icon_url && (
-              <div className="sv-hero__icon">
-                <img src={service.icon_url} alt={service.title} />
+            {/* Two-tone headline */}
+            {service.excerpt && (
+              <div className="sv-hero__eyebrow">{service.excerpt}</div>
+            )}
+            <h1 className="sv-hero__title">{service.title}</h1>
+
+            {/* Description with left accent bar */}
+            {service.description && (
+              <div className="sv-hero__desc-block">
+                {service.description}
               </div>
             )}
 
-            <h1 className="sv-hero__title" data-reveal>{service.title}</h1>
-
-            {(service.excerpt || service.description) && (
-              <p className="sv-hero__desc" data-reveal data-reveal-delay="100">
-                {service.excerpt || service.description}
-              </p>
-            )}
-
-            {service.tags.length > 0 && (
-              <div className="sv-hero__tags" data-reveal data-reveal-delay="150">
-                {service.tags.map(t => (
-                  <span key={t} className="ws-tech-pill">{t}</span>
+            {/* Feature icon grid (first 3) */}
+            {service.features.length > 0 && (
+              <div className="sv-hero__features">
+                {service.features.slice(0, 3).map((f, i) => (
+                  <div key={i} className="sv-hero__feat">
+                    <div className="sv-hero__feat-icon">
+                      {FEAT_ICONS[i % FEAT_ICONS.length]}
+                    </div>
+                    <span className="sv-hero__feat-label">{f}</span>
+                  </div>
                 ))}
               </div>
             )}
 
-            {(service.cta_label && service.cta_url) && (
-              <div data-reveal data-reveal-delay="200">
-                <a
-                  href={service.cta_url}
-                  className="ws-btn-primary sv-hero__cta"
-                  target={service.cta_url.startsWith('http') ? '_blank' : undefined}
-                  rel={service.cta_url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                >
-                  {service.cta_label} <FiArrowRight size={15} />
-                </a>
-              </div>
-            )}
+            {/* Large CTA button */}
+            <a
+              href={ctaHref}
+              className="sv-hero__cta-btn"
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+            >
+              <span className="sv-hero__cta-sub-text">Talk to an expert today</span>
+              <span className="sv-hero__cta-main-text">{ctaLabel}</span>
+            </a>
+
           </div>
         </div>
       </section>
@@ -154,9 +165,14 @@ export default function ServiceDetail() {
               <div className="sv-card sv-card--cta" data-reveal data-reveal-delay="100">
                 <h3 className="sv-card__title">Ready to get started?</h3>
                 <p className="sv-card__text">Let's talk about your project and how I can help.</p>
-                <Link to="/contact" className="ws-btn-primary sv-card__btn">
-                  Get in Touch
-                </Link>
+                <a
+                  href={ctaHref}
+                  className="ws-btn-primary sv-card__btn"
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                >
+                  {ctaLabel}
+                </a>
               </div>
             </aside>
 
