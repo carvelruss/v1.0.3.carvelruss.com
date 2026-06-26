@@ -97,8 +97,9 @@
 .ts__stars {
   display: flex;
   gap: 3px;
-  color: #f5b700;
 }
+.ts__star--on  { color: #f5b700; }
+.ts__star--off { color: #d1d5db; }
 
 /* ── Message ──────────────────────────────────────────────────── */
 .ts__message-wrap {

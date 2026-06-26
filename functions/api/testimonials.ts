@@ -11,7 +11,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
         `SELECT * FROM testimonials ORDER BY created_at DESC`
       ).all()
     : await env.DB.prepare(
-        `SELECT id, full_name, company_name, role, website_url, message, created_at
+        `SELECT id, full_name, company_name, role, website_url, message, rating, created_at
          FROM testimonials WHERE status = 'approved' ORDER BY created_at DESC`
       ).all();
   return json(rows.results ?? []);
@@ -25,15 +25,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       role?: string;
       website_url?: string;
       message?: string;
+      rating?: number;
     }>();
 
-    const { full_name, company_name, role, website_url, message } = body;
+    const { full_name, company_name, role, website_url, message, rating } = body;
 
     if (!full_name?.trim())    return err('Full name is required');
     if (!company_name?.trim()) return err('Company name is required');
     if (!role?.trim())         return err('Role is required');
     if (!website_url?.trim())  return err('Website URL is required');
     if (!message?.trim())      return err('Testimonial message is required');
+    const stars = Number(rating);
+    if (!stars || stars < 1 || stars > 5) return err('Please select a rating between 1 and 5');
 
     const normalised = website_url.trim().startsWith('http')
       ? website_url.trim()
@@ -41,10 +44,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     try { new URL(normalised); } catch { return err('Please enter a valid website URL'); }
 
     await env.DB.prepare(
-      `INSERT INTO testimonials (full_name, company_name, role, website_url, message, status)
-       VALUES (?, ?, ?, ?, ?, 'pending')`
+      `INSERT INTO testimonials (full_name, company_name, role, website_url, message, rating, status)
+       VALUES (?, ?, ?, ?, ?, ?, 'pending')`
     )
-      .bind(full_name.trim(), company_name.trim(), role.trim(), normalised, message.trim())
+      .bind(full_name.trim(), company_name.trim(), role.trim(), normalised, message.trim(), stars)
       .run();
 
     return json({ success: true });

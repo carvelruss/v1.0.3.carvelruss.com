@@ -8,9 +8,38 @@ interface FormState {
   role: string;
   website_url: string;
   message: string;
+  rating: number;
 }
 
-const BLANK: FormState = { full_name: '', company_name: '', role: '', website_url: '', message: '' };
+const BLANK: FormState = { full_name: '', company_name: '', role: '', website_url: '', message: '', rating: 0 };
+
+function StarPicker({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const [hovered, setHovered] = useState(0);
+  const active = hovered || value;
+  return (
+    <div className="wr-stars" role="radiogroup" aria-label="Rating">
+      {[1, 2, 3, 4, 5].map(n => (
+        <button
+          key={n}
+          type="button"
+          className={`wr-star${active >= n ? ' wr-star--on' : ''}`}
+          onClick={() => onChange(n)}
+          onMouseEnter={() => setHovered(n)}
+          onMouseLeave={() => setHovered(0)}
+          aria-label={`${n} star${n > 1 ? 's' : ''}`}
+          aria-pressed={value === n}
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+        </button>
+      ))}
+      {value > 0 && (
+        <span className="wr-stars__label">{value} star{value > 1 ? 's' : ''}</span>
+      )}
+    </div>
+  );
+}
 
 export default function WriteReviewButton() {
   const { pathname }                = useLocation();
@@ -169,6 +198,16 @@ export default function WriteReviewButton() {
                         autoComplete="url"
                       />
                     </div>
+                  </div>
+
+                  <div className="wr-modal__field">
+                    <label className="wr-modal__label">
+                      Rating <span aria-hidden="true">*</span>
+                    </label>
+                    <StarPicker
+                      value={form.rating}
+                      onChange={n => setForm(f => ({ ...f, rating: n }))}
+                    />
                   </div>
 
                   <div className="wr-modal__field">

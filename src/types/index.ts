@@ -110,6 +110,7 @@ export interface Testimonial {
   role: string;
   website_url: string;
   message: string;
+  rating: number;
   status: 'pending' | 'approved' | 'rejected';
   created_at: string;
   updated_at?: string;

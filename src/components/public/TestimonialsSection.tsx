@@ -14,11 +14,15 @@ function QuoteIcon() {
   );
 }
 
-function StarRating() {
+function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="ts__stars" aria-label="5 stars">
+    <div className="ts__stars" aria-label={`${rating} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map(i => (
-        <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg key={i} width="13" height="13" viewBox="0 0 24 24"
+          fill={i <= rating ? 'currentColor' : 'none'}
+          stroke="currentColor" strokeWidth={i <= rating ? 0 : 1.5}
+          className={i <= rating ? 'ts__star--on' : 'ts__star--off'}
+          aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       ))}
@@ -32,7 +36,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
   return (
     <article className="ts__card">
       <QuoteIcon />
-      <StarRating />
+      <StarRating rating={t.rating ?? 5} />
       <div className="ts__message-wrap">
         <p className={`ts__message${expanded ? ' ts__message--expanded' : ''}`}>"{t.message}"</p>
         <button className="ts__toggle" onClick={() => setExpanded(v => !v)}>
