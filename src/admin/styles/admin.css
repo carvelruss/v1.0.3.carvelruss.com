@@ -4228,3 +4228,33 @@
 .a-chip button:hover {
   opacity: 1;
 }
+
+
+/* ── Media picker selectable card ────────────────────────────────────────── */
+.a-media-card--selectable {
+  all: unset;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  text-align: left;
+}
+.a-media-card--selectable:hover,
+.a-media-card--selectable:focus-visible {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  outline: none;
+}
+.a-media-card--selectable .a-media-card__name {
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--adm-text, #0f172a);
+}

@@ -22,6 +22,7 @@ import type { Post } from '../../types';
 import AdminLayout from './AdminLayout';
 import BlogHero from '../../components/blog/BlogHero';
 import BlogContent from '../../components/blog/BlogContent';
+import MediaPickerModal from './MediaPickerModal';
 import '../styles/blog-editor.css';
 
 /* ── Types ─────────────────────────────────────────────────────────────────── */
@@ -212,9 +213,7 @@ export default function PostForm() {
   const [featuredUploadErr, setFeaturedUploadErr] = useState('');
   const [featuredDragOver, setFeaturedDragOver] = useState(false);
   const featuredInputRef = useRef<HTMLInputElement>(null);
-  const [avatarUploading, setAvatarUploading] = useState(false);
-  const [avatarUploadErr, setAvatarUploadErr] = useState('');
-  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const dpRef = useRef<DatePicker>(null);
   const toastRef = useRef(0);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -361,19 +360,6 @@ export default function PostForm() {
     }
   };
 
-  /* ── avatar upload ── */
-  const uploadAvatar = async (file: File) => {
-    setAvatarUploadErr('');
-    setAvatarUploading(true);
-    try {
-      const { url } = await api.uploadImage(file);
-      set('author_avatar', url);
-    } catch (e: unknown) {
-      setAvatarUploadErr(e instanceof Error ? e.message : 'Upload failed');
-    } finally {
-      setAvatarUploading(false);
-    }
-  };
 
   /* ── save ── */
   const save = async (overrideStatus?: Post['status'], silent = false) => {
@@ -659,30 +645,21 @@ export default function PostForm() {
       <div className="ep-panel__section">
         <span className="ep-panel__section-title">Author</span>
 
-        {/* hidden avatar file input */}
-        <input
-          ref={avatarInputRef}
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          onChange={e => {
-            const file = e.target.files?.[0];
-            if (file) uploadAvatar(file);
-            e.target.value = '';
-          }}
-        />
+        {showAvatarPicker && (
+          <MediaPickerModal
+            onSelect={url => set('author_avatar', url)}
+            onClose={() => setShowAvatarPicker(false)}
+          />
+        )}
 
         <div className="ep-author-row">
           <button
             type="button"
             className="ep-avatar ep-avatar--upload"
-            onClick={() => avatarInputRef.current?.click()}
-            title="Click to upload avatar"
-            disabled={avatarUploading}
+            onClick={() => setShowAvatarPicker(true)}
+            title="Pick avatar from media"
           >
-            {avatarUploading ? (
-              <span style={{ fontSize: 11, color: 'var(--ep-muted)' }}>…</span>
-            ) : form.author_avatar ? (
+            {form.author_avatar ? (
               <img src={form.author_avatar} alt="avatar"
                 onError={e => (e.currentTarget.style.display = 'none')} />
             ) : (
@@ -690,25 +667,14 @@ export default function PostForm() {
             )}
           </button>
           <div style={{ flex: 1 }}>
-            {form.author_avatar ? (
-              <button
-                type="button"
-                className="ep-avatar-btn"
-                style={{ display: 'block', marginBottom: 4 }}
-                onClick={() => avatarInputRef.current?.click()}
-              >
-                Change Avatar
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="ep-avatar-btn"
-                style={{ display: 'block', marginBottom: 4 }}
-                onClick={() => avatarInputRef.current?.click()}
-              >
-                Upload Avatar
-              </button>
-            )}
+            <button
+              type="button"
+              className="ep-avatar-btn"
+              style={{ display: 'block', marginBottom: 4 }}
+              onClick={() => setShowAvatarPicker(true)}
+            >
+              {form.author_avatar ? 'Change Avatar' : 'Pick Avatar'}
+            </button>
             {form.author_avatar && (
               <button
                 type="button"
@@ -720,12 +686,6 @@ export default function PostForm() {
             )}
           </div>
         </div>
-
-        {avatarUploadErr && (
-          <p className="ep-hint" style={{ color: 'var(--ep-danger)', marginBottom: 8 }}>
-            {avatarUploadErr}
-          </p>
-        )}
 
         <div className="ep-gap">
           <div className="ep-field">
