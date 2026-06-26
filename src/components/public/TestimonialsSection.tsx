@@ -28,11 +28,18 @@ function StarRating() {
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   const domain = t.website_url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <article className="ts__card">
       <QuoteIcon />
       <StarRating />
-      <p className="ts__message">"{t.message}"</p>
+      <div className="ts__message-wrap">
+        <p className={`ts__message${expanded ? ' ts__message--expanded' : ''}`}>"{t.message}"</p>
+        <button className="ts__toggle" onClick={() => setExpanded(v => !v)}>
+          {expanded ? 'See less ↑' : 'See more ↓'}
+        </button>
+      </div>
       <div className="ts__author">
         <div className="ts__author-avatar" aria-hidden="true">
           {t.full_name.charAt(0).toUpperCase()}

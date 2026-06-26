@@ -72,13 +72,38 @@
   color: #f5b700;
 }
 
+.ts__message-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 .ts__message {
   font-size: 14px;
   line-height: 1.7;
   color: #475569;
   margin: 0;
-  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+.ts__message--expanded {
+  display: block;
+  overflow: visible;
+}
+.ts__toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0d215a;
+  cursor: pointer;
+  align-self: flex-start;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.ts__toggle:hover { opacity: 1; }
 
 /* ── Author ───────────────────────────────────────────────────── */
 .ts__author {
