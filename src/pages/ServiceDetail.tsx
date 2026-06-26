@@ -40,8 +40,31 @@ export default function ServiceDetail() {
     </div>
   );
 
+  const ctaLabel = service.cta_label || 'Get a Free Quote';
+  const ctaHref  = service.cta_url  || '/contact';
+
   return (
     <div className="sv-page">
+
+      {/* ── Landing Header ── */}
+      <header className="sv-lp-header">
+        <div className="sv-lp-header__inner">
+          <a href="/" className="sv-lp-header__logo" aria-label="Carvel Russ – Home">
+            <img src="/logos/carvelruss-logo.png" alt="Carvel Russ" />
+          </a>
+          <div className="sv-lp-header__cta-wrap">
+            <a
+              href={ctaHref}
+              className="sv-lp-header__cta-btn"
+              target={ctaHref.startsWith('http') ? '_blank' : undefined}
+              rel={ctaHref.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
+              {ctaLabel}
+            </a>
+            <span className="sv-lp-header__cta-sub">Talk to an expert today</span>
+          </div>
+        </div>
+      </header>
 
       {/* ── Hero ── */}
       <section className="sv-hero">
