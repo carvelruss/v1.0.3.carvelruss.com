@@ -171,24 +171,6 @@
   margin: 0 0 1.4rem;
 }
 
-/* Description with left accent bar */
-.sv-hero__desc-block {
-  position: relative;
-  padding-left: 1rem;
-  margin-bottom: 1.75rem;
-  font-size: .9375rem;
-  line-height: 1.65;
-  color: #374151;
-}
-.sv-hero__desc-block::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 2px; bottom: 2px;
-  width: 3px;
-  background: #b8870b;
-  border-radius: 2px;
-}
-
 /* Feature icon grid */
 .sv-hero__features {
   display: flex;

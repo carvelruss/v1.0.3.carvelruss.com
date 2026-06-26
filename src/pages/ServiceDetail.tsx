@@ -94,13 +94,6 @@ export default function ServiceDetail() {
             )}
             <h1 className="sv-hero__title">{service.title}</h1>
 
-            {/* Description with left accent bar */}
-            {service.description && (
-              <div className="sv-hero__desc-block">
-                {service.description}
-              </div>
-            )}
-
             {/* Feature icon grid (first 3) */}
             {service.features.length > 0 && (
               <div className="sv-hero__features">
