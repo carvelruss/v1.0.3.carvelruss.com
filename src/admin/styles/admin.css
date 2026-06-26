@@ -1071,8 +1071,14 @@
 /* ── 18. MEDIA GRID ─────────────────────────────────────────── */
 .a-media-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: .875rem;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.a-media-count {
+  font-size: .8125rem;
+  color: var(--adm-muted);
+  white-space: nowrap;
 }
 
 .a-media-card {
@@ -1080,11 +1086,17 @@
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-r);
   overflow: hidden;
-  transition: border-color .2s var(--adm-ease), transform .2s var(--adm-ease);
+  transition: border-color .18s var(--adm-ease), box-shadow .18s var(--adm-ease);
 }
 .a-media-card:hover {
   border-color: var(--adm-border-2);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+}
+
+/* thumb wrapper — positions the overlay */
+.a-media-card__thumb-wrap {
+  position: relative;
+  overflow: hidden;
 }
 
 .a-media-card__thumb {
@@ -1093,6 +1105,10 @@
   object-fit: cover;
   background: var(--adm-surface-3);
   display: block;
+  transition: transform .22s var(--adm-ease);
+}
+.a-media-card:hover .a-media-card__thumb {
+  transform: scale(1.04);
 }
 
 .a-media-card__thumb-fallback {
@@ -1102,33 +1118,71 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
   color: var(--adm-muted);
 }
 
-.a-media-card__body {
-  padding: .625rem .75rem .75rem;
+/* hover overlay */
+.a-media-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15,23,42,.52);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 8px;
+  opacity: 0;
+  transition: opacity .18s var(--adm-ease);
+}
+.a-media-card:hover .a-media-card__overlay { opacity: 1; }
+
+.a-media-card__overlay-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.a-media-card__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background .15s ease;
+}
+.a-media-card__action:hover { background: rgba(255,255,255,.32); }
+.a-media-card__action.is-copied { background: rgba(34,197,94,.55); }
+.a-media-card__action--delete:hover { background: rgba(239,68,68,.55); }
+
+/* info row below thumb */
+.a-media-card__info {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .5rem;
+  padding: 8px 10px;
+  border-top: 1px solid var(--adm-border);
 }
 
 .a-media-card__name {
-  font-size: .75rem;
-  font-weight: 600;
+  font-size: .725rem;
+  font-weight: 500;
   color: var(--adm-text-2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: .125rem;
+  min-width: 0;
 }
 
-.a-media-card__meta {
+.a-media-card__size {
   font-size: .6875rem;
   color: var(--adm-muted);
-}
-
-.a-media-card__actions {
-  display: flex;
-  gap: .3rem;
-  margin-top: .5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ── 19. RECENT ACTIVITY LISTS ──────────────────────────────── */
