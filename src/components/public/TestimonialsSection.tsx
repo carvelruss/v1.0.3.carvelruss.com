@@ -99,7 +99,11 @@ export default function TestimonialsSection() {
 
   if (!loading && !hasItems) return null;
 
-  // Duplicate items so the marquee loops seamlessly (animate -50% = one full set)
+  const avg = hasItems
+    ? items!.reduce((sum, t) => sum + (t.rating ?? 5), 0) / items!.length
+    : 0;
+  const avgDisplay  = avg.toFixed(1);
+  const fullStars   = Math.floor(avg);
   const track = hasItems ? [...items!, ...items!] : [];
 
   return (
@@ -115,6 +119,26 @@ export default function TestimonialsSection() {
               Real feedback from clients I've had the pleasure of working with.
             </p>
           </div>
+
+          {hasItems && (
+            <div className="ts__avg" aria-label={`Average rating: ${avgDisplay} out of 5`}>
+              <div className="ts__avg-score">{avgDisplay}</div>
+              <div className="ts__avg-stars">
+                {[1, 2, 3, 4, 5].map(i => (
+                  <svg key={i} width="18" height="18" viewBox="0 0 24 24"
+                    fill={i <= fullStars ? 'currentColor' : 'none'}
+                    stroke="currentColor" strokeWidth={i <= fullStars ? 0 : 1.5}
+                    className={i <= fullStars ? 'ts__star--on' : 'ts__star--off'}
+                    aria-hidden="true">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
+                ))}
+              </div>
+              <div className="ts__avg-label">
+                Based on {items!.length} review{items!.length !== 1 ? 's' : ''}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
