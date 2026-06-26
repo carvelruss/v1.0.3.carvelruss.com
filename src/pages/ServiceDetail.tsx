@@ -88,11 +88,13 @@ export default function ServiceDetail() {
         <div className="sv-hero__wrap">
           <div className="sv-hero__inner">
 
-            {/* Two-tone headline */}
-            {service.excerpt && (
-              <div className="sv-hero__eyebrow">{service.excerpt}</div>
-            )}
+            {/* Heading */}
             <h1 className="sv-hero__title">{service.title}</h1>
+
+            {/* Sub-Heading */}
+            {service.excerpt && (
+              <p className="sv-hero__subtitle">{service.excerpt}</p>
+            )}
 
             {/* Feature icon grid (first 3) */}
             {service.features.length > 0 && (

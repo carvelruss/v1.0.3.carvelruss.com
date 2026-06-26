@@ -149,26 +149,24 @@
   max-width: 520px;
 }
 
-/* Gold eyebrow / accent line */
-.sv-hero__eyebrow {
-  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-  font-weight: 800;
-  color: #b8870b;
-  text-transform: uppercase;
-  letter-spacing: .01em;
-  line-height: 1.2;
-  margin: 0 0 .1rem;
-}
-
-/* Main headline — dark, bold, uppercase */
+/* Heading */
 .sv-hero__title {
-  font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
   font-weight: 900;
   color: var(--pf-primary);
   text-transform: uppercase;
   line-height: 1.1;
   letter-spacing: -.01em;
-  margin: 0 0 1.4rem;
+  margin: 0 0 .75rem;
+}
+
+/* Sub-Heading */
+.sv-hero__subtitle {
+  font-size: clamp(.9375rem, 1.5vw, 1.0625rem);
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0 0 1.75rem;
 }
 
 /* Feature icon grid */
