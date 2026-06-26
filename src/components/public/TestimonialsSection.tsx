@@ -46,15 +46,15 @@ function TestimonialCard({ t }: { t: Testimonial }) {
         </div>
         <div className="ts__author-info">
           <strong className="ts__author-name">{t.full_name}</strong>
+          <span className="ts__author-company-name">{t.company_name}</span>
           <a
             href={t.website_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="ts__author-company"
+            className="ts__author-domain"
           >
-            {t.company_name} ↗
+            {t.website_url}
           </a>
-          <span className="ts__author-domain">{domain}</span>
         </div>
       </div>
     </article>
