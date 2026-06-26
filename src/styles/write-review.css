@@ -208,6 +208,7 @@
   margin: 0;
   max-width: 340px;
 }
+.wr-modal__success .wr-modal__btn { align-self: center; }
 
 /* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 520px) {
