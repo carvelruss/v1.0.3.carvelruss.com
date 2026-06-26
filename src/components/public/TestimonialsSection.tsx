@@ -4,7 +4,7 @@ import '../../styles/testimonials-section.css';
 
 function QuoteIcon() {
   return (
-    <svg className="ts__quote-icon" width="36" height="28" viewBox="0 0 36 28" fill="none"
+    <svg className="ts__quote-icon" width="28" height="22" viewBox="0 0 36 28" fill="none"
       aria-hidden="true">
       <path
         d="M0 28V17.6C0 12.587 1.44 8.533 4.32 5.44 7.2 2.347 11.147.693 16.16.48L17.12 4c-3.093.747-5.413 2.16-6.96 4.24C8.613 10.32 7.84 12.72 8 15.44h8V28H0zm20 0V17.6c0-5.013 1.44-9.067 4.32-12.16C27.2 2.347 31.147.693 36.16.48L37.12 4c-3.093.747-5.413 2.16-6.96 4.24C28.613 10.32 27.84 12.72 28 15.44h8V28H20z"
@@ -18,7 +18,7 @@ function StarRating() {
   return (
     <div className="ts__stars" aria-label="5 stars">
       {[1, 2, 3, 4, 5].map(i => (
-        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       ))}
@@ -81,7 +81,7 @@ function SkeletonCard() {
 }
 
 export default function TestimonialsSection() {
-  const [items, setItems]   = useState<Testimonial[] | null>(null);
+  const [items, setItems] = useState<Testimonial[] | null>(null);
 
   useEffect(() => {
     fetch('/api/testimonials')
@@ -90,15 +90,19 @@ export default function TestimonialsSection() {
       .catch(() => setItems([]));
   }, []);
 
-  const loading = items === null;
+  const loading  = items === null;
   const hasItems = !loading && items!.length > 0;
 
   if (!loading && !hasItems) return null;
 
+  // Duplicate items so the marquee loops seamlessly (animate -50% = one full set)
+  const track = hasItems ? [...items!, ...items!] : [];
+
   return (
     <section className="ts" aria-labelledby="ts-title">
-      <div className="container">
 
+      {/* Header stays inside the container */}
+      <div className="container">
         <div className="ts__head">
           <div className="ts__head-left">
             <span className="ts__eyebrow">Client Reviews</span>
@@ -108,20 +112,25 @@ export default function TestimonialsSection() {
             </p>
           </div>
         </div>
-
-        {loading ? (
-          <div className="ts__grid">
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
-          </div>
-        ) : (
-          <div className="ts__grid">
-            {items!.map(t => <TestimonialCard key={t.id} t={t} />)}
-          </div>
-        )}
-
       </div>
+
+      {/* Marquee — full bleed, faded edges */}
+      {loading ? (
+        <div className="ts__marquee-wrap">
+          <div className="ts__marquee ts__marquee--paused">
+            {[1, 2, 3, 4].map(i => <SkeletonCard key={i} />)}
+          </div>
+        </div>
+      ) : (
+        <div className="ts__marquee-wrap" aria-label="Client testimonials carousel">
+          <div className="ts__marquee">
+            {track.map((t, i) => (
+              <TestimonialCard key={`${t.id}-${i}`} t={t} />
+            ))}
+          </div>
+        </div>
+      )}
+
     </section>
   );
 }

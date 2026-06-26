@@ -2,14 +2,11 @@
 .ts {
   padding: 88px 0 96px;
   background: #f8fafc;
+  overflow: hidden;
 }
 
 /* ── Header ───────────────────────────────────────────────────── */
 .ts__head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
   margin-bottom: 48px;
 }
 .ts__head-left { max-width: 560px; }
@@ -36,23 +33,56 @@
   line-height: 1.6;
 }
 
-/* ── Grid ─────────────────────────────────────────────────────── */
-.ts__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+/* ── Marquee track ────────────────────────────────────────────── */
+.ts__marquee-wrap {
+  position: relative;
+  /* Fade left/right edges */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 100px,
+    #000 calc(100% - 100px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 100px,
+    #000 calc(100% - 100px),
+    transparent 100%
+  );
+}
+
+.ts__marquee {
+  display: flex;
   gap: 24px;
+  width: max-content;
+  padding: 8px 0 20px; /* room for card shadows */
+  animation: ts-scroll 40s linear infinite;
+}
+.ts__marquee:hover,
+.ts__marquee--paused {
+  animation-play-state: paused;
+}
+
+@keyframes ts-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 /* ── Card ─────────────────────────────────────────────────────── */
 .ts__card {
+  width: 340px;
+  flex-shrink: 0;
   background: #fff;
   border: 1px solid #e8edf5;
   border-radius: 14px;
-  padding: 28px 28px 24px;
+  padding: 24px 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   transition: box-shadow 0.2s, transform 0.2s;
+  cursor: default;
 }
 .ts__card:hover {
   box-shadow: 0 8px 32px rgba(13, 33, 90, 0.1);
@@ -61,8 +91,6 @@
 
 .ts__quote-icon {
   color: #e8edf5;
-  width: 28px;
-  height: auto;
   flex-shrink: 0;
 }
 
@@ -72,13 +100,15 @@
   color: #f5b700;
 }
 
+/* ── Message ──────────────────────────────────────────────────── */
 .ts__message-wrap {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex: 1;
 }
 .ts__message {
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.7;
   color: #475569;
   margin: 0;
@@ -100,8 +130,9 @@
   color: #0d215a;
   cursor: pointer;
   align-self: flex-start;
-  opacity: 0.7;
+  opacity: 0.6;
   transition: opacity 0.15s;
+  font-family: inherit;
 }
 .ts__toggle:hover { opacity: 1; }
 
@@ -112,17 +143,18 @@
   gap: 12px;
   padding-top: 14px;
   border-top: 1px solid #f1f5f9;
+  margin-top: auto;
 }
 .ts__author-avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   background: #0d215a;
   color: #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -145,6 +177,10 @@
   font-size: 12px;
   color: #64748b;
   font-weight: 500;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .ts__author-domain {
   font-size: 11px;
@@ -159,10 +195,12 @@
 
 /* ── Skeleton ─────────────────────────────────────────────────── */
 .ts__skeleton {
+  width: 340px;
+  flex-shrink: 0;
   background: #fff;
   border: 1px solid #e8edf5;
   border-radius: 14px;
-  padding: 28px 28px 24px;
+  padding: 24px 24px 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -170,7 +208,7 @@
 }
 @keyframes ts-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
+  50% { opacity: 0.5; }
 }
 .ts__skeleton-line {
   background: #e8edf5;
@@ -181,7 +219,7 @@
 .ts__skeleton-line--full   { width: 100%; }
 .ts__skeleton-line--mid    { width: 70%; }
 .ts__skeleton-line--name   { width: 100px; height: 11px; }
-.ts__skeleton-line--sub    { width: 70px; height: 10px; }
+.ts__skeleton-line--sub    { width: 70px;  height: 10px; }
 .ts__skeleton-author {
   display: flex;
   align-items: center;
@@ -190,8 +228,8 @@
   border-top: 1px solid #f1f5f9;
 }
 .ts__skeleton-avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #e8edf5;
   flex-shrink: 0;
@@ -200,6 +238,10 @@
 /* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .ts { padding: 64px 0 72px; }
-  .ts__head { flex-direction: column; align-items: flex-start; }
-  .ts__grid { grid-template-columns: 1fr; }
+  .ts__card,
+  .ts__skeleton { width: 280px; }
+  .ts__marquee-wrap {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+  }
 }
