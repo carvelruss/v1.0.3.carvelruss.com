@@ -8,7 +8,7 @@
 /* ── Header ───────────────────────────────────────────────────── */
 .ts__head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 32px;
   margin-bottom: 48px;
