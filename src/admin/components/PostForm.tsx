@@ -270,6 +270,22 @@ export default function PostForm() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, editSlug]);
 
+  /* pre-fill author fields from Settings when creating a new post */
+  useEffect(() => {
+    if (isEdit) return;
+    api.getSettings().then(rows => {
+      const s: Record<string, string> = {};
+      rows.forEach(r => { s[r.setting_key] = r.setting_value ?? ''; });
+      setForm(prev => ({
+        ...prev,
+        author:        s.author_name   || prev.author,
+        author_avatar: s.author_avatar || prev.author_avatar,
+        author_bio:    s.author_bio    || prev.author_bio,
+      }));
+    }).catch(() => { /* silently ignore — fields remain editable */ });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEdit]);
+
   /* sync editor content when it mounts after load */
   useEffect(() => {
     if (editor && form.content && editor.isEmpty) {
