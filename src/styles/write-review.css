@@ -235,10 +235,38 @@
 .wr-modal__success .wr-modal__btn { align-self: center; }
 
 /* ── Responsive ───────────────────────────────────────────────── */
-@media (max-width: 520px) {
+@media (max-width: 600px) {
+  /* FAB — icon only pill */
   .wr-fab span { display: none; }
-  .wr-fab { padding: 13px; border-radius: 50%; }
-  .wr-modal { padding: 28px 20px 24px; border-radius: 12px; }
-  .wr-modal__row { grid-template-columns: 1fr; }
+  .wr-fab { padding: 13px; border-radius: 50%; bottom: 20px; left: 20px; }
+
+  /* Overlay fills the screen from the bottom (sheet style) */
+  .wr-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .wr-modal {
+    border-radius: 20px 20px 0 0;
+    max-width: 100%;
+    max-height: 92dvh;
+    padding: 24px 20px 32px;
+  }
+
+  /* Single column for all rows */
+  .wr-modal__row { grid-template-columns: 1fr; gap: 14px; }
+
+  /* Slightly smaller heading */
   .wr-modal__title { font-size: 19px; }
+  .wr-modal__subtitle { font-size: 13px; }
+
+  /* Larger tap targets on inputs */
+  .wr-modal__input,
+  .wr-modal__textarea { padding: 12px 14px; font-size: 16px; } /* 16px prevents iOS zoom */
+
+  /* Bigger stars for touch */
+  .wr-star svg { width: 34px; height: 34px; }
+
+  /* Full-width submit */
+  .wr-modal__btn { width: 100%; text-align: center; align-self: stretch; padding: 14px; font-size: 15px; }
+  .wr-modal__success .wr-modal__btn { width: auto; align-self: center; }
 }
