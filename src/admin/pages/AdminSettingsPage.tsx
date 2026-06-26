@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../lib/api';
 import AdminLayout from '../components/AdminLayout';
+import MediaPickerModal from '../components/MediaPickerModal';
 import type { SiteSetting } from '../../types';
 
 const SETTING_LABELS: Record<string, { label: string; hint?: string; type?: 'text' | 'url' | 'email' | 'textarea' }> = {
@@ -14,12 +15,15 @@ const SETTING_LABELS: Record<string, { label: string; hint?: string; type?: 'tex
   hero_headline:  { label: 'Hero Headline',        type: 'textarea', hint: 'The main tagline shown in the hero section' },
 };
 
+const BIO_MAX = 150;
+
 export default function AdminSettingsPage() {
-  const [settings, setSettings] = useState<Record<string, string>>({});
-  const [loading, setLoading]   = useState(true);
-  const [saving, setSaving]     = useState(false);
-  const [error, setError]       = useState('');
-  const [success, setSuccess]   = useState('');
+  const [settings, setSettings]       = useState<Record<string, string>>({});
+  const [loading, setLoading]         = useState(true);
+  const [saving, setSaving]           = useState(false);
+  const [error, setError]             = useState('');
+  const [success, setSuccess]         = useState('');
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -33,9 +37,8 @@ export default function AdminSettingsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleChange = (key: string, value: string) => {
+  const set = (key: string, value: string) =>
     setSettings(prev => ({ ...prev, [key]: value }));
-  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,15 +55,106 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const authorInitials = (settings.author_name || settings.site_name || 'A')
+    .split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+
   return (
     <AdminLayout pageTitle="Settings">
       {error   && <div className="a-alert a-alert--error"   role="alert"  onClick={() => setError('')}>{error}</div>}
       {success && <div className="a-alert a-alert--success" role="status" onClick={() => setSuccess('')}>{success}</div>}
 
+      {showAvatarPicker && (
+        <MediaPickerModal
+          onSelect={url => set('author_avatar', url)}
+          onClose={() => setShowAvatarPicker(false)}
+        />
+      )}
+
       {loading ? (
         <p className="a-loading">Loading settings…</p>
       ) : (
         <form onSubmit={handleSave}>
+
+          {/* Author */}
+          <div className="a-card" style={{ marginBottom: 20 }}>
+            <div className="a-section-head">
+              <span className="a-section-head__title">Author</span>
+            </div>
+            <div className="a-form">
+              <div className="a-field">
+                <label className="a-field__label">Avatar</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowAvatarPicker(true)}
+                    style={{
+                      width: 52, height: 52, borderRadius: '50%',
+                      border: '2px solid var(--adm-border)', background: 'var(--adm-surface-2)',
+                      overflow: 'hidden', cursor: 'pointer', flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 16, fontWeight: 600, color: 'var(--adm-primary)',
+                    }}
+                    title="Pick avatar from media"
+                  >
+                    {settings.author_avatar ? (
+                      <img src={settings.author_avatar} alt="avatar"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : authorInitials}
+                  </button>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <button
+                      type="button"
+                      className="a-btn a-btn--secondary a-btn--sm"
+                      onClick={() => setShowAvatarPicker(true)}
+                    >
+                      {settings.author_avatar ? 'Change Avatar' : 'Pick Avatar'}
+                    </button>
+                    {settings.author_avatar && (
+                      <button
+                        type="button"
+                        className="a-btn a-btn--ghost a-btn--sm"
+                        style={{ color: 'var(--adm-danger)' }}
+                        onClick={() => set('author_avatar', '')}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="a-field">
+                <label className="a-field__label" htmlFor="setting-author-name">Name</label>
+                <input
+                  id="setting-author-name"
+                  type="text"
+                  className="a-input"
+                  value={settings.author_name ?? ''}
+                  onChange={e => set('author_name', e.target.value)}
+                  placeholder="Carvel Russ"
+                />
+              </div>
+
+              <div className="a-field">
+                <label className="a-field__label" htmlFor="setting-author-bio">
+                  Bio
+                  <span className="a-field__hint" style={{ float: 'right' }}>
+                    {(settings.author_bio ?? '').length}/{BIO_MAX}
+                  </span>
+                </label>
+                <textarea
+                  id="setting-author-bio"
+                  className="a-textarea"
+                  rows={3}
+                  maxLength={BIO_MAX}
+                  value={settings.author_bio ?? ''}
+                  onChange={e => set('author_bio', e.target.value)}
+                  placeholder="Short bio shown on blog posts and your about section…"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Identity */}
           <div className="a-card" style={{ marginBottom: 20 }}>
             <div className="a-section-head">
@@ -78,7 +172,7 @@ export default function AdminSettingsPage() {
                         className="a-textarea"
                         rows={3}
                         value={settings[key] ?? ''}
-                        onChange={e => handleChange(key, e.target.value)}
+                        onChange={e => set(key, e.target.value)}
                       />
                     ) : (
                       <input
@@ -86,7 +180,7 @@ export default function AdminSettingsPage() {
                         type={meta.type ?? 'text'}
                         className="a-input"
                         value={settings[key] ?? ''}
-                        onChange={e => handleChange(key, e.target.value)}
+                        onChange={e => set(key, e.target.value)}
                       />
                     )}
                     {meta.hint && <span className="a-field__hint">{meta.hint}</span>}
@@ -112,7 +206,7 @@ export default function AdminSettingsPage() {
                       type="url"
                       className="a-input"
                       value={settings[key] ?? ''}
-                      onChange={e => handleChange(key, e.target.value)}
+                      onChange={e => set(key, e.target.value)}
                       placeholder="https://…"
                     />
                   </div>
@@ -136,7 +230,7 @@ export default function AdminSettingsPage() {
                   type="text"
                   className="a-input"
                   value={settings.availability ?? ''}
-                  onChange={e => handleChange('availability', e.target.value)}
+                  onChange={e => set('availability', e.target.value)}
                   placeholder="Available for new projects"
                 />
                 <span className="a-field__hint">{SETTING_LABELS.availability.hint}</span>
