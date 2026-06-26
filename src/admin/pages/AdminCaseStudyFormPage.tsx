@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type FormEvent } from 'react';
+import { useState, useEffect, useRef, type FormEvent, type KeyboardEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
 import CaseStudyBuilder from '../components/CaseStudyBuilder';
@@ -12,7 +12,7 @@ interface FormData {
   content: string;
   logo_url: string;
   cover_url: string;
-  tech: string;
+  tech: string[];
   project_type: string;
   role: string;
   tools: string;
@@ -33,7 +33,7 @@ const EMPTY_FORM: FormData = {
   content: '',
   logo_url: '',
   cover_url: '',
-  tech: '',
+  tech: [],
   project_type: '',
   role: '',
   tools: '',
@@ -68,8 +68,22 @@ export default function AdminCaseStudyFormPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [slugTouched, setSlugTouched] = useState(false);
+  const [techInput, setTechInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  function addTechChip() {
+    const val = techInput.trim();
+    if (val && !form.tech.includes(val)) set('tech', [...form.tech, val]);
+    setTechInput('');
+  }
+  function removeTechChip(chip: string) {
+    set('tech', form.tech.filter(t => t !== chip));
+  }
+  function handleTechKey(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTechChip(); }
+    else if (e.key === 'Backspace' && !techInput && form.tech.length) set('tech', form.tech.slice(0, -1));
+  }
 
   async function uploadFile(
     file: File,
@@ -117,7 +131,7 @@ export default function AdminCaseStudyFormPage() {
           content:         String(data.content         ?? ''),
           logo_url:        String(data.logo_url        ?? ''),
           cover_url:       String(data.cover_url       ?? ''),
-          tech:            Array.isArray(data.tech) ? (data.tech as string[]).join(', ') : '',
+          tech:            Array.isArray(data.tech) ? (data.tech as string[]) : [],
           project_type:    String(data.project_type    ?? ''),
           role:            String(data.role            ?? ''),
           tools:           String(data.tools           ?? ''),
@@ -169,7 +183,7 @@ export default function AdminCaseStudyFormPage() {
         excerpt:         form.excerpt.trim()         || null,
         logo_url:        form.logo_url.trim()         || null,
         cover_url:       form.cover_url.trim()       || null,
-        tech:            form.tech.split(',').map(t => t.trim()).filter(Boolean),
+        tech:            form.tech,
         project_type:    form.project_type           || null,
         role:            form.role.trim()            || null,
         tools:           form.tools.trim()           || null,
@@ -382,7 +396,7 @@ export default function AdminCaseStudyFormPage() {
               projectMeta={{
                 title:        form.title,
                 role:         form.role,
-                tech:         form.tech.split(',').map(t => t.trim()).filter(Boolean),
+                tech:         form.tech,
                 timeline:     form.timeline,
                 client_name:  form.client_name,
                 project_type: form.project_type,
@@ -534,14 +548,23 @@ export default function AdminCaseStudyFormPage() {
 
               <div className="a-field">
                 <label className="a-field__label" htmlFor="cs-tech">Tech Stack</label>
-                <input
-                  id="cs-tech"
-                  className="a-input"
-                  value={form.tech}
-                  onChange={e => set('tech', e.target.value)}
-                  placeholder="React, TypeScript, Node.js"
-                />
-                <span className="a-field__hint">Comma-separated — e.g. React, TypeScript, Node.js</span>
+                <div className="a-chips" onClick={() => document.getElementById('cs-tech')?.focus()}>
+                  {form.tech.map(chip => (
+                    <span key={chip} className="a-chip">
+                      {chip}
+                      <button type="button" onClick={() => removeTechChip(chip)} aria-label={`Remove ${chip}`}>×</button>
+                    </span>
+                  ))}
+                  <input
+                    id="cs-tech"
+                    value={techInput}
+                    onChange={e => setTechInput(e.target.value)}
+                    onKeyDown={handleTechKey}
+                    onBlur={addTechChip}
+                    placeholder={form.tech.length ? '' : 'Angular, TypeScript, Node.js…'}
+                  />
+                </div>
+                <span className="a-field__hint">Press Enter or comma to add each technology</span>
               </div>
 
 <div className="a-field">
