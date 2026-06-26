@@ -46,7 +46,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
         <div className="ts__author-info">
           <strong className="ts__author-name">{t.full_name}</strong>
           <span className="ts__author-company-name">
-            {[t.role, t.company_name].filter(Boolean).join(' · ')}
+            {[t.role, t.company_name].filter(Boolean).join(', ')}
           </span>
           <a
             href={t.website_url}
