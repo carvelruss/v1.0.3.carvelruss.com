@@ -1,4 +1,4 @@
-import type { Project, Post, Inquiry, MediaAsset, SiteSetting } from '../types';
+import type { Project, Post, Inquiry, MediaAsset, SiteSetting, Service } from '../types';
 import { compressImage } from './compressImage';
 
 const TOKEN_KEY = 'portfolio_admin_token';
@@ -105,6 +105,26 @@ class ApiClient {
   }
   deletePost(slug: string): Promise<{ success: boolean }> {
     return this.request(`/posts/${slug}`, { method: 'DELETE' });
+  }
+
+  // ── Services ─────────────────────────────────────────────────────────────
+  getServices(adminMode = false): Promise<Service[]> {
+    return this.request(`/services${adminMode ? '?admin=true' : ''}`);
+  }
+  getServiceBySlug(slug: string): Promise<Service> {
+    return this.request(`/services/slug/${slug}`);
+  }
+  createService(data: Omit<Service, 'id'>): Promise<{ id: number }> {
+    return this.request('/services', { method: 'POST', body: JSON.stringify(data) });
+  }
+  updateService(id: number, data: Partial<Service>): Promise<{ success: boolean }> {
+    return this.request(`/services/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  }
+  deleteService(id: number): Promise<{ success: boolean }> {
+    return this.request(`/services/${id}`, { method: 'DELETE' });
+  }
+  toggleServiceStatus(id: number, status: 'draft' | 'published'): Promise<{ success: boolean }> {
+    return this.request(`/services/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
   }
 
   // ── Inquiries ────────────────────────────────────────────────────────────

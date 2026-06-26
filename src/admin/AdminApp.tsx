@@ -29,6 +29,8 @@ function lazyChunk<T extends ComponentType<unknown>>(
   );
 }
 
+const AdminServicesPage        = lazyChunk(() => import('./pages/AdminServicesPage'),      'services');
+const AdminServiceFormPage     = lazyChunk(() => import('./pages/AdminServiceFormPage'),   'svc-form');
 const AdminMediaPage           = lazyChunk(() => import('./pages/AdminMediaPage'),         'media');
 const AdminSettingsPage        = lazyChunk(() => import('./pages/AdminSettingsPage'),      'settings');
 const AdminCaseStudyFormPage   = lazyChunk(() => import('./pages/AdminCaseStudyFormPage'), 'cs-form');
@@ -91,6 +93,11 @@ export default function AdminApp() {
           <Route path="projects"            element={<G><ProjectsAdmin /></G>} />
           <Route path="projects/new"        element={<GS><AdminCaseStudyFormPage /></GS>} />
           <Route path="projects/:id/edit"   element={<GS><AdminCaseStudyFormPage /></GS>} />
+
+          {/* Services */}
+          <Route path="services"            element={<GS><AdminServicesPage /></GS>} />
+          <Route path="services/new"        element={<GS><AdminServiceFormPage /></GS>} />
+          <Route path="services/:id/edit"   element={<GS><AdminServiceFormPage /></GS>} />
 
           {/* Blog Posts */}
           <Route path="posts"               element={<G><PostsAdmin /></G>} />

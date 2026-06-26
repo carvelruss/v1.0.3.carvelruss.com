@@ -85,6 +85,7 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 // AdminApp especially: it imports TipTap + react-datepicker that no public visitor needs.
 const ProjectsPage    = lazy(() => import('./pages/ProjectsPage'));
 const CaseStudyDetail = lazy(() => import('./pages/CaseStudyDetail'));
+const ServiceDetail   = lazy(() => import('./pages/ServiceDetail'));
 const BlogList        = lazy(() => import('./pages/BlogList'));
 const BlogSingle      = lazy(() => import('./pages/BlogSingle'));
 const ThankYou        = lazy(() => import('./pages/ThankYou'));
@@ -117,6 +118,7 @@ export default function App() {
         <Route path="/"                      element={<WebStudioLanding />} />
         <Route path="/case-studies"          element={<PageShell><ProjectsPage /></PageShell>} />
         <Route path="/case-studies/:slug"    element={<PageShell><CaseStudyDetail /></PageShell>} />
+        <Route path="/services/:slug"        element={<PageShell><ServiceDetail /></PageShell>} />
         <Route path="/blog"                  element={<PageShell><BlogList /></PageShell>} />
         <Route path="/blog/:slug"            element={<PageShell><BlogSingle /></PageShell>} />
         <Route path="/blogs"                 element={<PageShell><BlogList /></PageShell>} />

@@ -74,6 +74,28 @@ export interface MediaAsset {
   created_at: string;
 }
 
+export interface Service {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  excerpt?: string | null;
+  content?: string;
+  icon_url?: string | null;
+  cover_url?: string | null;
+  features: string[];
+  tags: string[];
+  cta_label?: string | null;
+  cta_url?: string | null;
+  sort_order: number;
+  status?: 'draft' | 'published';
+  seo_title?: string | null;
+  seo_description?: string | null;
+  published_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface SiteSetting {
   id: number;
   setting_key: string;
