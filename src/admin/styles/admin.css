@@ -4413,6 +4413,23 @@
   }
 }
 
+/* ── Services table ─────────────────────────────────────────────────────────── */
+/* Reset button to look like a badge (keeps click semantics) */
+.a-svc-status-btn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+/* Mobile card layout for services table */
+@media (max-width: 1024px) {
+  .a-table--services td:nth-child(1) { padding-right: 88px; margin-bottom: 3px; }
+  .a-table--services td:nth-child(2) { position: absolute; top: 12px; right: 14px; }
+  .a-table--services td:nth-child(3) { margin-bottom: 8px; }
+  .a-table--services td:nth-child(4) { display: none; }
+  .a-table--services td:nth-child(5) .a-table__actions { justify-content: flex-end; }
+}
+
 /* ── Performance list (Portfolio tab) mobile ────────────────────────────────── */
 /* Clip any text/bar overflow at the card boundary */
 .an-perf-card {

@@ -5,11 +5,41 @@ import AdminLayout from '../components/AdminLayout';
 import { useConfirm } from '../components/ConfirmModal';
 import type { Service } from '../../types';
 
+const EditIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+);
+
+const ViewIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <polyline points="15 3 21 3 21 9" />
+    <line x1="10" y1="14" x2="21" y2="3" />
+  </svg>
+);
+
+const TrashIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    <path d="M10 11v6" /><path d="M14 11v6" />
+    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+  </svg>
+);
+
 function formatDate(raw?: string | null): string {
   if (!raw) return '—';
   const d = new Date(raw);
   if (isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return d.toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    timeZone: 'Asia/Manila',
+  });
 }
 
 export default function AdminServicesPage() {
@@ -78,28 +108,28 @@ export default function AdminServicesPage() {
         </div>
       ) : (
         <div className="a-table-wrap">
-          <table className="a-table">
+          <table className="a-table a-table--services">
             <thead>
               <tr>
                 <th>Title</th>
                 <th>Status</th>
                 <th>Tags</th>
                 <th>Updated</th>
-                <th style={{ width: 120 }}></th>
+                <th style={{ width: 110 }}></th>
               </tr>
             </thead>
             <tbody>
               {services.map(svc => (
                 <tr key={svc.id}>
                   <td>
-                    <div className="a-table-title">{svc.title}</div>
-                    <div className="a-table-sub">/services/{svc.slug}</div>
+                    <div className="a-table__title">{svc.title}</div>
+                    <div className="a-table__sub">/services/{svc.slug}</div>
                   </td>
                   <td>
                     <button
-                      className={`a-badge a-badge--clickable ${svc.status === 'published' ? 'a-badge--green' : 'a-badge--gray'}`}
+                      className={`a-badge a-svc-status-btn ${svc.status === 'published' ? 'a-badge--published' : 'a-badge--draft'}`}
                       onClick={() => handleToggleStatus(svc.id, svc.status ?? 'draft')}
-                      title="Click to toggle"
+                      title="Click to toggle status"
                     >
                       {svc.status === 'published' ? 'Published' : 'Draft'}
                     </button>
@@ -107,20 +137,28 @@ export default function AdminServicesPage() {
                   <td>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                       {svc.tags.slice(0, 3).map(t => (
-                        <span key={t} className="a-badge a-badge--blue">{t}</span>
+                        <span key={t} className="a-badge a-badge--unread">{t}</span>
                       ))}
-                      {svc.tags.length > 3 && <span className="a-badge a-badge--gray">+{svc.tags.length - 3}</span>}
+                      {svc.tags.length > 3 && (
+                        <span className="a-badge a-badge--read">+{svc.tags.length - 3}</span>
+                      )}
                     </div>
                   </td>
                   <td className="a-table-muted">{formatDate(svc.updated_at)}</td>
                   <td>
-                    <div className="a-table-actions">
+                    <div className="a-table__actions">
                       <button className="a-action-btn a-action-btn--edit" title="Edit"
-                        onClick={() => navigate(`/admin/services/${svc.id}/edit`)}>✏</button>
-                      <a className="a-action-btn a-action-btn--view" title="View"
-                        href={`/services/${svc.slug}`} target="_blank" rel="noopener noreferrer">↗</a>
+                        onClick={() => navigate(`/admin/services/${svc.id}/edit`)}>
+                        <EditIcon />
+                      </button>
+                      <a className="a-action-btn a-action-btn--view" title="View live page"
+                        href={`/services/${svc.slug}`} target="_blank" rel="noopener noreferrer">
+                        <ViewIcon />
+                      </a>
                       <button className="a-action-btn a-action-btn--delete" title="Delete"
-                        onClick={() => handleDelete(svc.id, svc.title)}>🗑</button>
+                        onClick={() => handleDelete(svc.id, svc.title)}>
+                        <TrashIcon />
+                      </button>
                     </div>
                   </td>
                 </tr>
