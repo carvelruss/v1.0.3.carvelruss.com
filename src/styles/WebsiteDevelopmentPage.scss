@@ -1270,13 +1270,9 @@
     @media (max-width: 576px) {
       min-width: calc(100vw - 2 * 1.25rem);
       max-width: calc(100vw - 2 * 1.25rem);
-      padding: 28px 20px 24px;
+      padding: 24px 20px 20px;
 
-      &::before {
-        font-size: 3rem;
-        top: 8px;
-        left: 16px;
-      }
+      &::before { display: none; }
 
       &__stars { margin-bottom: 12px; }
 
