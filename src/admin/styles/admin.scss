@@ -2082,3 +2082,41 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
 
   svg { opacity: 0.45; }
 }
+
+// ── Analytics page mobile ─────────────────────────────────────────────────────
+
+@media (max-width: 640px) {
+  .an-tab-nav {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .an-tab-nav__tabs {
+    flex: 1 1 100%;
+    border-bottom: none;
+  }
+  .an-period-wrap {
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 0 10px;
+    border-bottom: 1px solid var(--adm-border);
+  }
+  .an-tab-btn {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .an-src-body {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .an-src-donut-wrap {
+    order: -1;
+  }
+  .an-src-svg {
+    width: 150px;
+    height: 150px;
+  }
+}
