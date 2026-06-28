@@ -31,20 +31,28 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, params })
     if (row) {
       const title       = esc(row.title) + ' | Carvel Russ';
       const description = esc(row.meta_description ?? row.excerpt ?? '');
-      const image       = row.og_image ?? '';
       const pageUrl     = `${url.origin}/blogs/${slug}`;
+
+      const rawImage = (row.og_image ?? '').trim();
+      const image = rawImage
+        ? rawImage.startsWith('http')
+          ? rawImage
+          : `${url.origin}${rawImage.startsWith('/') ? rawImage : '/' + rawImage}`
+        : '';
 
       const ogTags = `
   <meta name="description" content="${description}" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${description}" />
+  <meta property="og:url" content="${pageUrl}" />${image ? `
   <meta property="og:image" content="${image}" />
-  <meta property="og:url" content="${pageUrl}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />` : ''}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${title}" />
-  <meta name="twitter:description" content="${description}" />
-  <meta name="twitter:image" content="${image}" />`;
+  <meta name="twitter:description" content="${description}" />${image ? `
+  <meta name="twitter:image" content="${image}" />` : ''}`;
 
       // Replace generic title + inject OG tags before </head>
       html = html
