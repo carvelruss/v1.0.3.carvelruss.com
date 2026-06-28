@@ -923,13 +923,13 @@ export default function WebsiteDevelopmentPage() {
       <section className="wdp-reviews" aria-labelledby="wdp-reviews-heading">
         <div className="container">
           <div className="wdp-section-header text-center">
-            <span className="wdp-kicker">Review Proof Placement</span>
+            <span className="wdp-kicker">What clients say</span>
             <h2 id="wdp-reviews-heading" className="wdp-section-title">
               Trust belongs before the final form.
             </h2>
             <p className="wdp-section-sub">
-              Replace these placeholders with verified client reviews or real project proof before
-              publishing.
+              Real reviews from real clients. Each one covers a different part of the build —
+              design, clarity, and results.
             </p>
           </div>
           <div className="wdp-reviews__grid">

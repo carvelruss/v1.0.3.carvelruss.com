@@ -1186,32 +1186,70 @@
   .wdp-review-card {
     background: var(--paper);
     border: 1px solid var(--line);
+    border-top: 3px solid var(--gold);
     border-radius: 12px;
-    padding: 28px 24px;
+    padding: 36px 28px 28px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
     margin: 0;
     position: relative;
+    transition: box-shadow 0.2s, transform 0.2s;
 
-    &__stars { font-size: 1.125rem; color: #f5a623; letter-spacing: 2px; }
+    &:hover {
+      box-shadow: 0 10px 36px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+    }
 
-    &__quote p { font-size: 0.9375rem; color: var(--muted); line-height: 1.7; margin: 0; font-style: italic; }
+    &::before {
+      content: '\201C';
+      position: absolute;
+      top: 12px;
+      left: 22px;
+      font-size: 4.5rem;
+      line-height: 1;
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--gold);
+      opacity: 0.15;
+      pointer-events: none;
+    }
 
-    &__name { font-size: 0.875rem; font-weight: 600; color: var(--ink); }
+    &__stars {
+      font-size: 1.125rem;
+      color: #f5a623;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
+    }
+
+    &__quote {
+      flex: 1;
+      margin-bottom: 24px;
+
+      p {
+        font-size: 1rem;
+        color: var(--ink);
+        line-height: 1.78;
+        margin: 0;
+        font-style: italic;
+      }
+    }
+
+    &__name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--ink);
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
 
     &__placeholder-badge {
-      display: inline-block;
-      background: rgba(190, 61, 47, 0.1);
-      color: var(--red);
-      border: 1px solid rgba(190, 61, 47, 0.2);
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      align-self: flex-start;
+      font-size: 0.68rem;
+      color: var(--muted);
+      opacity: 0.45;
+      margin-top: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
+      align-self: flex-start;
     }
   }
 
