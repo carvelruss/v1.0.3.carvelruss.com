@@ -1198,9 +1198,20 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
-        gap: 0;
+        gap: 16px;
+        // Bleed to viewport edges, restore offset via padding
+        margin-inline: -1.25rem;
+        padding-inline: 1.25rem;
+        scroll-padding-left: 1.25rem;
+        padding-top: 6px;   // breathing room for card shadow
+        padding-bottom: 6px;
 
         &::-webkit-scrollbar { display: none; }
+      }
+
+      @media (max-width: 576px) {
+        margin-inline: -1.25rem;
+        padding-inline: 1.25rem;
       }
     }
 
@@ -1244,11 +1255,37 @@
     transition: box-shadow 0.2s, transform 0.2s;
 
     @media (max-width: 992px) {
-      min-width: 100%;
+      // Explicit vw-based width so % doesn't resolve against scroll container
+      min-width: calc(100vw - 2 * 1.25rem - 24px);
+      max-width: calc(100vw - 2 * 1.25rem - 24px);
       flex-shrink: 0;
       scroll-snap-align: start;
       scroll-snap-stop: always;
       will-change: transform;
+      overflow: hidden;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    @media (max-width: 576px) {
+      min-width: calc(100vw - 2 * 1.25rem);
+      max-width: calc(100vw - 2 * 1.25rem);
+      padding: 28px 20px 24px;
+
+      &::before {
+        font-size: 3rem;
+        top: 8px;
+        left: 16px;
+      }
+
+      &__stars { margin-bottom: 12px; }
+
+      &__quote {
+        margin: 10px 0 16px;
+        p { font-size: 0.9375rem; }
+      }
+
+      &__name { padding-top: 16px; }
     }
 
     &:hover {
