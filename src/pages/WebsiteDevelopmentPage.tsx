@@ -516,6 +516,9 @@ export default function WebsiteDevelopmentPage() {
                 <button type="button" className="wdp-btn wdp-btn--gold" onClick={openModal}>
                   Get My Free Website Quote
                 </button>
+                <a href="mailto:hello@carvelruss.com" className="wdp-btn wdp-btn--outline-light">
+                  Email Carvel Russ
+                </a>
               </div>
 
               <div className="wdp-hero__proof">
