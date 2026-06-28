@@ -456,10 +456,10 @@ export default function WebsiteDevelopmentPage() {
       <header className="wdp-header">
         <div className="wdp-header__inner container">
           <a href="/" className="wdp-logo" aria-label="Carvel Russ – Home">
-            <img src="/logos/white-logo.png" alt="Carvel Russ" />
+            <img src="/logos/carvelruss-logo.png" alt="Carvel Russ" />
           </a>
           <div className="wdp-header__actions">
-            <button type="button" className="wdp-btn wdp-btn--outline-nav" onClick={openModal}>
+            <button type="button" className="wdp-btn wdp-btn--gold" onClick={openModal}>
               Get A Free Quote
             </button>
           </div>
