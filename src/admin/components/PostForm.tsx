@@ -347,6 +347,9 @@ export default function PostForm() {
     if (!slugManual) set('slug', slugify(value));
   };
 
+  const handleExcerptChange = (value: string) =>
+    setForm(prev => ({ ...prev, excerpt: value, meta_description: value }));
+
   /* ── validation ── */
   const validate = (forPublish: boolean): string[] => {
     const errs: string[] = [];
@@ -803,7 +806,7 @@ export default function PostForm() {
               style={{ minHeight: 80 }}
               maxLength={200}
               value={form.meta_description ?? ''}
-              onChange={e => set('meta_description', e.target.value)}
+              onChange={e => handleExcerptChange(e.target.value)}
               placeholder="150–160 chars shown in search results…" />
           </div>
           <div className="ep-field">
@@ -920,7 +923,7 @@ export default function PostForm() {
                   <textarea
                     rows={3}
                     value={form.excerpt ?? ''}
-                    onChange={e => set('excerpt', e.target.value)}
+                    onChange={e => handleExcerptChange(e.target.value)}
                     placeholder="Write a short summary of your post. This will be shown in blog lists and previews."
                     maxLength={200}
                     aria-label="Post excerpt"
