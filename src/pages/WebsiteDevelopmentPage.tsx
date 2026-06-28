@@ -474,9 +474,6 @@ export default function WebsiteDevelopmentPage() {
             <button type="button" className="wdp-btn wdp-btn--outline-nav" onClick={openModal}>
               Get A Free Quote
             </button>
-            <a href="mailto:hello@carvelruss.com" className="wdp-btn wdp-btn--ghost-nav">
-              Email Carvel
-            </a>
           </div>
         </div>
       </header>
