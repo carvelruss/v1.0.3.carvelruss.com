@@ -7,7 +7,7 @@ import {
   FiChevronUp,
   FiChevronLeft,
   FiChevronRight,
-  FiPhone,
+  FiMail,
 } from 'react-icons/fi';
 import '../styles/WebsiteDevelopmentPage.scss';
 
@@ -139,7 +139,7 @@ const REASON_CARDS: ReasonCard[] = [
 const FAQ_ITEMS: FAQItem[] = [
   {
     question: 'Is this page only for Website Development?',
-    answer:   'Yes. This version is intentionally focused on one service only: Website Development. Other Astra services should each have their own dedicated landing page.',
+    answer:   'Yes. This version is intentionally focused on one service only: Website Development. Other Carvel Russ services should each have their own dedicated landing page.',
   },
   {
     question: 'What kind of website is this best for?',
@@ -211,8 +211,8 @@ const CREDENTIALS: CredentialCard[] = [
 ];
 
 const AREA_CHIPS: string[] = [
-  'Miami', 'Brickell', 'South Florida',
-  'Remote strategy calls', 'Service businesses', 'Growth-stage teams',
+  'Remote-first', 'Worldwide clients', 'Service businesses',
+  'Growth-stage teams', 'Digital brands', 'Startups',
 ];
 
 const LONGFORM_CHECKLIST: string[] = [
@@ -261,7 +261,7 @@ function QuoteForm({ variant, onSuccess }: QuoteFormProps) {
         <div className="wdp-form-success__icon" aria-hidden="true">
           <FiCheck size={22} />
         </div>
-        <p>Thanks — this demo quote request is ready to route to Astra's CRM/calendar workflow.</p>
+        <p>Thanks — this demo quote request was received. Carvel Russ will be in touch soon.</p>
       </div>
     );
   }
@@ -403,7 +403,7 @@ function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
           </button>
         </div>
         <p className="wdp-modal__copy">
-          Fill out the form below and Astra can review your project goals, current site, and ideal
+          Fill out the form below and I'll review your project goals, current site, and ideal
           launch timeline.
         </p>
         <div className="wdp-modal__body">
@@ -426,7 +426,7 @@ export default function WebsiteDevelopmentPage() {
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   useEffect(() => {
-    document.title = 'Website Development | Astra Results Marketing';
+    document.title = 'Website Development | Carvel Russ';
   }, []);
 
   const currentHotspot = HOTSPOTS.find((h) => h.id === selectedHotspot) ?? HOTSPOTS[0];
@@ -449,9 +449,9 @@ export default function WebsiteDevelopmentPage() {
         <div className="wdp-top-bar__inner container">
           <span className="wdp-top-bar__left">Get A Free Website Development Quote</span>
           <span className="wdp-top-bar__center">Speak to a growth strategist</span>
-          <a href="tel:+17866433036" className="wdp-top-bar__right">
-            <FiPhone aria-hidden="true" size={13} />
-            CALL (786) 643-3036
+          <a href="mailto:hello@carvelruss.com" className="wdp-top-bar__right">
+            <FiMail aria-hidden="true" size={13} />
+            hello@carvelruss.com
           </a>
         </div>
       </div>
@@ -459,18 +459,18 @@ export default function WebsiteDevelopmentPage() {
       {/* ── 2. Sticky Header ── */}
       <header className="wdp-header">
         <div className="wdp-header__inner container">
-          <div className="wdp-logo" aria-label="Astra Results Marketing">
-            <div className="wdp-logo__mark" aria-hidden="true">A</div>
+          <div className="wdp-logo" aria-label="Carvel Russ">
+            <div className="wdp-logo__mark" aria-hidden="true">CR</div>
             <span className="wdp-logo__text">
-              Astra <span className="wdp-logo__accent">Results</span>
+              Carvel <span className="wdp-logo__accent">Russ</span>
             </span>
           </div>
           <div className="wdp-header__actions">
             <button type="button" className="wdp-btn wdp-btn--outline-nav" onClick={openModal}>
               Get A Free Quote
             </button>
-            <a href="tel:+17866433036" className="wdp-btn wdp-btn--ghost-nav">
-              Call Astra
+            <a href="mailto:hello@carvelruss.com" className="wdp-btn wdp-btn--ghost-nav">
+              Email Carvel
             </a>
           </div>
         </div>
@@ -514,8 +514,8 @@ export default function WebsiteDevelopmentPage() {
                 <button type="button" className="wdp-btn wdp-btn--gold" onClick={openModal}>
                   Get My Free Website Quote
                 </button>
-                <a href="tel:+17866433036" className="wdp-btn wdp-btn--outline-light">
-                  Talk to Astra: (786) 643-3036
+                <a href="mailto:hello@carvelruss.com" className="wdp-btn wdp-btn--outline-light">
+                  Email Carvel Russ
                 </a>
               </div>
 
@@ -542,8 +542,8 @@ export default function WebsiteDevelopmentPage() {
                   <div className="wdp-quote-card__badge">Free Estimate</div>
                   <h2 className="wdp-quote-card__title">Free Website Development Quote</h2>
                   <p className="wdp-quote-card__copy">
-                    Tell us what you need built. Astra will review your goals, current site, and
-                    launch timeline.
+                    Tell us what you need built. I'll review your goals, current site, and launch
+                    timeline.
                   </p>
                 </div>
                 <QuoteForm variant="hero" />
@@ -616,7 +616,7 @@ export default function WebsiteDevelopmentPage() {
         </div>
       </section>
 
-      {/* ── 7. Why Businesses Choose Astra ── */}
+      {/* ── 7. Why Clients Choose Carvel Russ ── */}
       <section className="wdp-why" aria-labelledby="wdp-why-heading">
         <div className="container">
           <div className="wdp-why__layout">
@@ -688,13 +688,13 @@ export default function WebsiteDevelopmentPage() {
 
             {/* Right — Reasons */}
             <div className="wdp-why__right">
-              <span className="wdp-kicker">Why businesses choose Astra</span>
+              <span className="wdp-kicker">Why clients choose Carvel Russ</span>
               <h2 id="wdp-why-heading" className="wdp-section-title">
                 A website build with revenue direction.
               </h2>
               <p className="wdp-why__intro">
                 The layout mirrors a quote-driven service page, but the message is tailored to
-                Astra's Website Development offer.
+                Carvel Russ's Website Development offer.
               </p>
               <div className="wdp-reasons">
                 {REASON_CARDS.map((card, i) => (
@@ -733,9 +733,9 @@ export default function WebsiteDevelopmentPage() {
                   feels disconnected from the sales process.
                 </p>
                 <p>
-                  Astra's Website Development page should make the value clear immediately: the
-                  business gets a polished, responsive, conversion-focused website that helps turn
-                  qualified traffic into calls and quote requests.
+                  This Website Development approach makes the value clear immediately: the business
+                  gets a polished, responsive, conversion-focused website that helps turn qualified
+                  traffic into calls and quote requests.
                 </p>
                 <p>
                   This page keeps the layout quote-focused: top CTA, authority signals, immediate
@@ -757,8 +757,8 @@ export default function WebsiteDevelopmentPage() {
               <div className="wdp-mini-quote">
                 <h3 className="wdp-mini-quote__title">Not sure what your website needs?</h3>
                 <p className="wdp-mini-quote__copy">
-                  Start with a free website review. Astra can identify messaging gaps, UX friction,
-                  and conversion handoff issues before recommending a build path.
+                  Start with a free website review. A quick review can identify messaging gaps, UX
+                  friction, and conversion handoff issues before recommending a build path.
                 </p>
                 <button
                   type="button"
@@ -829,13 +829,13 @@ export default function WebsiteDevelopmentPage() {
       <section className="wdp-promise" aria-labelledby="wdp-promise-heading">
         <div className="container">
           <div className="wdp-section-header text-center">
-            <span className="wdp-kicker wdp-kicker--light">The Astra promise</span>
+            <span className="wdp-kicker wdp-kicker--light">The Carvel Russ promise</span>
             <h2 id="wdp-promise-heading" className="wdp-section-title wdp-section-title--light">
               Conversion-focused development, not decoration.
             </h2>
             <p className="wdp-section-sub wdp-section-sub--light">
-              The page's proof system should show why Astra is qualified to build websites that
-              support growth and sales conversations.
+              The page's proof system should show why Carvel Russ is qualified to build websites
+              that support growth and sales conversations.
             </p>
           </div>
           <div className="wdp-promise__grid">
@@ -858,8 +858,8 @@ export default function WebsiteDevelopmentPage() {
               Example website build outcomes.
             </h2>
             <p className="wdp-section-sub">
-              Use this carousel for real Astra case studies or verified screenshots. The current
-              cards are safe placeholders for prototype review.
+              Use this carousel for real Carvel Russ case studies or verified screenshots. The
+              current cards are safe placeholders for prototype review.
             </p>
           </div>
 
@@ -969,11 +969,11 @@ export default function WebsiteDevelopmentPage() {
             <div className="wdp-area__left">
               <span className="wdp-kicker">Service Area</span>
               <h2 id="wdp-area-heading" className="wdp-section-title">
-                Miami-based website development for growth-focused teams.
+                Website development for growth-focused teams worldwide.
               </h2>
               <p className="wdp-area__copy">
-                Keep the reference page's local-service confidence, adapted for Astra's Miami
-                presence and businesses that need a sharper digital storefront.
+                Carvel Russ's remote-first approach means businesses anywhere can get a sharper
+                digital storefront built around clarity, trust, and conversion.
               </p>
               <div className="wdp-area__chips">
                 {AREA_CHIPS.map((chip) => (
@@ -987,13 +987,13 @@ export default function WebsiteDevelopmentPage() {
                 <div className="wdp-map__ring wdp-map__ring--outer" />
                 <div className="wdp-map__ring wdp-map__ring--middle" />
                 <div className="wdp-map__ring wdp-map__ring--inner" />
-                <div className="wdp-map__center"><span>MIA</span></div>
+                <div className="wdp-map__center"><span>CR</span></div>
                 <div className="wdp-map__pin wdp-map__pin--1" />
                 <div className="wdp-map__pin wdp-map__pin--2" />
                 <div className="wdp-map__pin wdp-map__pin--3" />
                 <div className="wdp-map__pin wdp-map__pin--4" />
-                <div className="wdp-map__label wdp-map__label--1">Brickell</div>
-                <div className="wdp-map__label wdp-map__label--2">S. Florida</div>
+                <div className="wdp-map__label wdp-map__label--1">Remote</div>
+                <div className="wdp-map__label wdp-map__label--2">Global</div>
               </div>
             </div>
           </div>
@@ -1010,7 +1010,7 @@ export default function WebsiteDevelopmentPage() {
                 Bad website friction costs real opportunities
               </span>
               <h2 id="wdp-final-heading" className="wdp-section-title wdp-section-title--light">
-                Get a website quote from Astra Results Marketing.
+                Get a website quote from Carvel Russ.
               </h2>
               <p className="wdp-final-quote__copy">
                 A focused Website Development page should end exactly how it began: one service,
@@ -1030,7 +1030,7 @@ export default function WebsiteDevelopmentPage() {
               <div className="wdp-final-form-card">
                 <h3 className="wdp-final-form-card__title">Request your free website quote</h3>
                 <p className="wdp-final-form-card__copy">
-                  Fill out the form and Astra can review the best path for your website build.
+                  Fill out the form and I'll review the best path for your website build.
                 </p>
                 <QuoteForm variant="final" />
               </div>
@@ -1045,10 +1045,10 @@ export default function WebsiteDevelopmentPage() {
         <div className="container">
           <div className="wdp-footer__inner">
             <p className="wdp-footer__left">
-              Astra Results Marketing — Website Development Landing Page Prototype
+              Carvel Russ — Website Development Landing Page Prototype
             </p>
             <p className="wdp-footer__right">
-              <a href="tel:+17866433036">(786) 643-3036</a> · Miami, FL
+              <a href="mailto:hello@carvelruss.com">hello@carvelruss.com</a> · Based Worldwide
             </p>
           </div>
         </div>
@@ -1067,10 +1067,10 @@ export default function WebsiteDevelopmentPage() {
           Free Quote
         </button>
         <a
-          href="tel:+17866433036"
+          href="mailto:hello@carvelruss.com"
           className="wdp-sticky-cta__btn wdp-sticky-cta__btn--call"
         >
-          <FiPhone aria-hidden="true" size={16} /> Call
+          <FiMail aria-hidden="true" size={16} /> Email
         </a>
       </div>
 
