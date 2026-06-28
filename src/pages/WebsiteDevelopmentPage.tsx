@@ -427,9 +427,24 @@ export default function WebsiteDevelopmentPage() {
   const [selectedHotspot, setSelectedHotspot] = useState(1);
   const [carouselIndex,   setCarouselIndex]   = useState(0);
   const [openFaqIndex,    setOpenFaqIndex]    = useState<number | null>(null);
+  const [activeReview,    setActiveReview]    = useState(0);
+  const reviewsGridRef = useRef<HTMLDivElement>(null);
 
   const openModal  = useCallback(() => setIsModalOpen(true),  []);
   const closeModal = useCallback(() => setIsModalOpen(false), []);
+
+  const handleReviewsScroll = useCallback(() => {
+    const el = reviewsGridRef.current;
+    if (!el) return;
+    const index = Math.round(el.scrollLeft / el.offsetWidth);
+    setActiveReview(Math.min(index, REVIEWS.length - 1));
+  }, []);
+
+  const scrollToReview = useCallback((index: number) => {
+    const el = reviewsGridRef.current;
+    if (!el) return;
+    el.scrollTo({ left: index * el.offsetWidth, behavior: 'smooth' });
+  }, []);
 
   useEffect(() => {
     document.title = 'Website Development | Carvel Russ';
@@ -920,7 +935,11 @@ export default function WebsiteDevelopmentPage() {
               design, clarity, and results.
             </p>
           </div>
-          <div className="wdp-reviews__grid">
+          <div
+            className="wdp-reviews__grid"
+            ref={reviewsGridRef}
+            onScroll={handleReviewsScroll}
+          >
             {REVIEWS.map((review, i) => (
               <figure
                 key={i}
@@ -938,6 +957,16 @@ export default function WebsiteDevelopmentPage() {
                   Placeholder — replace before publishing
                 </span>
               </figure>
+            ))}
+          </div>
+          <div className="wdp-reviews__dots" aria-hidden="true">
+            {REVIEWS.map((_, i) => (
+              <button
+                key={i}
+                className={`wdp-reviews__dot${activeReview === i ? ' wdp-reviews__dot--active' : ''}`}
+                onClick={() => scrollToReview(i)}
+                aria-label={`Go to review ${i + 1}`}
+              />
             ))}
           </div>
         </div>
