@@ -26,9 +26,9 @@
   --paper:     #ffffff;
   --soft:      #f5f5f7;
   --line:      #e5e7eb;
-  --gold:      #7c3aed;
-  --gold-dark: #5b21b6;
-  --gold-soft: #ede9fe;
+  --gold:      #0d215c;
+  --gold-dark: #091848;
+  --gold-soft: #e8edf8;
   --navy:      #0D215A;
   --navy-2:    #071440;
   --green:     #1c7c54;
@@ -136,10 +136,10 @@
 
     &--gold {
       background: var(--gold);
-      color: var(--navy);
-      box-shadow: 0 4px 18px rgba(245, 189, 56, 0.35);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(13, 33, 92, 0.3);
 
-      &:hover { background: #f0ae20; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(245, 189, 56, 0.45); color: var(--navy); }
+      &:hover { background: var(--gold-dark); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(13, 33, 92, 0.4); color: #fff; }
       &:active { transform: translateY(0); }
     }
 
