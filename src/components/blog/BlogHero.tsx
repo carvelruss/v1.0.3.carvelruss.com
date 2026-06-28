@@ -1,10 +1,5 @@
-import { Link } from 'react-router-dom';
-import { FiEye, FiCalendar, FiClock } from 'react-icons/fi';
+import { FiCalendar, FiClock } from 'react-icons/fi';
 import type { Post } from '../../types';
-
-interface Props {
-  post: Post;
-}
 
 function formatDate(d?: string | null) {
   return d
@@ -12,52 +7,47 @@ function formatDate(d?: string | null) {
     : '';
 }
 
-export default function BlogHero({ post }: Props) {
+export default function BlogHero({ post }: { post: Post }) {
   return (
-    <header className="bs-hero">
-      <div className="bs-container">
-        <div className="bs-reader">
-          <nav className="bs-breadcrumb" aria-label="Breadcrumb">
-            <Link to="/" className="bs-breadcrumb__item">Home</Link>
-            <span className="bs-breadcrumb__sep" aria-hidden="true">›</span>
-            <Link to="/blog" className="bs-breadcrumb__item">Blog</Link>
-            <span className="bs-breadcrumb__sep" aria-hidden="true">›</span>
-            <span className="bs-breadcrumb__item bs-breadcrumb__item--current" aria-current="page">
-              {post.title}
-            </span>
-          </nav>
+    <div className="bs-container">
+      <nav className="bs-breadcrumb" aria-label="Breadcrumb">
+        <span className="bs-bc-link">Home</span>
+        <span className="bs-bc-sep" aria-hidden="true">›</span>
+        <span className="bs-bc-link">Blog</span>
+        <span className="bs-bc-sep" aria-hidden="true">›</span>
+        <span className="bs-bc-current" aria-current="page">{post.title}</span>
+      </nav>
 
-          {post.category && <span className="bs-cat">{post.category}</span>}
-
-          <h1 className="bs-title">{post.title}</h1>
-
-          {post.excerpt && <p className="bs-excerpt">{post.excerpt}</p>}
-
-          <div className="bs-meta">
-            {(post.views_count ?? 0) > 0 && (
-              <span className="bs-meta-item">
-                <FiEye size={14} aria-hidden="true" />
-                {post.views_count?.toLocaleString()} views
-              </span>
-            )}
-            {post.published_at && (
-              <span className="bs-meta-item">
-                <FiCalendar size={14} aria-hidden="true" />
-                <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
-              </span>
-            )}
-            {post.reading_time && (
-              <span className="bs-meta-item">
-                <FiClock size={14} aria-hidden="true" />
-                {post.reading_time}
-              </span>
-            )}
-            <span className="bs-meta-item">
-              By <strong style={{ marginLeft: '.25rem' }}>{post.author}</strong>
-            </span>
-          </div>
-        </div>
-      </div>
-    </header>
+      <header className="bs-post-header">
+        {post.category && <span className="bs-cat">{post.category}</span>}
+        <h1 className="bs-title">{post.title}</h1>
+        {post.excerpt && <p className="bs-excerpt">{post.excerpt}</p>}
+        <ul className="bs-meta" role="list">
+          {post.published_at && (
+            <li className="bs-meta__item">
+              <FiCalendar size={13} aria-hidden="true" />
+              <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
+            </li>
+          )}
+          {post.reading_time && (
+            <>
+              <li className="bs-meta__div" aria-hidden="true" />
+              <li className="bs-meta__item">
+                <FiClock size={13} aria-hidden="true" />
+                <span>{post.reading_time}</span>
+              </li>
+            </>
+          )}
+          {post.author && (
+            <>
+              <li className="bs-meta__div" aria-hidden="true" />
+              <li className="bs-meta__item">
+                By&nbsp;<strong>{post.author}</strong>
+              </li>
+            </>
+          )}
+        </ul>
+      </header>
+    </div>
   );
 }

@@ -127,6 +127,14 @@
   letter-spacing: -.025em;
 }
 
+/* ── 8b. EXCERPT ──────────────────────────────────────────────── */
+.bs-excerpt {
+  font-size: 1.0625rem;
+  color: var(--bs-text-soft);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+
 /* ── 9. META ROW ──────────────────────────────────────────────── */
 .bs-meta {
   list-style: none;

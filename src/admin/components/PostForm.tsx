@@ -24,6 +24,7 @@ import BlogHero from '../../components/blog/BlogHero';
 import BlogContent from '../../components/blog/BlogContent';
 import MediaPickerModal from './MediaPickerModal';
 import '../styles/blog-editor.css';
+import '../../styles/blog-single.css';
 
 /* ── Types ─────────────────────────────────────────────────────────────────── */
 type ToastKind = 'success' | 'error' | 'warning' | 'info';
@@ -1126,13 +1127,13 @@ export default function PostForm() {
             </button>
           </div>
           <div className="ep-preview-frame">
-            <article>
+            <div className="bs-page">
               <BlogHero post={{ ...form, id: 0 } as Post} />
               <BlogContent
                 html={form.content?.trim().startsWith('<') ? (form.content ?? '') : renderMarkdown(form.content ?? '')}
                 post={{ ...form, id: 0 } as Post}
               />
-            </article>
+            </div>
           </div>
         </div>
       )}

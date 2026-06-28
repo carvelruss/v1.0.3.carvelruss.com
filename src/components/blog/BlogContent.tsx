@@ -11,33 +11,31 @@ export default function BlogContent({ html, post }: Props) {
     : [];
 
   return (
-    <div className="bs-body">
-      <div className="bs-container">
-        {post.og_image && (
-          <figure className="bs-featured-img">
-            <img src={post.og_image} alt={post.title} loading="lazy" />
-            {post.featured_image_caption && (
-              <figcaption className="bs-img-caption">{post.featured_image_caption}</figcaption>
-            )}
-          </figure>
-        )}
-
-        <div className="bs-reader">
-          <div
-            className="bs-prose"
-            dangerouslySetInnerHTML={{ __html: html }}
-            aria-label="Post content"
-          />
-
-          {tags.length > 0 && (
-            <div className="bs-tags" aria-label="Post tags">
-              <span className="bs-tags__label">Tags:</span>
-              {tags.map(tag => (
-                <span key={tag} className="bs-tag">{tag}</span>
-              ))}
-            </div>
+    <div className="bs-container">
+      {post.og_image && (
+        <figure className="bs-feat-img">
+          <img src={post.og_image} alt={post.title} loading="lazy" />
+          {post.featured_image_caption && (
+            <figcaption className="bs-img-caption">{post.featured_image_caption}</figcaption>
           )}
-        </div>
+        </figure>
+      )}
+
+      <div style={{ maxWidth: '720px', margin: '2rem auto 3rem' }}>
+        <div
+          className="bs-prose"
+          dangerouslySetInnerHTML={{ __html: html }}
+          aria-label="Post content"
+        />
+
+        {tags.length > 0 && (
+          <div className="bs-tags" aria-label="Post tags">
+            <span className="bs-tags__label">Tags:</span>
+            {tags.map(tag => (
+              <span key={tag} className="bs-tag">{tag}</span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
