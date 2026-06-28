@@ -673,7 +673,15 @@
       @media (max-width: 992px) { grid-template-columns: 1fr; gap: 48px; }
     }
 
-    &__left { display: flex; flex-direction: column; gap: 20px; }
+    &__left {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: sticky;
+      top: calc(var(--header-h) + 24px);
+
+      @media (max-width: 992px) { position: static; }
+    }
 
     &__right {
       display: flex;
