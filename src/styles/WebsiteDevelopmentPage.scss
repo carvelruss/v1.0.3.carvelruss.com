@@ -559,8 +559,14 @@
     }
 
     &__icon {
-      width: 44px;
-      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(245, 189, 56, 0.1);
+      color: var(--gold);
     }
 
     &__title {
@@ -571,18 +577,6 @@
     }
 
     &__copy { font-size: 0.875rem; color: var(--muted); margin: 0; line-height: 1.5; }
-  }
-
-  .wdp-icon-shape {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    position: relative;
-
-    &[data-index="0"] { background: linear-gradient(135deg, #1a2340, #0b1020); &::after { content: '⚡'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; } }
-    &[data-index="1"] { background: linear-gradient(135deg, #2a1a40, #1a0b30); &::after { content: '🎨'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; } }
-    &[data-index="2"] { background: linear-gradient(135deg, #0f2540, #061520); &::after { content: '🔧'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; } }
-    &[data-index="3"] { background: linear-gradient(135deg, #1c400f, #0b2006); &::after { content: '📋'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; } }
   }
 
   // ── 5. Standards Section ────────────────────────────────────────────────────

@@ -9,6 +9,12 @@ import {
   FiChevronRight,
   FiMail,
 } from 'react-icons/fi';
+import {
+  BsBarChartLine,
+  BsPalette,
+  BsCodeSlash,
+  BsClipboardCheck,
+} from 'react-icons/bs';
 import '../styles/WebsiteDevelopmentPage.scss';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -63,6 +69,8 @@ type CredentialCard = {
 };
 
 // ─── Static Data ─────────────────────────────────────────────────────────────
+
+const HIGHLIGHT_ICONS = [BsBarChartLine, BsPalette, BsCodeSlash, BsClipboardCheck];
 
 const SERVICE_HIGHLIGHTS: ServiceHighlight[] = [
   { title: 'Conversion Strategy', copy: 'Offer, structure, CTA flow' },
@@ -555,15 +563,18 @@ export default function WebsiteDevelopmentPage() {
       <section className="wdp-highlights" aria-label="Service highlights">
         <div className="container">
           <div className="wdp-highlights__grid">
-            {SERVICE_HIGHLIGHTS.map((item, i) => (
-              <div key={item.title} className="wdp-highlight-card">
-                <div className="wdp-highlight-card__icon" aria-hidden="true">
-                  <div className="wdp-icon-shape" data-index={i} />
+            {SERVICE_HIGHLIGHTS.map((item, i) => {
+              const Icon = HIGHLIGHT_ICONS[i];
+              return (
+                <div key={item.title} className="wdp-highlight-card">
+                  <div className="wdp-highlight-card__icon" aria-hidden="true">
+                    <Icon size={24} aria-hidden="true" />
+                  </div>
+                  <h3 className="wdp-highlight-card__title">{item.title}</h3>
+                  <p className="wdp-highlight-card__copy">{item.copy}</p>
                 </div>
-                <h3 className="wdp-highlight-card__title">{item.title}</h3>
-                <p className="wdp-highlight-card__copy">{item.copy}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
