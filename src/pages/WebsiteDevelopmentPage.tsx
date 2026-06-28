@@ -818,7 +818,7 @@ export default function WebsiteDevelopmentPage() {
                   id={`faq-body-${i}`}
                   role="region"
                   aria-labelledby={`faq-btn-${i}`}
-                  className="wdp-faq-item__body"
+                  className={`wdp-faq-item__body${openFaqIndex === i ? ' wdp-faq-item__body--open' : ''}`}
                 >
                   <div className="wdp-faq-item__body-inner">
                     <p className="wdp-faq-item__answer">{item.answer}</p>
