@@ -4312,3 +4312,63 @@
   text-overflow: ellipsis;
   color: var(--adm-text, #0f172a);
 }
+
+
+/* ── Topbar mobile responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .admin-topbar {
+    padding: 0 16px;
+  }
+  .admin-topbar__portal-link {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-topbar {
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+  }
+  .admin-topbar__left {
+    height: 56px;
+    flex: 1;
+    min-width: 0;
+  }
+  .admin-topbar__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+  }
+  .admin-topbar__actions {
+    flex-basis: 100%;
+    padding-bottom: 10px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+/* ── Dashboard inquiry table mobile ────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .adm-inq-table th:first-child,
+  .adm-inq-table td:first-child {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .adm-inq-table th:nth-child(4),
+  .adm-inq-table td:nth-child(4) {
+    display: none;
+  }
+  .adm-inq-table {
+    font-size: 12px;
+  }
+  .adm-inq-table th {
+    padding: 8px 10px;
+  }
+  .adm-inq-table td {
+    padding: 9px 10px;
+  }
+}

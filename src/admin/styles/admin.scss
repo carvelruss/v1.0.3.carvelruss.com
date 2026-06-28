@@ -244,6 +244,38 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
 
     &:hover { background: $a-content-bg; color: $a-blue; }
   }
+
+  @media (max-width: 768px) {
+    padding: 0 16px;
+
+    &__portal-link { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    height: auto;
+    min-height: $a-topbar-h;
+    flex-wrap: wrap;
+
+    &__left {
+      height: $a-topbar-h;
+      flex: 1;
+      min-width: 0;
+    }
+
+    &__title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 160px;
+    }
+
+    &__actions {
+      flex-basis: 100%;
+      padding-bottom: 10px;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+  }
 }
 
 .admin-overlay {
@@ -1813,6 +1845,18 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
 
   tr:last-child td { border-bottom: none; }
   tr:hover td      { background: #fafbfc; }
+
+  @media (max-width: 640px) {
+    th:first-child, td:first-child { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    th:nth-child(4), td:nth-child(4) { display: none; }
+    font-size: 12px;
+
+    th { padding: 8px 10px; }
+    td { padding: 9px 10px; }
+  }
 }
 
 .adm-inq-check {
