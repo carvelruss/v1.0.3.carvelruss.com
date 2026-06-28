@@ -1198,7 +1198,7 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
-        gap: 16px;
+        gap: 0;
 
         &::-webkit-scrollbar { display: none; }
       }
@@ -1247,6 +1247,8 @@
       min-width: 100%;
       flex-shrink: 0;
       scroll-snap-align: start;
+      scroll-snap-stop: always;
+      will-change: transform;
     }
 
     &:hover {

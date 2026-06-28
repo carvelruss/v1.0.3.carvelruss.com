@@ -436,14 +436,16 @@ export default function WebsiteDevelopmentPage() {
   const handleReviewsScroll = useCallback(() => {
     const el = reviewsGridRef.current;
     if (!el) return;
-    const index = Math.round(el.scrollLeft / el.offsetWidth);
+    const cardWidth = el.firstElementChild ? (el.firstElementChild as HTMLElement).offsetWidth : el.offsetWidth;
+    const index = Math.round(el.scrollLeft / cardWidth);
     setActiveReview(Math.min(index, REVIEWS.length - 1));
   }, []);
 
   const scrollToReview = useCallback((index: number) => {
     const el = reviewsGridRef.current;
     if (!el) return;
-    el.scrollTo({ left: index * el.offsetWidth, behavior: 'smooth' });
+    const cardWidth = el.firstElementChild ? (el.firstElementChild as HTMLElement).offsetWidth : el.offsetWidth;
+    el.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
   }, []);
 
   useEffect(() => {
