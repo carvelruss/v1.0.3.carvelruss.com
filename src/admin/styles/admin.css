@@ -4412,3 +4412,18 @@
     height: 150px;
   }
 }
+
+/* ── Performance list (Portfolio tab) mobile ────────────────────────────────── */
+/* Clip any text/bar overflow at the card boundary */
+.an-perf-card {
+  overflow: hidden;
+}
+/* Flex child in the column flex list needs min-width: 0 to shrink properly */
+.an-perf-item {
+  min-width: 0;
+}
+/* Anchor tags are inline by default; set explicit width so overflow:hidden +
+   text-overflow:ellipsis kicks in instead of the text just running off-screen */
+.an-perf-label {
+  width: 100%;
+}

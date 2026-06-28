@@ -2120,3 +2120,8 @@ $a-shadow-hover:  0 4px 24px rgba(15,23,42,.1);
     height: 150px;
   }
 }
+
+// ── Performance list (Portfolio tab) mobile ───────────────────────────────────
+.an-perf-card { overflow: hidden; }
+.an-perf-item { min-width: 0; }
+.an-perf-label { width: 100%; }
