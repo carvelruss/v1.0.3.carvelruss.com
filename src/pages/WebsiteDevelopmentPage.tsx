@@ -224,11 +224,9 @@ const AREA_CHIPS: string[] = [
 ];
 
 const LONGFORM_CHECKLIST: string[] = [
-  'Custom page structure based on the offer and buyer intent',
-  'Mobile-first UI/UX design with clear content hierarchy',
-  'Lead form strategy with phone, email, website, and project context',
-  'Launch checklist for QA, analytics, and conversion tracking',
-  'Follow-up path recommendation to reduce lead decay',
+  'Custom page structure built around offer and buyer intent',
+  'Mobile-first UI/UX design with clear visual hierarchy',
+  'Lead form, tracking, and handoff — ready at launch',
 ];
 
 const MINI_CHECKLIST: string[] = [
@@ -721,18 +719,8 @@ export default function WebsiteDevelopmentPage() {
               </h2>
               <div className="wdp-prose">
                 <p>
-                  Most websites underperform because the visitor has to work too hard. The headline
-                  is vague, the offer is scattered, the proof appears too late, and the contact form
-                  feels disconnected from the sales process.
-                </p>
-                <p>
-                  This Website Development approach makes the value clear immediately: the business
-                  gets a polished, responsive, conversion-focused website that helps turn qualified
-                  traffic into calls and quote requests.
-                </p>
-                <p>
-                  This page keeps the layout quote-focused: top CTA, authority signals, immediate
-                  form, service-specific details, proof sections, FAQ, and a final quote request.
+                  Most websites lose leads before a conversation starts. A conversion-focused build
+                  makes the value clear, the next step obvious, and the form easy to complete.
                 </p>
               </div>
               <ul className="wdp-checklist">
