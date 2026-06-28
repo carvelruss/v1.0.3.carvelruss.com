@@ -452,18 +452,6 @@ export default function WebsiteDevelopmentPage() {
   return (
     <div className="website-development-page">
 
-      {/* ── 1. Top Quote Bar ── */}
-      <div className="wdp-top-bar">
-        <div className="wdp-top-bar__inner container">
-          <span className="wdp-top-bar__left">Get A Free Website Development Quote</span>
-          <span className="wdp-top-bar__center">Speak to a growth strategist</span>
-          <a href="mailto:hello@carvelruss.com" className="wdp-top-bar__right">
-            <FiMail aria-hidden="true" size={13} />
-            hello@carvelruss.com
-          </a>
-        </div>
-      </div>
-
       {/* ── 2. Sticky Header ── */}
       <header className="wdp-header">
         <div className="wdp-header__inner container">
