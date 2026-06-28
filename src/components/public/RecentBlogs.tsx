@@ -57,6 +57,7 @@ function formatPostMeta(post: Post): string {
         month: 'long',
         day: 'numeric',
         year: 'numeric',
+        timeZone: 'Asia/Manila',
       })
     : '';
   const read = post.reading_time ? `${post.reading_time} read` : '';

@@ -59,7 +59,7 @@ export default function BlogPost() {
   }, [slug]);
 
   const formatDate = (d?: string | null) =>
-    d ? new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+    d ? new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'Asia/Manila' }) : '';
 
   if (loading) return (
     <div className="ws-loading-state" style={{ paddingTop: '8rem' }}>Loading…</div>
