@@ -513,7 +513,7 @@ export default function WebsiteDevelopmentPage() {
               </div>
 
               <div className="wdp-hero__ctas">
-                <button type="button" className="wdp-btn wdp-btn--gold" onClick={openModal}>
+                <button type="button" className="wdp-btn wdp-btn--white" onClick={openModal}>
                   Get My Free Website Quote
                 </button>
                 <a href="mailto:hello@carvelruss.com" className="wdp-btn wdp-btn--outline-light">
@@ -614,7 +614,7 @@ export default function WebsiteDevelopmentPage() {
                 around trust, speed, and action.
               </p>
             </div>
-            <button type="button" className="wdp-btn wdp-btn--gold" onClick={openModal}>
+            <button type="button" className="wdp-btn wdp-btn--white" onClick={openModal}>
               Request a Website Quote
             </button>
           </div>
@@ -767,7 +767,7 @@ export default function WebsiteDevelopmentPage() {
                 </p>
                 <button
                   type="button"
-                  className="wdp-btn wdp-btn--gold wdp-btn--full"
+                  className="wdp-btn wdp-btn--white wdp-btn--full"
                   onClick={openModal}
                 >
                   Get My Website Review
