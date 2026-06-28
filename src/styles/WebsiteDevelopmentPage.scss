@@ -109,31 +109,13 @@
   .wdp-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    text-decoration: none;
 
-    &__mark {
-      width: 36px;
+    img {
       height: 36px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--gold) 0%, #e8a800 100%);
-      color: var(--navy);
-      font-size: 1rem;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 2px 12px rgba(245, 189, 56, 0.35);
+      width: auto;
+      display: block;
     }
-
-    &__text {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.3px;
-    }
-
-    &__accent { color: var(--gold); }
   }
 
   // ── Shared Buttons ──────────────────────────────────────────────────────────

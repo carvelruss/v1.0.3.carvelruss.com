@@ -459,12 +459,9 @@ export default function WebsiteDevelopmentPage() {
       {/* ── 2. Sticky Header ── */}
       <header className="wdp-header">
         <div className="wdp-header__inner container">
-          <div className="wdp-logo" aria-label="Carvel Russ">
-            <div className="wdp-logo__mark" aria-hidden="true">CR</div>
-            <span className="wdp-logo__text">
-              Carvel <span className="wdp-logo__accent">Russ</span>
-            </span>
-          </div>
+          <a href="/" className="wdp-logo" aria-label="Carvel Russ – Home">
+            <img src="/logos/white-logo.png" alt="Carvel Russ" />
+          </a>
           <div className="wdp-header__actions">
             <button type="button" className="wdp-btn wdp-btn--outline-nav" onClick={openModal}>
               Get A Free Quote
