@@ -147,7 +147,7 @@ const REASON_CARDS: ReasonCard[] = [
 const FAQ_ITEMS: FAQItem[] = [
   {
     question: 'Is this page only for Website Development?',
-    answer:   'Yes. This version is intentionally focused on one service only: Website Development. Other Carvel Russ services should each have their own dedicated landing page.',
+    answer:   'Yes. This version is intentionally focused on one service only: Website Development. Other services should each have their own dedicated landing page.',
   },
   {
     question: 'What kind of website is this best for?',
@@ -269,7 +269,7 @@ function QuoteForm({ variant, onSuccess }: QuoteFormProps) {
         <div className="wdp-form-success__icon" aria-hidden="true">
           <FiCheck size={22} />
         </div>
-        <p>Thanks — this demo quote request was received. Carvel Russ will be in touch soon.</p>
+        <p>Thanks — this demo quote request was received. Our team will be in touch soon.</p>
       </div>
     );
   }
@@ -505,7 +505,7 @@ export default function WebsiteDevelopmentPage() {
                   Get My Free Website Quote
                 </button>
                 <a href="mailto:hello@carvelruss.com" className="wdp-btn wdp-btn--outline-dark">
-                  Email Carvel Russ
+                  Send Us an Email
                 </a>
               </div>
 
@@ -681,13 +681,13 @@ export default function WebsiteDevelopmentPage() {
 
             {/* Right — Reasons */}
             <div className="wdp-why__right">
-              <span className="wdp-kicker">Why clients choose Carvel Russ</span>
+              <span className="wdp-kicker">Why clients choose us</span>
               <h2 id="wdp-why-heading" className="wdp-section-title">
                 A website build with revenue direction.
               </h2>
               <p className="wdp-why__intro">
-                The layout mirrors a quote-driven service page, but the message is tailored to
-                Carvel Russ's Website Development offer.
+                The layout mirrors a quote-driven service page, built around one offer:
+                a conversion-focused website build.
               </p>
               <div className="wdp-reasons">
                 {REASON_CARDS.map((card, i) => (
@@ -822,13 +822,13 @@ export default function WebsiteDevelopmentPage() {
       <section className="wdp-promise" aria-labelledby="wdp-promise-heading">
         <div className="container">
           <div className="wdp-section-header text-center">
-            <span className="wdp-kicker wdp-kicker--light">The Carvel Russ promise</span>
+            <span className="wdp-kicker wdp-kicker--light">Our promise</span>
             <h2 id="wdp-promise-heading" className="wdp-section-title wdp-section-title--light">
               Conversion-focused development, not decoration.
             </h2>
             <p className="wdp-section-sub wdp-section-sub--light">
-              The page's proof system should show why Carvel Russ is qualified to build websites
-              that support growth and sales conversations.
+              The proof system here shows why this team is qualified to build websites
+              that support growth and real sales conversations.
             </p>
           </div>
           <div className="wdp-promise__grid">
@@ -851,8 +851,8 @@ export default function WebsiteDevelopmentPage() {
               Example website build outcomes.
             </h2>
             <p className="wdp-section-sub">
-              Use this carousel for real Carvel Russ case studies or verified screenshots. The
-              current cards are safe placeholders for prototype review.
+              Replace these cards with real case studies or verified screenshots.
+              The current cards are safe placeholders for prototype review.
             </p>
           </div>
 
@@ -965,7 +965,7 @@ export default function WebsiteDevelopmentPage() {
                 Website development for growth-focused teams worldwide.
               </h2>
               <p className="wdp-area__copy">
-                Carvel Russ's remote-first approach means businesses anywhere can get a sharper
+                A remote-first approach means businesses anywhere can get a sharper
                 digital storefront built around clarity, trust, and conversion.
               </p>
               <div className="wdp-area__chips">
@@ -1003,7 +1003,7 @@ export default function WebsiteDevelopmentPage() {
                 Bad website friction costs real opportunities
               </span>
               <h2 id="wdp-final-heading" className="wdp-section-title wdp-section-title--light">
-                Get a website quote from Carvel Russ.
+                Get your website quote today.
               </h2>
               <p className="wdp-final-quote__copy">
                 A focused Website Development page should end exactly how it began: one service,
@@ -1038,7 +1038,7 @@ export default function WebsiteDevelopmentPage() {
         <div className="container">
           <div className="wdp-footer__inner">
             <p className="wdp-footer__left">
-              Carvel Russ — Website Development Landing Page Prototype
+              Website Development Landing Page Prototype
             </p>
             <p className="wdp-footer__right">
               <a href="mailto:hello@carvelruss.com">hello@carvelruss.com</a> · Based Worldwide
