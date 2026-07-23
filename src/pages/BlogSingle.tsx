@@ -9,6 +9,7 @@ import { renderMarkdown } from '../lib/markdown';
 import type { Post } from '../types';
 import '../styles/blog-single.css';
 import RelatedArticles from '../components/blog/RelatedArticles';
+import AdSenseLoader from '../components/AdSenseLoader';
 
 function formatDate(d?: string | null) {
   return d
@@ -201,6 +202,7 @@ export default function BlogSingle() {
 
   return (
     <>
+      <AdSenseLoader />
       {/* Reading progress bar — fixed at top of viewport */}
       <div
         className="bs-read-progress"

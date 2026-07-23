@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/markdown';
 import CTABanner from '../components/CTABanner';
+import AdSenseLoader from '../components/AdSenseLoader';
 import type { Post } from '../types';
 
 export default function BlogPost() {
@@ -78,6 +79,7 @@ export default function BlogPost() {
 
   return (
     <>
+      <AdSenseLoader />
       <article className="ws-article">
         <button className="ws-article-back" onClick={() => navigate('/blog')}>
           ← Blog
