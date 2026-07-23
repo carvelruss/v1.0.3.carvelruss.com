@@ -69,22 +69,12 @@
 }
 
 /* ── 5. BREADCRUMB ────────────────────────────────────────────── */
-.bs-breadcrumb-bar {
-  position: sticky;
-  top: var(--site-header-height, 64px);
-  z-index: 50;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-}
-
 .bs-breadcrumb {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: .2rem .4rem;
-  padding: .65rem 0;
+  padding: 1.25rem 0 0;
   font-size: .8rem;
 }
 
