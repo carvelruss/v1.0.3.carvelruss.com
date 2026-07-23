@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   FiGrid, FiLayers, FiEdit2, FiMail, FiImage, FiSettings,
-  FiExternalLink, FiLogOut, FiBarChart2, FiZap, FiStar,
+  FiExternalLink, FiLogOut, FiBarChart2, FiZap, FiStar, FiLayout,
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 
@@ -45,6 +45,7 @@ export default function AdminLayout({
     { icon: FiZap,      label: 'Services',     path: '/admin/services'  },
     { icon: FiEdit2,    label: 'Blogs',        path: '/admin/posts'     },
     { icon: FiMail,      label: 'Inquiries',    path: '/admin/inbox',         badgeCount: unreadInquiries },
+    { icon: FiLayout,    label: 'Landing Pages',path: '/admin/landing-pages' },
     { icon: FiStar,      label: 'Testimonials', path: '/admin/testimonials'  },
     { icon: FiBarChart2, label: 'Analytics',  path: '/admin/analytics'  },
     { icon: FiImage,     label: 'Media',      path: '/admin/media'      },

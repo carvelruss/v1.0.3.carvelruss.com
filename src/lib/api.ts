@@ -1,4 +1,4 @@
-import type { Project, Post, Inquiry, MediaAsset, SiteSetting, Service, Testimonial } from '../types';
+import type { Project, Post, Inquiry, MediaAsset, SiteSetting, Service, Testimonial, LandingPage, LandingPageSections } from '../types';
 import { compressImage } from './compressImage';
 
 const TOKEN_KEY = 'portfolio_admin_token';
@@ -167,6 +167,49 @@ class ApiClient {
   }
   deleteTestimonial(id: number): Promise<{ success: boolean }> {
     return this.request(`/testimonials/${id}`, { method: 'DELETE' });
+  }
+
+  // ── Landing Pages ─────────────────────────────────────────────────────────
+  getLandingPages(adminMode = false): Promise<LandingPage[]> {
+    return this.request(`/landing-pages${adminMode ? '?admin=true' : ''}`);
+  }
+  getLandingPageBySlug(slug: string, adminMode = false): Promise<LandingPage> {
+    return this.request(`/landing-pages/${slug}${adminMode ? '?admin=true' : ''}`);
+  }
+  createLandingPage(data: {
+    title: string;
+    slug: string;
+    status?: 'draft' | 'published';
+    sections: LandingPageSections;
+    seo_title?: string | null;
+    seo_description?: string | null;
+    og_image?: string | null;
+  }): Promise<{ slug: string }> {
+    return this.request('/landing-pages', {
+      method: 'POST',
+      body: JSON.stringify({ ...data, sections: JSON.stringify(data.sections) }),
+    });
+  }
+  updateLandingPage(slug: string, data: {
+    title?: string;
+    slug?: string;
+    status?: 'draft' | 'published';
+    sections?: LandingPageSections;
+    seo_title?: string | null;
+    seo_description?: string | null;
+    og_image?: string | null;
+  }): Promise<{ slug: string }> {
+    const { sections, ...rest } = data;
+    const payload = sections
+      ? { ...rest, sections: JSON.stringify(sections) }
+      : rest;
+    return this.request(`/landing-pages/${slug}`, { method: 'PUT', body: JSON.stringify(payload) });
+  }
+  deleteLandingPage(slug: string): Promise<{ success: boolean }> {
+    return this.request(`/landing-pages/${slug}`, { method: 'DELETE' });
+  }
+  toggleLandingPageStatus(slug: string, status: 'draft' | 'published'): Promise<{ slug: string }> {
+    return this.request(`/landing-pages/${slug}`, { method: 'PUT', body: JSON.stringify({ status }) });
   }
 
   // ── Contact (public) ─────────────────────────────────────────────────────

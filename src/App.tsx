@@ -84,10 +84,11 @@ import WriteReviewButton  from './components/WriteReviewButton';
 
 // All non-homepage routes are lazy — they're never needed for the initial LCP paint.
 // AdminApp especially: it imports TipTap + react-datepicker that no public visitor needs.
-const ProjectsPage    = lazy(() => import('./pages/ProjectsPage'));
-const CaseStudyDetail = lazy(() => import('./pages/CaseStudyDetail'));
-const ServiceDetail            = lazy(() => import('./pages/ServiceDetail'));
-const WebsiteDevelopmentPage  = lazy(() => import('./pages/WebsiteDevelopmentPage'));
+const ProjectsPage           = lazy(() => import('./pages/ProjectsPage'));
+const CaseStudyDetail        = lazy(() => import('./pages/CaseStudyDetail'));
+const ServiceDetail          = lazy(() => import('./pages/ServiceDetail'));
+const WebsiteDevelopmentPage = lazy(() => import('./pages/WebsiteDevelopmentPage'));
+const ServiceLandingPage     = lazy(() => import('./pages/ServiceLandingPage'));
 const BlogList        = lazy(() => import('./pages/BlogList'));
 const BlogSingle      = lazy(() => import('./pages/BlogSingle'));
 const ThankYou        = lazy(() => import('./pages/ThankYou'));
@@ -123,6 +124,7 @@ export default function App() {
         <Route path="/case-studies/:slug"    element={<PageShell><CaseStudyDetail /></PageShell>} />
         <Route path="/services/website-development" element={<Suspense fallback={null}><WebsiteDevelopmentPage /></Suspense>} />
         <Route path="/services/:slug"            element={<Suspense fallback={null}><ServiceDetail /></Suspense>} />
+        <Route path="/lp/:slug"                  element={<Suspense fallback={null}><ServiceLandingPage /></Suspense>} />
         <Route path="/blog"                  element={<PageShell><BlogList /></PageShell>} />
         <Route path="/blog/:slug"            element={<PageShell><BlogSingle /></PageShell>} />
         <Route path="/blogs"                 element={<PageShell><BlogList /></PageShell>} />

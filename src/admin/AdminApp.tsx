@@ -30,6 +30,8 @@ function lazyChunk<T extends ComponentType<unknown>>(
 }
 
 const AdminServicesPage        = lazyChunk(() => import('./pages/AdminServicesPage'),      'services');
+const LandingPagesAdmin        = lazyChunk(() => import('./pages/LandingPagesAdmin'),       'lp-list');
+const LandingPageFormPage      = lazyChunk(() => import('./pages/LandingPageFormPage'),     'lp-form');
 const AdminServiceFormPage     = lazyChunk(() => import('./pages/AdminServiceFormPage'),   'svc-form');
 const AdminMediaPage           = lazyChunk(() => import('./pages/AdminMediaPage'),         'media');
 const AdminSettingsPage        = lazyChunk(() => import('./pages/AdminSettingsPage'),      'settings');
@@ -114,6 +116,11 @@ export default function AdminApp() {
 
           {/* Settings */}
           <Route path="settings"            element={<GS><AdminSettingsPage /></GS>} />
+
+          {/* Landing Pages */}
+          <Route path="landing-pages"               element={<GS><LandingPagesAdmin /></GS>} />
+          <Route path="landing-pages/new"           element={<GS><LandingPageFormPage /></GS>} />
+          <Route path="landing-pages/:slug/edit"    element={<GS><LandingPageFormPage /></GS>} />
 
           {/* Testimonials */}
           <Route path="testimonials"        element={<GS><TestimonialsAdmin /></GS>} />
