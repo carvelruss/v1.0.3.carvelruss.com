@@ -17,8 +17,10 @@ function lazyChunk<T extends ComponentType<unknown>>(
   key: string,
 ) {
   return lazy(() =>
-    factory().catch((err) => {
-      const flag = `chunk-reloaded-${key}`;
+    factory().catch((err: unknown) => {
+      // Use the failing chunk URL as the flag key so each new deployment (new hash) gets a fresh retry.
+      const url = err instanceof Error ? (err.message.match(/https?:\/\/\S+/)?.[0] ?? key) : key;
+      const flag = `chunk-reloaded-${url}`;
       if (!sessionStorage.getItem(flag)) {
         sessionStorage.setItem(flag, '1');
         window.location.reload();
