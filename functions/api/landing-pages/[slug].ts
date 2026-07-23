@@ -32,7 +32,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, params })
     const row = await env.DB.prepare(sql).bind(slug).first<LandingPageRow>();
     if (!row) return err('Not found', 404);
 
-    return json({ ...row, sections: JSON.parse(row.sections || '{}') });
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(row.sections || '{}');
+      if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+    } catch {
+      parsed = {};
+    }
+    return json({ ...row, sections: parsed });
   } catch {
     return err('Failed to fetch landing page', 500);
   }
