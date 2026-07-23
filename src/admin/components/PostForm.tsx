@@ -209,7 +209,6 @@ export default function PostForm() {
   const [panelTab, setPanelTab] = useState<PanelTab>('post');
   const [preview, setPreview] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  const [customCat, setCustomCat] = useState(false);
   const [featuredUploading, setFeaturedUploading] = useState(false);
   const [featuredUploadErr, setFeaturedUploadErr] = useState('');
   const [featuredDragOver, setFeaturedDragOver] = useState(false);
@@ -262,7 +261,6 @@ export default function PostForm() {
         if (editor && content) {
           editor.commands.setContent(content);
         }
-        setCustomCat(Boolean(post.category) && !CATEGORIES.includes(post.category ?? ''));
         setSlugManual(true);
         setDirty(false);
       })
@@ -735,33 +733,18 @@ export default function PostForm() {
         <div className="ep-gap">
           <div className="ep-field">
             <label className="ep-label" htmlFor="ps-category">Category</label>
-            <select
-              id="ps-category" className="ep-select"
-              value={customCat ? '__custom__' : (form.category ?? '')}
-              onChange={e => {
-                if (e.target.value === '__custom__') {
-                  setCustomCat(true);
-                  set('category', '');
-                } else {
-                  setCustomCat(false);
-                  set('category', e.target.value);
-                }
-              }}
-            >
-              <option value="">Select a category…</option>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              <option value="__custom__">Other…</option>
-            </select>
-            {customCat && (
-              <input
-                className="ep-input ep-input--sm"
-                style={{ marginTop: 6 }}
-                value={form.category ?? ''}
-                onChange={e => set('category', e.target.value)}
-                placeholder="Enter custom category…"
-                autoFocus
-              />
-            )}
+            <input
+              id="ps-category"
+              className="ep-input"
+              list="ps-category-list"
+              value={form.category ?? ''}
+              onChange={e => set('category', e.target.value)}
+              placeholder="Select or type a new category…"
+              autoComplete="off"
+            />
+            <datalist id="ps-category-list">
+              {CATEGORIES.map(c => <option key={c} value={c} />)}
+            </datalist>
           </div>
           <div className="ep-field">
             <label className="ep-label" htmlFor="ps-tags">Tags</label>
