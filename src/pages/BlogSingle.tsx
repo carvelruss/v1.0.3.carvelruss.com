@@ -210,10 +210,9 @@ export default function BlogSingle() {
         aria-hidden="true"
       />
 
-      <article className="bs-page" ref={articleRef}>
+      {/* ── Sticky breadcrumb bar ── */}
+      <div className="bs-breadcrumb-bar">
         <div className="bs-container">
-
-          {/* ── Breadcrumb ── */}
           <nav className="bs-breadcrumb" aria-label="Breadcrumb">
             <Link to="/" className="bs-bc-link">Home</Link>
             <span className="bs-bc-sep" aria-hidden="true">›</span>
@@ -221,6 +220,11 @@ export default function BlogSingle() {
             <span className="bs-bc-sep" aria-hidden="true">›</span>
             <span className="bs-bc-current" aria-current="page">{post.title}</span>
           </nav>
+        </div>
+      </div>
+
+      <article className="bs-page" ref={articleRef}>
+        <div className="bs-container">
 
           {/* ── Post header: category + title + meta (above the hero image) ── */}
           <header className="bs-post-header">
