@@ -17,7 +17,8 @@ import {
   BsClipboardCheck,
 } from 'react-icons/bs';
 import { api } from '../lib/api';
-import type { LandingPage } from '../types';
+import type { LandingPage, LandingPageSections } from '../types';
+import { DEFAULT_LP_SECTIONS } from '../types';
 import '../styles/WebsiteDevelopmentPage.scss';
 
 const HIGHLIGHT_ICONS = [BsBarChartLine, BsPalette, BsCodeSlash, BsClipboardCheck];
@@ -189,7 +190,11 @@ export default function ServiceLandingPage() {
     if (!slug) return;
     api.getLandingPageBySlug(slug)
       .then(p => {
-        setPage(p);
+        const merged = { ...DEFAULT_LP_SECTIONS } as LandingPageSections;
+        for (const k of Object.keys(DEFAULT_LP_SECTIONS) as Array<keyof LandingPageSections>) {
+          merged[k] = { ...DEFAULT_LP_SECTIONS[k], ...(p.sections[k] ?? {}) } as never;
+        }
+        setPage({ ...p, sections: merged });
         document.title = p.seo_title ?? `${p.title} | Carvel Russ`;
       })
       .catch(() => setNotFound(true))
