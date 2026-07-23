@@ -156,7 +156,11 @@ export default function LandingPageFormPage() {
         setSeoTitle(p.seo_title ?? '');
         setSeoDescription(p.seo_description ?? '');
         setOgImage(p.og_image ?? '');
-        setSections(p.sections);
+        const merged = { ...DEFAULT_LP_SECTIONS } as LandingPageSections;
+        for (const k of Object.keys(DEFAULT_LP_SECTIONS) as Array<keyof LandingPageSections>) {
+          merged[k] = { ...DEFAULT_LP_SECTIONS[k], ...(p.sections[k] ?? {}) } as never;
+        }
+        setSections(merged);
         setSlugManual(true);
       })
       .catch(() => setError('Failed to load page for editing.'))
